@@ -1,0 +1,57 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'auth_models.dart';
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+_$LoginRequestImpl _$$LoginRequestImplFromJson(Map<String, dynamic> json) =>
+    _$LoginRequestImpl(
+      username: json['username'] as String,
+      password: json['password'] as String,
+      client_id: json['client_id'] as String,
+      client_secret: json['client_secret'] as String,
+      grant_type: json['grant_type'] as String,
+      scope: json['scope'] as String,
+    );
+
+Map<String, dynamic> _$$LoginRequestImplToJson(_$LoginRequestImpl instance) =>
+    <String, dynamic>{
+      'username': instance.username,
+      'password': instance.password,
+      'client_id': instance.client_id,
+      'client_secret': instance.client_secret,
+      'grant_type': instance.grant_type,
+      'scope': instance.scope,
+    };
+
+_$RegisterRequestImpl _$$RegisterRequestImplFromJson(
+  Map<String, dynamic> json,
+) => _$RegisterRequestImpl(
+  fullName: json['full_name'] as String,
+  email: json['email'] as String,
+  password: json['password'] as String,
+);
+
+Map<String, dynamic> _$$RegisterRequestImplToJson(
+  _$RegisterRequestImpl instance,
+) => <String, dynamic>{
+  'full_name': instance.fullName,
+  'email': instance.email,
+  'password': instance.password,
+};
+
+_$AuthTokenResponseImpl _$$AuthTokenResponseImplFromJson(
+  Map<String, dynamic> json,
+) => _$AuthTokenResponseImpl(
+  accessToken: json['access_token'] as String,
+  tokenType: json['token_type'] as String? ?? 'bearer',
+);
+
+Map<String, dynamic> _$$AuthTokenResponseImplToJson(
+  _$AuthTokenResponseImpl instance,
+) => <String, dynamic>{
+  'access_token': instance.accessToken,
+  'token_type': instance.tokenType,
+};
