@@ -297,10 +297,11 @@ RegisterRequest _$RegisterRequestFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$RegisterRequest {
-  @JsonKey(name: 'full_name')
-  String get fullName => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
   String get password => throw _privateConstructorUsedError;
+  @JsonKey(name: 'is_active')
+  bool get isActive => throw _privateConstructorUsedError;
+  String get role => throw _privateConstructorUsedError;
 
   /// Serializes this RegisterRequest to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -320,9 +321,10 @@ abstract class $RegisterRequestCopyWith<$Res> {
   ) = _$RegisterRequestCopyWithImpl<$Res, RegisterRequest>;
   @useResult
   $Res call({
-    @JsonKey(name: 'full_name') String fullName,
     String email,
     String password,
+    @JsonKey(name: 'is_active') bool isActive,
+    String role,
   });
 }
 
@@ -341,16 +343,13 @@ class _$RegisterRequestCopyWithImpl<$Res, $Val extends RegisterRequest>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? fullName = null,
     Object? email = null,
     Object? password = null,
+    Object? isActive = null,
+    Object? role = null,
   }) {
     return _then(
       _value.copyWith(
-            fullName: null == fullName
-                ? _value.fullName
-                : fullName // ignore: cast_nullable_to_non_nullable
-                      as String,
             email: null == email
                 ? _value.email
                 : email // ignore: cast_nullable_to_non_nullable
@@ -358,6 +357,14 @@ class _$RegisterRequestCopyWithImpl<$Res, $Val extends RegisterRequest>
             password: null == password
                 ? _value.password
                 : password // ignore: cast_nullable_to_non_nullable
+                      as String,
+            isActive: null == isActive
+                ? _value.isActive
+                : isActive // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            role: null == role
+                ? _value.role
+                : role // ignore: cast_nullable_to_non_nullable
                       as String,
           )
           as $Val,
@@ -375,9 +382,10 @@ abstract class _$$RegisterRequestImplCopyWith<$Res>
   @override
   @useResult
   $Res call({
-    @JsonKey(name: 'full_name') String fullName,
     String email,
     String password,
+    @JsonKey(name: 'is_active') bool isActive,
+    String role,
   });
 }
 
@@ -395,16 +403,13 @@ class __$$RegisterRequestImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? fullName = null,
     Object? email = null,
     Object? password = null,
+    Object? isActive = null,
+    Object? role = null,
   }) {
     return _then(
       _$RegisterRequestImpl(
-        fullName: null == fullName
-            ? _value.fullName
-            : fullName // ignore: cast_nullable_to_non_nullable
-                  as String,
         email: null == email
             ? _value.email
             : email // ignore: cast_nullable_to_non_nullable
@@ -412,6 +417,14 @@ class __$$RegisterRequestImplCopyWithImpl<$Res>
         password: null == password
             ? _value.password
             : password // ignore: cast_nullable_to_non_nullable
+                  as String,
+        isActive: null == isActive
+            ? _value.isActive
+            : isActive // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        role: null == role
+            ? _value.role
+            : role // ignore: cast_nullable_to_non_nullable
                   as String,
       ),
     );
@@ -422,25 +435,29 @@ class __$$RegisterRequestImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$RegisterRequestImpl implements _RegisterRequest {
   const _$RegisterRequestImpl({
-    @JsonKey(name: 'full_name') required this.fullName,
     required this.email,
     required this.password,
+    @JsonKey(name: 'is_active') this.isActive = true,
+    this.role = 'parent',
   });
 
   factory _$RegisterRequestImpl.fromJson(Map<String, dynamic> json) =>
       _$$RegisterRequestImplFromJson(json);
 
   @override
-  @JsonKey(name: 'full_name')
-  final String fullName;
-  @override
   final String email;
   @override
   final String password;
+  @override
+  @JsonKey(name: 'is_active')
+  final bool isActive;
+  @override
+  @JsonKey()
+  final String role;
 
   @override
   String toString() {
-    return 'RegisterRequest(fullName: $fullName, email: $email, password: $password)';
+    return 'RegisterRequest(email: $email, password: $password, isActive: $isActive, role: $role)';
   }
 
   @override
@@ -448,16 +465,17 @@ class _$RegisterRequestImpl implements _RegisterRequest {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$RegisterRequestImpl &&
-            (identical(other.fullName, fullName) ||
-                other.fullName == fullName) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.password, password) ||
-                other.password == password));
+                other.password == password) &&
+            (identical(other.isActive, isActive) ||
+                other.isActive == isActive) &&
+            (identical(other.role, role) || other.role == role));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, fullName, email, password);
+  int get hashCode => Object.hash(runtimeType, email, password, isActive, role);
 
   /// Create a copy of RegisterRequest
   /// with the given fields replaced by the non-null parameter values.
@@ -478,21 +496,24 @@ class _$RegisterRequestImpl implements _RegisterRequest {
 
 abstract class _RegisterRequest implements RegisterRequest {
   const factory _RegisterRequest({
-    @JsonKey(name: 'full_name') required final String fullName,
     required final String email,
     required final String password,
+    @JsonKey(name: 'is_active') final bool isActive,
+    final String role,
   }) = _$RegisterRequestImpl;
 
   factory _RegisterRequest.fromJson(Map<String, dynamic> json) =
       _$RegisterRequestImpl.fromJson;
 
   @override
-  @JsonKey(name: 'full_name')
-  String get fullName;
-  @override
   String get email;
   @override
   String get password;
+  @override
+  @JsonKey(name: 'is_active')
+  bool get isActive;
+  @override
+  String get role;
 
   /// Create a copy of RegisterRequest
   /// with the given fields replaced by the non-null parameter values.

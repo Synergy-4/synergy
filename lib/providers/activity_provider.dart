@@ -9,12 +9,13 @@ class ActivityState extends _$ActivityState {
   @override
   FutureOr<ActivityPayload?> build() => null;
 
-  Future<void> fetchNextActivity(String childId) async {
+  Future<void> fetchNextActivity(String childId, {String? gameType}) async {
     state = const AsyncLoading();
 
     try {
+      final queryParams = gameType != null ? '?game_type=$gameType' : '';
       final result = await ApiClient.instance.get(
-        '/activities/next/$childId',
+        '/activities/next/$childId$queryParams',
         withAuth: true,
       );
 

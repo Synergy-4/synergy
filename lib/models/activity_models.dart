@@ -64,12 +64,26 @@ class StepConfig with _$StepConfig {
 @freezed
 class GameConfig with _$GameConfig {
   const factory GameConfig({
-    @JsonKey(name: 'game_type') required String gameType, // "matching", "sorting", "tracing"
+    @JsonKey(name: 'game_type') required String gameType,
     required String difficulty,
     @JsonKey(name: 'time_limit_seconds') int? timeLimitSeconds,
     required Map<String, dynamic> data,
+    @JsonKey(name: 'on_success') GameEvent? onSuccess,
+    @JsonKey(name: 'on_failure') GameEvent? onFailure,
   }) = _GameConfig;
 
   factory GameConfig.fromJson(Map<String, dynamic> json) =>
       _$GameConfigFromJson(json);
+}
+
+@freezed
+class GameEvent with _$GameEvent {
+  const factory GameEvent({
+    required String type, // "animation", "sound", "navigation"
+    required String action,
+    Map<String, dynamic>? params,
+  }) = _GameEvent;
+
+  factory GameEvent.fromJson(Map<String, dynamic> json) =>
+      _$GameEventFromJson(json);
 }

@@ -21,8 +21,14 @@ class DatabaseService {
 
     return await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: _createDB,
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          await db.execute('DROP TABLE IF EXISTS children');
+          await _createDB(db, newVersion);
+        }
+      },
     );
   }
 
@@ -32,7 +38,7 @@ class DatabaseService {
         id INTEGER PRIMARY KEY,
         parentId INTEGER NOT NULL,
         name TEXT NOT NULL,
-        ageInYears INTEGER NOT NULL,
+        dateOfBirth TEXT NOT NULL,
         interests TEXT NOT NULL,
         diagnosisNotes TEXT,
         goals TEXT NOT NULL
@@ -49,7 +55,7 @@ class DatabaseService {
           'id': child.id,
           'parentId': child.parentId,
           'name': child.name,
-          'ageInYears': child.ageInYears,
+          'dateOfBirth': child.dateOfBirth,
           'interests': jsonEncode(child.interests),
           'diagnosisNotes': child.diagnosisNotes,
           'goals': jsonEncode(child.goals),
@@ -67,8 +73,9 @@ class DatabaseService {
         id: json['id'] as int,
         parentId: json['parentId'] as int,
         name: json['name'] as String,
-        ageInYears: json['ageInYears'] as int,
-        interests: (jsonDecode(json['interests'] as String) as List).cast<String>(),
+        dateOfBirth: json['dateOfBirth'] as String,
+        interests: (jsonDecode(json['interests'] as String) as List)
+            .cast<String>(),
         diagnosisNotes: json['diagnosisNotes'] as String?,
         goals: jsonDecode(json['goals'] as String) as List<dynamic>,
       );

@@ -29,17 +29,19 @@ Map<String, dynamic> _$$LoginRequestImplToJson(_$LoginRequestImpl instance) =>
 _$RegisterRequestImpl _$$RegisterRequestImplFromJson(
   Map<String, dynamic> json,
 ) => _$RegisterRequestImpl(
-  fullName: json['full_name'] as String,
   email: json['email'] as String,
   password: json['password'] as String,
+  isActive: json['is_active'] as bool? ?? true,
+  role: json['role'] as String? ?? 'parent',
 );
 
 Map<String, dynamic> _$$RegisterRequestImplToJson(
   _$RegisterRequestImpl instance,
 ) => <String, dynamic>{
-  'full_name': instance.fullName,
   'email': instance.email,
   'password': instance.password,
+  'is_active': instance.isActive,
+  'role': instance.role,
 };
 
 _$AuthTokenResponseImpl _$$AuthTokenResponseImplFromJson(

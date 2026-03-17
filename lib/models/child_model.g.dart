@@ -11,10 +11,12 @@ _$ChildModelImpl _$$ChildModelImplFromJson(Map<String, dynamic> json) =>
       id: (json['id'] as num).toInt(),
       parentId: (json['parent_id'] as num).toInt(),
       name: json['name'] as String,
-      ageInYears: (json['age_in_years'] as num).toInt(),
-      interests: (json['interests'] as List<dynamic>)
-          .map((e) => e as String)
-          .toList(),
+      dateOfBirth: json['date_of_birth'] as String? ?? '',
+      interests:
+          (json['interests'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
       diagnosisNotes: json['diagnosis_notes'] as String?,
       goals: json['goals'] as List<dynamic>? ?? const [],
     );
@@ -24,7 +26,7 @@ Map<String, dynamic> _$$ChildModelImplToJson(_$ChildModelImpl instance) =>
       'id': instance.id,
       'parent_id': instance.parentId,
       'name': instance.name,
-      'age_in_years': instance.ageInYears,
+      'date_of_birth': instance.dateOfBirth,
       'interests': instance.interests,
       'diagnosis_notes': instance.diagnosisNotes,
       'goals': instance.goals,

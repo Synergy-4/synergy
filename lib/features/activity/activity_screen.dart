@@ -24,7 +24,7 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
       if (child != null) {
         ref
             .read(activityStateProvider.notifier)
-            .fetchNextActivity(child.id.toString());
+            .fetchNextActivity(child.id.toString(), gameType: widget.type);
       }
     });
   }

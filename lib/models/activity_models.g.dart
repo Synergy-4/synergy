@@ -98,6 +98,12 @@ _$GameConfigImpl _$$GameConfigImplFromJson(Map<String, dynamic> json) =>
       difficulty: json['difficulty'] as String,
       timeLimitSeconds: (json['time_limit_seconds'] as num?)?.toInt(),
       data: json['data'] as Map<String, dynamic>,
+      onSuccess: json['on_success'] == null
+          ? null
+          : GameEvent.fromJson(json['on_success'] as Map<String, dynamic>),
+      onFailure: json['on_failure'] == null
+          ? null
+          : GameEvent.fromJson(json['on_failure'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$$GameConfigImplToJson(_$GameConfigImpl instance) =>
@@ -106,4 +112,20 @@ Map<String, dynamic> _$$GameConfigImplToJson(_$GameConfigImpl instance) =>
       'difficulty': instance.difficulty,
       'time_limit_seconds': instance.timeLimitSeconds,
       'data': instance.data,
+      'on_success': instance.onSuccess,
+      'on_failure': instance.onFailure,
+    };
+
+_$GameEventImpl _$$GameEventImplFromJson(Map<String, dynamic> json) =>
+    _$GameEventImpl(
+      type: json['type'] as String,
+      action: json['action'] as String,
+      params: json['params'] as Map<String, dynamic>?,
+    );
+
+Map<String, dynamic> _$$GameEventImplToJson(_$GameEventImpl instance) =>
+    <String, dynamic>{
+      'type': instance.type,
+      'action': instance.action,
+      'params': instance.params,
     };

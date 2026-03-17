@@ -6,6 +6,7 @@ import '../features/auth/register_screen.dart';
 import '../features/home/meadow_dashboard.dart';
 import '../features/activity/activity_screen.dart';
 import '../features/parent/parent_portal_screen.dart';
+import '../features/parent/add_child_screen.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
@@ -31,6 +32,10 @@ class AppRouter {
       GoRoute(
         path: '/parent/settings',
         builder: (context, state) => const ParentPortalScreen(),
+      ),
+      GoRoute(
+        path: '/parent/add-child',
+        builder: (context, state) => const AddChildScreen(),
       ),
     ],
   );

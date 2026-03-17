@@ -9,8 +9,8 @@ class ChildModel with _$ChildModel {
     required int id,
     @JsonKey(name: 'parent_id') required int parentId,
     required String name,
-    @JsonKey(name: 'age_in_years') required int ageInYears,
-    required List<String> interests,
+    @JsonKey(name: 'date_of_birth') @Default('') String dateOfBirth,
+    @Default([]) List<String> interests,
     @JsonKey(name: 'diagnosis_notes') String? diagnosisNotes,
     @Default([]) List<dynamic> goals,
   }) = _ChildModel;

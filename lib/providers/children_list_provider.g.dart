@@ -1,26 +1,26 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'activity_provider.dart';
+part of 'children_list_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$activityStateHash() => r'41e18533531d49f17ae99c2702039824f8dd5d1e';
+String _$childrenListHash() => r'40a6999035113d65cc1f46247604e3bdd49176a0';
 
-/// See also [ActivityState].
-@ProviderFor(ActivityState)
-final activityStateProvider =
-    AutoDisposeAsyncNotifierProvider<ActivityState, ActivityPayload?>.internal(
-      ActivityState.new,
-      name: r'activityStateProvider',
+/// See also [ChildrenList].
+@ProviderFor(ChildrenList)
+final childrenListProvider =
+    AutoDisposeAsyncNotifierProvider<ChildrenList, List<ChildModel>>.internal(
+      ChildrenList.new,
+      name: r'childrenListProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
           ? null
-          : _$activityStateHash,
+          : _$childrenListHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
 
-typedef _$ActivityState = AutoDisposeAsyncNotifier<ActivityPayload?>;
+typedef _$ChildrenList = AutoDisposeAsyncNotifier<List<ChildModel>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

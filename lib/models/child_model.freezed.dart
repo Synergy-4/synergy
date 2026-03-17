@@ -25,8 +25,8 @@ mixin _$ChildModel {
   @JsonKey(name: 'parent_id')
   int get parentId => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
-  @JsonKey(name: 'age_in_years')
-  int get ageInYears => throw _privateConstructorUsedError;
+  @JsonKey(name: 'date_of_birth')
+  String get dateOfBirth => throw _privateConstructorUsedError;
   List<String> get interests => throw _privateConstructorUsedError;
   @JsonKey(name: 'diagnosis_notes')
   String? get diagnosisNotes => throw _privateConstructorUsedError;
@@ -53,7 +53,7 @@ abstract class $ChildModelCopyWith<$Res> {
     int id,
     @JsonKey(name: 'parent_id') int parentId,
     String name,
-    @JsonKey(name: 'age_in_years') int ageInYears,
+    @JsonKey(name: 'date_of_birth') String dateOfBirth,
     List<String> interests,
     @JsonKey(name: 'diagnosis_notes') String? diagnosisNotes,
     List<dynamic> goals,
@@ -78,7 +78,7 @@ class _$ChildModelCopyWithImpl<$Res, $Val extends ChildModel>
     Object? id = null,
     Object? parentId = null,
     Object? name = null,
-    Object? ageInYears = null,
+    Object? dateOfBirth = null,
     Object? interests = null,
     Object? diagnosisNotes = freezed,
     Object? goals = null,
@@ -97,10 +97,10 @@ class _$ChildModelCopyWithImpl<$Res, $Val extends ChildModel>
                 ? _value.name
                 : name // ignore: cast_nullable_to_non_nullable
                       as String,
-            ageInYears: null == ageInYears
-                ? _value.ageInYears
-                : ageInYears // ignore: cast_nullable_to_non_nullable
-                      as int,
+            dateOfBirth: null == dateOfBirth
+                ? _value.dateOfBirth
+                : dateOfBirth // ignore: cast_nullable_to_non_nullable
+                      as String,
             interests: null == interests
                 ? _value.interests
                 : interests // ignore: cast_nullable_to_non_nullable
@@ -132,7 +132,7 @@ abstract class _$$ChildModelImplCopyWith<$Res>
     int id,
     @JsonKey(name: 'parent_id') int parentId,
     String name,
-    @JsonKey(name: 'age_in_years') int ageInYears,
+    @JsonKey(name: 'date_of_birth') String dateOfBirth,
     List<String> interests,
     @JsonKey(name: 'diagnosis_notes') String? diagnosisNotes,
     List<dynamic> goals,
@@ -156,7 +156,7 @@ class __$$ChildModelImplCopyWithImpl<$Res>
     Object? id = null,
     Object? parentId = null,
     Object? name = null,
-    Object? ageInYears = null,
+    Object? dateOfBirth = null,
     Object? interests = null,
     Object? diagnosisNotes = freezed,
     Object? goals = null,
@@ -175,10 +175,10 @@ class __$$ChildModelImplCopyWithImpl<$Res>
             ? _value.name
             : name // ignore: cast_nullable_to_non_nullable
                   as String,
-        ageInYears: null == ageInYears
-            ? _value.ageInYears
-            : ageInYears // ignore: cast_nullable_to_non_nullable
-                  as int,
+        dateOfBirth: null == dateOfBirth
+            ? _value.dateOfBirth
+            : dateOfBirth // ignore: cast_nullable_to_non_nullable
+                  as String,
         interests: null == interests
             ? _value._interests
             : interests // ignore: cast_nullable_to_non_nullable
@@ -203,8 +203,8 @@ class _$ChildModelImpl implements _ChildModel {
     required this.id,
     @JsonKey(name: 'parent_id') required this.parentId,
     required this.name,
-    @JsonKey(name: 'age_in_years') required this.ageInYears,
-    required final List<String> interests,
+    @JsonKey(name: 'date_of_birth') this.dateOfBirth = '',
+    final List<String> interests = const [],
     @JsonKey(name: 'diagnosis_notes') this.diagnosisNotes,
     final List<dynamic> goals = const [],
   }) : _interests = interests,
@@ -221,10 +221,11 @@ class _$ChildModelImpl implements _ChildModel {
   @override
   final String name;
   @override
-  @JsonKey(name: 'age_in_years')
-  final int ageInYears;
+  @JsonKey(name: 'date_of_birth')
+  final String dateOfBirth;
   final List<String> _interests;
   @override
+  @JsonKey()
   List<String> get interests {
     if (_interests is EqualUnmodifiableListView) return _interests;
     // ignore: implicit_dynamic_type
@@ -245,7 +246,7 @@ class _$ChildModelImpl implements _ChildModel {
 
   @override
   String toString() {
-    return 'ChildModel(id: $id, parentId: $parentId, name: $name, ageInYears: $ageInYears, interests: $interests, diagnosisNotes: $diagnosisNotes, goals: $goals)';
+    return 'ChildModel(id: $id, parentId: $parentId, name: $name, dateOfBirth: $dateOfBirth, interests: $interests, diagnosisNotes: $diagnosisNotes, goals: $goals)';
   }
 
   @override
@@ -257,8 +258,8 @@ class _$ChildModelImpl implements _ChildModel {
             (identical(other.parentId, parentId) ||
                 other.parentId == parentId) &&
             (identical(other.name, name) || other.name == name) &&
-            (identical(other.ageInYears, ageInYears) ||
-                other.ageInYears == ageInYears) &&
+            (identical(other.dateOfBirth, dateOfBirth) ||
+                other.dateOfBirth == dateOfBirth) &&
             const DeepCollectionEquality().equals(
               other._interests,
               _interests,
@@ -275,7 +276,7 @@ class _$ChildModelImpl implements _ChildModel {
     id,
     parentId,
     name,
-    ageInYears,
+    dateOfBirth,
     const DeepCollectionEquality().hash(_interests),
     diagnosisNotes,
     const DeepCollectionEquality().hash(_goals),
@@ -300,8 +301,8 @@ abstract class _ChildModel implements ChildModel {
     required final int id,
     @JsonKey(name: 'parent_id') required final int parentId,
     required final String name,
-    @JsonKey(name: 'age_in_years') required final int ageInYears,
-    required final List<String> interests,
+    @JsonKey(name: 'date_of_birth') final String dateOfBirth,
+    final List<String> interests,
     @JsonKey(name: 'diagnosis_notes') final String? diagnosisNotes,
     final List<dynamic> goals,
   }) = _$ChildModelImpl;
@@ -317,8 +318,8 @@ abstract class _ChildModel implements ChildModel {
   @override
   String get name;
   @override
-  @JsonKey(name: 'age_in_years')
-  int get ageInYears;
+  @JsonKey(name: 'date_of_birth')
+  String get dateOfBirth;
   @override
   List<String> get interests;
   @override

@@ -26,6 +26,7 @@ dependencies:
   sqflite_common_ffi_web: any
   sqlite3_flutter_libs: any
   path: ^1.8.3
+  intl: ^0.19.0
 
 dev_dependencies:
   flutter_test:

@@ -16,17 +16,15 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _nameController = TextEditingController();
   bool _obscurePassword = true;
 
   void register() async {
     final request = RegisterRequest(
-      fullName: _nameController.text.trim(),
       email: _emailController.text.trim(),
       password: _passwordController.text,
     );
 
-    final result = await ApiClient.instance.post(
+    final result = await ApiClient.instance.postJson(
       '/auth/register',
       body: request.toJson(),
       withAuth: false,
@@ -75,14 +73,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 padding: const EdgeInsets.all(24),
                 child: Column(
                   children: [
-                    TextFormField(
-                      controller: _nameController,
-                      decoration: const InputDecoration(
-                        labelText: 'Full Name',
-                        prefixIcon: Icon(Icons.person_outline),
-                      ),
-                      keyboardType: TextInputType.name,
-                    ),
                     const SizedBox(height: 20),
                     TextFormField(
                       controller: _emailController,
@@ -112,10 +102,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ),
                     const SizedBox(height: 32),
-                    AppButton(
-                      text: 'Sign Up',
-                      onPressed: register,
-                    ),
+                    AppButton(text: 'Sign Up', onPressed: register),
                   ],
                 ),
               ),

@@ -6,7 +6,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 import 'core/theme/app_theme.dart';
 import 'core/router.dart';
-import 'core/database_service.dart';
+// import 'core/database_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +19,7 @@ Future<void> main() async {
   } else {
     // Use ffi on Linux, Windows, macOS, Android, iOS
     // sqfliteFfiInit() might be needed for desktop
-    databaseFactory = databaseFactoryFfi;
+    databaseFactory = databaseFactory;
   }
 
   runApp(const ProviderScope(child: SynergyApp()));

@@ -174,6 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   TextButton(
                     onPressed: () {
                       // Navigate to register
+                      context.go('/register');
                     },
                     child: const Text('Sign Up'),
                   ),

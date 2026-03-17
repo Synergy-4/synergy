@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/app_card.dart';
+import '../../core/utility.dart';
 
 class MeadowDashboard extends StatefulWidget {
   const MeadowDashboard({super.key});
@@ -33,25 +34,44 @@ class _MeadowDashboardState extends State<MeadowDashboard> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Healthy Meadow',
-                          style: theme.textTheme.displayMedium?.copyWith(
-                            color: AppColors.primaryBlue,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Healthy Meadow',
+                            style: theme.textTheme.displayMedium?.copyWith(
+                              color: AppColors.primaryBlue,
+                            ),
                           ),
+                          Text(
+                            'What should we play today?',
+                            style: theme.textTheme.bodyMedium,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.logout_rounded,
+                              color: AppColors.textSecondary),
+                          tooltip: 'Logout',
+                          onPressed: () async {
+                            await const TokenStore().clearToken();
+                            if (mounted) {
+                              context.go('/login');
+                            }
+                          },
                         ),
-                        Text(
-                          'What should we play today?',
-                          style: theme.textTheme.bodyMedium,
+                        const SizedBox(width: 8),
+                        const CircleAvatar(
+                          radius: 28,
+                          backgroundColor: AppColors.softBlue,
+                          child:
+                              Icon(Icons.person, color: AppColors.primaryBlue),
                         ),
                       ],
-                    ),
-                    const CircleAvatar(
-                      radius: 28,
-                      backgroundColor: AppColors.softBlue,
-                      child: Icon(Icons.person, color: AppColors.primaryBlue),
                     ),
                   ],
                 ),
@@ -64,32 +84,25 @@ class _MeadowDashboardState extends State<MeadowDashboard> {
                   crossAxisSpacing: 16,
                   children: [
                     _ActivityDiscoveryCard(
-                      title: 'Number Maze',
+                      title: 'Matching Mania',
                       icon: Icons.grid_3x3_rounded,
                       color: AppColors.softBlue,
                       accentColor: AppColors.primaryBlue,
-                      onTap: () => context.push('/activity/numbers'),
+                      onTap: () => context.push('/activity/matching'),
                     ),
                     _ActivityDiscoveryCard(
-                      title: 'Sound Safari',
-                      icon: Icons.music_note_rounded,
+                      title: 'Tap to Select',
+                      icon: Icons.touch_app_rounded,
                       color: AppColors.grassGreen,
                       accentColor: AppColors.primaryGreen,
-                      onTap: () => context.push('/activity/sounds'),
+                      onTap: () => context.push('/activity/tap_to_select'),
                     ),
                     _ActivityDiscoveryCard(
-                      title: 'Monkey Mimic',
-                      icon: Icons.emoji_emotions_rounded,
+                      title: 'Phonics Fun',
+                      icon: Icons.record_voice_over_rounded,
                       color: AppColors.palePink,
                       accentColor: AppColors.coral,
-                      onTap: () => context.push('/activity/mimic'),
-                    ),
-                    _ActivityDiscoveryCard(
-                      title: 'Shape Sort',
-                      icon: Icons.category_rounded,
-                      color: AppColors.lavender,
-                      accentColor: Colors.purpleAccent,
-                      onTap: () => context.push('/activity/shapes'),
+                      onTap: () => context.push('/activity/phonics'),
                     ),
                   ],
                 ),

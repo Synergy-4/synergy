@@ -1161,11 +1161,15 @@ GameConfig _$GameConfigFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$GameConfig {
   @JsonKey(name: 'game_type')
-  String get gameType => throw _privateConstructorUsedError; // "matching", "sorting", "tracing"
+  String get gameType => throw _privateConstructorUsedError;
   String get difficulty => throw _privateConstructorUsedError;
   @JsonKey(name: 'time_limit_seconds')
   int? get timeLimitSeconds => throw _privateConstructorUsedError;
   Map<String, dynamic> get data => throw _privateConstructorUsedError;
+  @JsonKey(name: 'on_success')
+  GameEvent? get onSuccess => throw _privateConstructorUsedError;
+  @JsonKey(name: 'on_failure')
+  GameEvent? get onFailure => throw _privateConstructorUsedError;
 
   /// Serializes this GameConfig to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -1189,7 +1193,12 @@ abstract class $GameConfigCopyWith<$Res> {
     String difficulty,
     @JsonKey(name: 'time_limit_seconds') int? timeLimitSeconds,
     Map<String, dynamic> data,
+    @JsonKey(name: 'on_success') GameEvent? onSuccess,
+    @JsonKey(name: 'on_failure') GameEvent? onFailure,
   });
+
+  $GameEventCopyWith<$Res>? get onSuccess;
+  $GameEventCopyWith<$Res>? get onFailure;
 }
 
 /// @nodoc
@@ -1211,6 +1220,8 @@ class _$GameConfigCopyWithImpl<$Res, $Val extends GameConfig>
     Object? difficulty = null,
     Object? timeLimitSeconds = freezed,
     Object? data = null,
+    Object? onSuccess = freezed,
+    Object? onFailure = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -1230,9 +1241,45 @@ class _$GameConfigCopyWithImpl<$Res, $Val extends GameConfig>
                 ? _value.data
                 : data // ignore: cast_nullable_to_non_nullable
                       as Map<String, dynamic>,
+            onSuccess: freezed == onSuccess
+                ? _value.onSuccess
+                : onSuccess // ignore: cast_nullable_to_non_nullable
+                      as GameEvent?,
+            onFailure: freezed == onFailure
+                ? _value.onFailure
+                : onFailure // ignore: cast_nullable_to_non_nullable
+                      as GameEvent?,
           )
           as $Val,
     );
+  }
+
+  /// Create a copy of GameConfig
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $GameEventCopyWith<$Res>? get onSuccess {
+    if (_value.onSuccess == null) {
+      return null;
+    }
+
+    return $GameEventCopyWith<$Res>(_value.onSuccess!, (value) {
+      return _then(_value.copyWith(onSuccess: value) as $Val);
+    });
+  }
+
+  /// Create a copy of GameConfig
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $GameEventCopyWith<$Res>? get onFailure {
+    if (_value.onFailure == null) {
+      return null;
+    }
+
+    return $GameEventCopyWith<$Res>(_value.onFailure!, (value) {
+      return _then(_value.copyWith(onFailure: value) as $Val);
+    });
   }
 }
 
@@ -1250,7 +1297,14 @@ abstract class _$$GameConfigImplCopyWith<$Res>
     String difficulty,
     @JsonKey(name: 'time_limit_seconds') int? timeLimitSeconds,
     Map<String, dynamic> data,
+    @JsonKey(name: 'on_success') GameEvent? onSuccess,
+    @JsonKey(name: 'on_failure') GameEvent? onFailure,
   });
+
+  @override
+  $GameEventCopyWith<$Res>? get onSuccess;
+  @override
+  $GameEventCopyWith<$Res>? get onFailure;
 }
 
 /// @nodoc
@@ -1271,6 +1325,8 @@ class __$$GameConfigImplCopyWithImpl<$Res>
     Object? difficulty = null,
     Object? timeLimitSeconds = freezed,
     Object? data = null,
+    Object? onSuccess = freezed,
+    Object? onFailure = freezed,
   }) {
     return _then(
       _$GameConfigImpl(
@@ -1290,6 +1346,14 @@ class __$$GameConfigImplCopyWithImpl<$Res>
             ? _value._data
             : data // ignore: cast_nullable_to_non_nullable
                   as Map<String, dynamic>,
+        onSuccess: freezed == onSuccess
+            ? _value.onSuccess
+            : onSuccess // ignore: cast_nullable_to_non_nullable
+                  as GameEvent?,
+        onFailure: freezed == onFailure
+            ? _value.onFailure
+            : onFailure // ignore: cast_nullable_to_non_nullable
+                  as GameEvent?,
       ),
     );
   }
@@ -1303,6 +1367,8 @@ class _$GameConfigImpl implements _GameConfig {
     required this.difficulty,
     @JsonKey(name: 'time_limit_seconds') this.timeLimitSeconds,
     required final Map<String, dynamic> data,
+    @JsonKey(name: 'on_success') this.onSuccess,
+    @JsonKey(name: 'on_failure') this.onFailure,
   }) : _data = data;
 
   factory _$GameConfigImpl.fromJson(Map<String, dynamic> json) =>
@@ -1311,7 +1377,6 @@ class _$GameConfigImpl implements _GameConfig {
   @override
   @JsonKey(name: 'game_type')
   final String gameType;
-  // "matching", "sorting", "tracing"
   @override
   final String difficulty;
   @override
@@ -1326,8 +1391,15 @@ class _$GameConfigImpl implements _GameConfig {
   }
 
   @override
+  @JsonKey(name: 'on_success')
+  final GameEvent? onSuccess;
+  @override
+  @JsonKey(name: 'on_failure')
+  final GameEvent? onFailure;
+
+  @override
   String toString() {
-    return 'GameConfig(gameType: $gameType, difficulty: $difficulty, timeLimitSeconds: $timeLimitSeconds, data: $data)';
+    return 'GameConfig(gameType: $gameType, difficulty: $difficulty, timeLimitSeconds: $timeLimitSeconds, data: $data, onSuccess: $onSuccess, onFailure: $onFailure)';
   }
 
   @override
@@ -1341,7 +1413,11 @@ class _$GameConfigImpl implements _GameConfig {
                 other.difficulty == difficulty) &&
             (identical(other.timeLimitSeconds, timeLimitSeconds) ||
                 other.timeLimitSeconds == timeLimitSeconds) &&
-            const DeepCollectionEquality().equals(other._data, _data));
+            const DeepCollectionEquality().equals(other._data, _data) &&
+            (identical(other.onSuccess, onSuccess) ||
+                other.onSuccess == onSuccess) &&
+            (identical(other.onFailure, onFailure) ||
+                other.onFailure == onFailure));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1352,6 +1428,8 @@ class _$GameConfigImpl implements _GameConfig {
     difficulty,
     timeLimitSeconds,
     const DeepCollectionEquality().hash(_data),
+    onSuccess,
+    onFailure,
   );
 
   /// Create a copy of GameConfig
@@ -1374,6 +1452,8 @@ abstract class _GameConfig implements GameConfig {
     required final String difficulty,
     @JsonKey(name: 'time_limit_seconds') final int? timeLimitSeconds,
     required final Map<String, dynamic> data,
+    @JsonKey(name: 'on_success') final GameEvent? onSuccess,
+    @JsonKey(name: 'on_failure') final GameEvent? onFailure,
   }) = _$GameConfigImpl;
 
   factory _GameConfig.fromJson(Map<String, dynamic> json) =
@@ -1381,7 +1461,7 @@ abstract class _GameConfig implements GameConfig {
 
   @override
   @JsonKey(name: 'game_type')
-  String get gameType; // "matching", "sorting", "tracing"
+  String get gameType;
   @override
   String get difficulty;
   @override
@@ -1389,11 +1469,224 @@ abstract class _GameConfig implements GameConfig {
   int? get timeLimitSeconds;
   @override
   Map<String, dynamic> get data;
+  @override
+  @JsonKey(name: 'on_success')
+  GameEvent? get onSuccess;
+  @override
+  @JsonKey(name: 'on_failure')
+  GameEvent? get onFailure;
 
   /// Create a copy of GameConfig
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$GameConfigImplCopyWith<_$GameConfigImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+GameEvent _$GameEventFromJson(Map<String, dynamic> json) {
+  return _GameEvent.fromJson(json);
+}
+
+/// @nodoc
+mixin _$GameEvent {
+  String get type =>
+      throw _privateConstructorUsedError; // "animation", "sound", "navigation"
+  String get action => throw _privateConstructorUsedError;
+  Map<String, dynamic>? get params => throw _privateConstructorUsedError;
+
+  /// Serializes this GameEvent to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of GameEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $GameEventCopyWith<GameEvent> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $GameEventCopyWith<$Res> {
+  factory $GameEventCopyWith(GameEvent value, $Res Function(GameEvent) then) =
+      _$GameEventCopyWithImpl<$Res, GameEvent>;
+  @useResult
+  $Res call({String type, String action, Map<String, dynamic>? params});
+}
+
+/// @nodoc
+class _$GameEventCopyWithImpl<$Res, $Val extends GameEvent>
+    implements $GameEventCopyWith<$Res> {
+  _$GameEventCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of GameEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? type = null,
+    Object? action = null,
+    Object? params = freezed,
+  }) {
+    return _then(
+      _value.copyWith(
+            type: null == type
+                ? _value.type
+                : type // ignore: cast_nullable_to_non_nullable
+                      as String,
+            action: null == action
+                ? _value.action
+                : action // ignore: cast_nullable_to_non_nullable
+                      as String,
+            params: freezed == params
+                ? _value.params
+                : params // ignore: cast_nullable_to_non_nullable
+                      as Map<String, dynamic>?,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$GameEventImplCopyWith<$Res>
+    implements $GameEventCopyWith<$Res> {
+  factory _$$GameEventImplCopyWith(
+    _$GameEventImpl value,
+    $Res Function(_$GameEventImpl) then,
+  ) = __$$GameEventImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String type, String action, Map<String, dynamic>? params});
+}
+
+/// @nodoc
+class __$$GameEventImplCopyWithImpl<$Res>
+    extends _$GameEventCopyWithImpl<$Res, _$GameEventImpl>
+    implements _$$GameEventImplCopyWith<$Res> {
+  __$$GameEventImplCopyWithImpl(
+    _$GameEventImpl _value,
+    $Res Function(_$GameEventImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of GameEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? type = null,
+    Object? action = null,
+    Object? params = freezed,
+  }) {
+    return _then(
+      _$GameEventImpl(
+        type: null == type
+            ? _value.type
+            : type // ignore: cast_nullable_to_non_nullable
+                  as String,
+        action: null == action
+            ? _value.action
+            : action // ignore: cast_nullable_to_non_nullable
+                  as String,
+        params: freezed == params
+            ? _value._params
+            : params // ignore: cast_nullable_to_non_nullable
+                  as Map<String, dynamic>?,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$GameEventImpl implements _GameEvent {
+  const _$GameEventImpl({
+    required this.type,
+    required this.action,
+    final Map<String, dynamic>? params,
+  }) : _params = params;
+
+  factory _$GameEventImpl.fromJson(Map<String, dynamic> json) =>
+      _$$GameEventImplFromJson(json);
+
+  @override
+  final String type;
+  // "animation", "sound", "navigation"
+  @override
+  final String action;
+  final Map<String, dynamic>? _params;
+  @override
+  Map<String, dynamic>? get params {
+    final value = _params;
+    if (value == null) return null;
+    if (_params is EqualUnmodifiableMapView) return _params;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(value);
+  }
+
+  @override
+  String toString() {
+    return 'GameEvent(type: $type, action: $action, params: $params)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$GameEventImpl &&
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.action, action) || other.action == action) &&
+            const DeepCollectionEquality().equals(other._params, _params));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+    runtimeType,
+    type,
+    action,
+    const DeepCollectionEquality().hash(_params),
+  );
+
+  /// Create a copy of GameEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$GameEventImplCopyWith<_$GameEventImpl> get copyWith =>
+      __$$GameEventImplCopyWithImpl<_$GameEventImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$GameEventImplToJson(this);
+  }
+}
+
+abstract class _GameEvent implements GameEvent {
+  const factory _GameEvent({
+    required final String type,
+    required final String action,
+    final Map<String, dynamic>? params,
+  }) = _$GameEventImpl;
+
+  factory _GameEvent.fromJson(Map<String, dynamic> json) =
+      _$GameEventImpl.fromJson;
+
+  @override
+  String get type; // "animation", "sound", "navigation"
+  @override
+  String get action;
+  @override
+  Map<String, dynamic>? get params;
+
+  /// Create a copy of GameEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$GameEventImplCopyWith<_$GameEventImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

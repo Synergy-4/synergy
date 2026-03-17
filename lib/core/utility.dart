@@ -259,13 +259,19 @@ class ApiClient {
   final Dio _dio;
   final TokenStore _tokenStore;
 
-  Future<Options> _buildOptions({required bool withAuth}) async {
+  Future<Options> _buildOptions({
+    required bool withAuth,
+    bool isJson = false,
+  }) async {
     final headers = <String, String>{};
     if (withAuth) {
       final token = await _tokenStore.getToken();
       if (token != null) {
         headers['Authorization'] = 'Bearer $token';
       }
+    }
+    if (isJson) {
+      return Options(headers: headers);
     }
     return Options(
       headers: headers,
@@ -372,6 +378,28 @@ class ApiClient {
       );
       return ApiSuccess(response.data ?? {});
     } catch (e) {
+      print(e);
+      return _handleError(e);
+    }
+  }
+
+  /// Sends a POST request to [endpoint] with [body] as the JSON payload (application/json).
+  Future<ApiResponse<Map<String, dynamic>>> postJson(
+    String endpoint, {
+    required Map<String, dynamic> body,
+    bool withAuth = true,
+  }) async {
+    try {
+      final options = await _buildOptions(withAuth: withAuth, isJson: true);
+      options.contentType = Headers.jsonContentType;
+      final response = await _dio.post<Map<String, dynamic>>(
+        endpoint,
+        data: body,
+        options: options,
+      );
+      return ApiSuccess(response.data ?? {});
+    } catch (e) {
+      print(e);
       return _handleError(e);
     }
   }

@@ -43,9 +43,10 @@ class LoginRequest with _$LoginRequest {
 @freezed
 class RegisterRequest with _$RegisterRequest {
   const factory RegisterRequest({
-    @JsonKey(name: 'full_name') required String fullName,
     required String email,
     required String password,
+    @JsonKey(name: 'is_active') @Default(true) bool isActive,
+    @Default('parent') String role,
   }) = _RegisterRequest;
 
   factory RegisterRequest.fromJson(Map<String, dynamic> json) =>
