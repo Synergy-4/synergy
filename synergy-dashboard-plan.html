@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Synergy — Parent Dashboard Implementation Plan</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  --ink:        #0d1117;
+  --ink-mid:    #161b22;
+  --ink-light:  #21262d;
+  --border:     #30363d;
+  --border-lt:  #3d4450;
+  --muted:      #8b949e;
+  --body:       #c9d1d9;
+  --white:      #f0f6fc;
+  --green:      #3fb950;
+  --green-dim:  #1a3a24;
+  --blue:       #58a6ff;
+  --blue-dim:   #0d2a4a;
+  --amber:      #e3b341;
+  --amber-dim:  #3a2a0a;
+  --purple:     #bc8cff;
+  --purple-dim: #2a1a4a;
+  --red:        #f85149;
+  --red-dim:    #3a0d0d;
+  --cyan:       #79c0ff;
+  --teal:       #39d353;
+  --orange:     #ffa657;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Sora',system-ui,sans-serif;font-size:14px;line-height:1.7;color:var(--body);background:var(--ink)}
+
+/* SIDEBAR */
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:264px;background:var(--ink-mid);border-right:1px solid var(--border);overflow-y:auto;z-index:100;padding:28px 0 40px}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border-lt);border-radius:2px}
+.logo{padding:0 24px 24px;border-bottom:1px solid var(--border);margin-bottom:16px}
+.logo-name{font-size:17px;font-weight:700;color:var(--white);display:flex;align-items:center;gap:10px}
+.logo-pulse{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+.logo-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.nav-group{margin-bottom:4px}
+.nav-label{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:8px 24px 4px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:7px 24px;font-size:13px;color:var(--muted);text-decoration:none;transition:all .15s;border-left:2px solid transparent;cursor:pointer}
+.nav-item:hover{color:var(--white);background:var(--ink-light)}
+.nav-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--border-lt);min-width:18px}
+
+/* MAIN */
+.main{margin-left:264px;padding:60px 72px;max-width:calc(264px + 960px)}
+
+/* HEADER */
+.doc-header{border-bottom:1px solid var(--border);padding-bottom:48px;margin-bottom:64px}
+.doc-tag{display:inline-flex;align-items:center;gap:8px;background:var(--green-dim);border:1px solid rgba(63,185,80,.3);border-radius:20px;padding:4px 14px;font-size:11px;font-weight:600;color:var(--green);letter-spacing:.08em;text-transform:uppercase;margin-bottom:20px}
+.doc-title{font-size:clamp(28px,3.5vw,48px);font-weight:700;color:var(--white);line-height:1.1;letter-spacing:-.02em;margin-bottom:14px}
+.doc-title span{color:var(--blue)}
+.doc-sub{font-size:15px;font-weight:300;color:var(--muted);max-width:560px;line-height:1.7}
+.doc-meta{display:flex;gap:28px;margin-top:24px;flex-wrap:wrap}
+.meta-item{font-size:12px;color:var(--muted)}
+.meta-item strong{color:var(--body);font-weight:500}
+
+/* SECTIONS */
+.section{margin-bottom:72px;scroll-margin-top:40px}
+.sec-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:8px;letter-spacing:.08em}
+.sec-title{font-size:24px;font-weight:700;color:var(--white);letter-spacing:-.01em;margin-bottom:8px}
+.sec-desc{font-size:14px;color:var(--muted);max-width:600px;line-height:1.7;margin-bottom:28px}
+.sub-title{font-size:15px;font-weight:600;color:var(--white);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.sub-title::before{content:'';width:3px;height:16px;border-radius:2px;background:var(--blue);flex-shrink:0}
+.subsection{margin-bottom:36px}
+
+/* CODE */
+.code-block{background:var(--ink-light);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:14px 0;font-family:'JetBrains Mono',monospace}
+.code-head{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--ink-mid);border-bottom:1px solid var(--border)}
+.code-lang{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.code-file{font-size:11px;color:var(--blue);font-family:'JetBrains Mono',monospace}
+.code-body{padding:20px 24px;font-size:12.5px;line-height:1.85;color:var(--body);overflow-x:auto;white-space:pre}
+.k{color:#ff7b72}.s{color:#a5d6ff}.c{color:#8b949e;font-style:italic}.f{color:#d2a8ff}.n{color:#79c0ff}.v{color:#ffa657}.num{color:#79c0ff}.dec{color:#ff7b72}
+
+/* CALLOUTS */
+.callout{border-radius:8px;padding:16px 20px;margin:14px 0;display:flex;gap:14px}
+.callout-info{background:var(--blue-dim);border:1px solid rgba(88,166,255,.2)}
+.callout-warn{background:var(--amber-dim);border:1px solid rgba(227,179,65,.2)}
+.callout-tip{background:var(--green-dim);border:1px solid rgba(63,185,80,.2)}
+.callout-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.callout-body{font-size:13px;line-height:1.7;color:var(--body)}
+.callout-body strong{font-weight:600;color:var(--white)}
+
+/* SCREEN CARDS */
+.screen-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.screen-card{border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.screen-head{padding:14px 18px;background:var(--ink-mid);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.screen-icon{font-size:18px}
+.screen-name{font-size:14px;font-weight:600;color:var(--white)}
+.screen-route{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted)}
+.screen-body{padding:16px 18px}
+.screen-body p{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:12px}
+.widget-list{list-style:none;display:flex;flex-direction:column;gap:6px}
+.widget-item{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;color:var(--body)}
+.widget-dot{width:5px;height:5px;border-radius:50%;background:var(--blue);margin-top:6px;flex-shrink:0}
+
+/* PHASE CARDS */
+.phase-card{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:18px}
+.phase-head{display:flex;align-items:center;gap:14px;padding:15px 20px;background:var(--ink-mid);border-bottom:1px solid var(--border)}
+.phase-badge{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px;white-space:nowrap}
+.ph1{background:rgba(88,166,255,.15);color:var(--blue);border:1px solid rgba(88,166,255,.3)}
+.ph2{background:rgba(63,185,80,.15);color:var(--green);border:1px solid rgba(63,185,80,.3)}
+.ph3{background:rgba(227,179,65,.15);color:var(--amber);border:1px solid rgba(227,179,65,.3)}
+.ph4{background:rgba(188,140,255,.15);color:var(--purple);border:1px solid rgba(188,140,255,.3)}
+.phase-title{font-size:15px;font-weight:600;color:var(--white);flex:1}
+.phase-meta{font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.phase-body{padding:20px 24px}
+.task-list{list-style:none;display:flex;flex-direction:column;gap:12px}
+.task-item{display:flex;gap:12px;align-items:flex-start}
+.task-check{width:18px;height:18px;border-radius:4px;border:1.5px solid var(--border-lt);flex-shrink:0;margin-top:2px}
+.task-content{flex:1}
+.task-title{font-size:13.5px;font-weight:500;color:var(--white);margin-bottom:3px}
+.task-desc{font-size:12.5px;color:var(--muted);line-height:1.6}
+.task-tags{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+.task-tag{font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:3px;letter-spacing:.04em}
+.tag-ui{background:rgba(88,166,255,.12);color:var(--blue)}
+.tag-state{background:rgba(63,185,80,.12);color:var(--green)}
+.tag-storage{background:rgba(227,179,65,.12);color:var(--amber)}
+.tag-api{background:rgba(188,140,255,.12);color:var(--purple)}
+.tag-chart{background:rgba(248,81,73,.12);color:var(--red)}
+.tag-nav{background:rgba(121,192,255,.12);color:var(--cyan)}
+
+/* STORAGE TABLE */
+.spec-table{width:100%;border-collapse:collapse;font-size:13px;margin:14px 0}
+.spec-table th{text-align:left;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:10px 16px;border-bottom:2px solid var(--border);background:var(--ink-mid)}
+.spec-table td{padding:11px 16px;border-bottom:1px solid var(--border);color:var(--body);vertical-align:top}
+.spec-table tr:last-child td{border-bottom:none}
+.spec-table tr:hover td{background:rgba(255,255,255,.02)}
+code{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--cyan);background:var(--ink-light);padding:2px 6px;border-radius:3px;border:1px solid var(--border)}
+
+/* NAV TREE */
+.nav-tree{background:var(--ink-light);border:1px solid var(--border);border-radius:8px;padding:20px 24px;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.9;color:var(--body);white-space:pre}
+.dir{color:var(--blue)}.file{color:var(--body)}.cmt{color:var(--muted)}.hl{color:var(--amber)}
+
+/* MILESTONE BOX */
+.milestone{background:var(--green-dim);border:1px solid rgba(63,185,80,.25);border-radius:8px;padding:16px 20px;margin-top:20px;display:flex;gap:14px;align-items:flex-start}
+.milestone-icon{font-size:18px;flex-shrink:0}
+.milestone-body{font-size:13px;color:var(--body);line-height:1.7}
+.milestone-body strong{color:var(--white);font-weight:600}
+
+/* STATE MAP */
+.state-row{display:grid;grid-template-columns:200px 180px 1fr;border-bottom:1px solid var(--border)}
+.state-row:last-child{border-bottom:none}
+.state-cell{padding:11px 16px;font-size:13px;vertical-align:top}
+.state-key{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--cyan)}
+.state-type{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--purple)}
+.state-desc{font-size:12.5px;color:var(--muted)}
+
+/* DIVIDER */
+hr{border:none;border-top:1px solid var(--border);margin:52px 0}
+
+/* WIDGET SPEC */
+.widget-spec{border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:12px}
+.widget-spec-head{display:flex;align-items:center;gap:10px;padding:11px 16px;background:var(--ink-mid);border-bottom:1px solid var(--border)}
+.widget-spec-name{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--amber)}
+.widget-spec-desc{font-size:12px;color:var(--muted)}
+.widget-spec-body{padding:12px 16px;font-size:13px;color:var(--muted);line-height:1.7}
+
+/* BOTTOM FOOTER */
+.footer{border-top:1px solid var(--border);padding-top:28px;margin-top:56px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.footer-l{font-size:12px;color:var(--muted)}
+.footer-r{font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+
+@media(max-width:900px){.sidebar{display:none}.main{margin-left:0;padding:40px 24px}.screen-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="logo">
+    <div class="logo-name"><div class="logo-pulse"></div>Synergy</div>
+    <div class="logo-sub">Parent Dashboard Plan · Flutter</div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-label">Overview</div>
+    <a href="#overview" class="nav-item"><span class="nav-num">00</span>Overview & Goals</a>
+    <a href="#screens" class="nav-item"><span class="nav-num">01</span>Screen Inventory</a>
+    <a href="#navigation" class="nav-item"><span class="nav-num">02</span>Navigation Architecture</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-label">Feature Specs</div>
+    <a href="#home" class="nav-item"><span class="nav-num">03</span>Home Dashboard</a>
+    <a href="#progress" class="nav-item"><span class="nav-num">04</span>Progress Screen</a>
+    <a href="#child-mgmt" class="nav-item"><span class="nav-num">05</span>Child Management</a>
+    <a href="#settings" class="nav-item"><span class="nav-num">06</span>Settings Screen</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-label">Technical</div>
+    <a href="#state" class="nav-item"><span class="nav-num">07</span>State Management</a>
+    <a href="#storage" class="nav-item"><span class="nav-num">08</span>Client-Side Storage</a>
+    <a href="#charts" class="nav-item"><span class="nav-num">09</span>Chart Components</a>
+    <a href="#flutter-structure" class="nav-item"><span class="nav-num">10</span>Folder Structure</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-label">Build Plan</div>
+    <a href="#phase1" class="nav-item"><span class="nav-num">11</span>Phase 1 — Shell & Nav</a>
+    <a href="#phase2" class="nav-item"><span class="nav-num">12</span>Phase 2 — Progress</a>
+    <a href="#phase3" class="nav-item"><span class="nav-num">13</span>Phase 3 — Child Mgmt</a>
+    <a href="#phase4" class="nav-item"><span class="nav-num">14</span>Phase 4 — Settings</a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- HEADER -->
+  <div class="doc-header" id="overview">
+    <div class="doc-tag"><span class="logo-pulse" style="width:6px;height:6px;box-shadow:none"></span>Implementation Plan</div>
+    <h1 class="doc-title">Parent <span>Dashboard</span></h1>
+    <p class="doc-sub">Flutter mobile implementation plan for the Synergy parent-facing dashboard — covering progress tracking, child management, and client-side settings.</p>
+    <div class="doc-meta">
+      <div class="meta-item"><strong>Platform:</strong> Flutter 3.x (iOS + Android)</div>
+      <div class="meta-item"><strong>State:</strong> Riverpod</div>
+      <div class="meta-item"><strong>Storage:</strong> SharedPreferences + SecureStorage</div>
+      <div class="meta-item"><strong>Charts:</strong> fl_chart</div>
+      <div class="meta-item"><strong>Phases:</strong> 4 · ~3 Weeks</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- 01 SCREEN INVENTORY -->
+  <!-- ══════════════════════════════════════════ -->
+  <section class="section" id="screens">
+    <div class="sec-num">// 01</div>
+    <h2 class="sec-title">Screen Inventory</h2>
+    <p class="sec-desc">Six screens make up the parent dashboard. All sit behind authentication, accessed via a persistent bottom navigation bar.</p>
+
+    <div class="screen-grid">
+
+      <div class="screen-card">
+        <div class="screen-head">
+          <span class="screen-icon">🏠</span>
+          <div>
+            <div class="screen-name">Home Dashboard</div>
+            <div class="screen-route">/dashboard</div>
+          </div>
+        </div>
+        <div class="screen-body">
+          <p>Entry point after login. Shows active child summary, today's activity prompt, streak, and quick-access to start a session.</p>
+          <ul class="widget-list">
+            <li class="widget-item"><div class="widget-dot"></div>Child selector chip (multi-child switcher)</li>
+            <li class="widget-item"><div class="widget-dot"></div>Streak card with consecutive days</li>
+            <li class="widget-item"><div class="widget-dot"></div>"Start Today's Activity" CTA card</li>
+            <li class="widget-item"><div class="widget-dot"></div>Recent sessions mini-list (last 3)</li>
+            <li class="widget-item"><div class="widget-dot"></div>Active goal domain pills</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="screen-card">
+        <div class="screen-head">
+          <span class="screen-icon">📈</span>
+          <div>
+            <div class="screen-name">Progress Screen</div>
+            <div class="screen-route">/progress</div>
+          </div>
+        </div>
+        <div class="screen-body">
+          <p>Per-skill accuracy trends for the active child. Charts sourced from <code>GET /sessions/{child_id}/progress</code>.</p>
+          <ul class="widget-list">
+            <li class="widget-item"><div class="widget-dot"></div>Domain filter tabs (All / Communication / Social / etc.)</li>
+            <li class="widget-item"><div class="widget-dot"></div>Per-skill accuracy line charts (fl_chart)</li>
+            <li class="widget-item"><div class="widget-dot"></div>Session count + average score summary cards</li>
+            <li class="widget-item"><div class="widget-dot"></div>Goal status badges (active / mastered / paused)</li>
+            <li class="widget-item"><div class="widget-dot"></div>Empty state for children with no sessions yet</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="screen-card">
+        <div class="screen-head">
+          <span class="screen-icon">👧</span>
+          <div>
+            <div class="screen-name">Children List</div>
+            <div class="screen-route">/children</div>
+          </div>
+        </div>
+        <div class="screen-body">
+          <p>Master list of all children under the account. Gateway to add, edit, or remove a child profile.</p>
+          <ul class="widget-list">
+            <li class="widget-item"><div class="widget-dot"></div>Child cards with avatar, name, age, goal count</li>
+            <li class="widget-item"><div class="widget-dot"></div>Add Child FAB (floating action button)</li>
+            <li class="widget-item"><div class="widget-dot"></div>Swipe-to-reveal Edit / Delete actions</li>
+            <li class="widget-item"><div class="widget-dot"></div>Active child indicator badge</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="screen-card">
+        <div class="screen-head">
+          <span class="screen-icon">✏️</span>
+          <div>
+            <div class="screen-name">Add / Edit Child</div>
+            <div class="screen-route">/children/edit</div>
+          </div>
+        </div>
+        <div class="screen-body">
+          <p>Single form screen for creating or editing a child profile. Reused for both add and edit flows with different pre-filled state.</p>
+          <ul class="widget-list">
+            <li class="widget-item"><div class="widget-dot"></div>Avatar picker (emoji-based, no camera required)</li>
+            <li class="widget-item"><div class="widget-dot"></div>Name field + date of birth picker</li>
+            <li class="widget-item"><div class="widget-dot"></div>Interests multi-select chip input</li>
+            <li class="widget-item"><div class="widget-dot"></div>Diagnosis notes text field (optional)</li>
+            <li class="widget-item"><div class="widget-dot"></div>Goals section — add/remove developmental goals</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="screen-card">
+        <div class="screen-head">
+          <span class="screen-icon">⚙️</span>
+          <div>
+            <div class="screen-name">Settings</div>
+            <div class="screen-route">/settings</div>
+          </div>
+        </div>
+        <div class="screen-body">
+          <p>All client-side preferences. Persisted to SharedPreferences — no server calls required. Includes personal info, audio, display, and accessibility.</p>
+          <ul class="widget-list">
+            <li class="widget-item"><div class="widget-dot"></div>Personal info section (name, email — calls API on save)</li>
+            <li class="widget-item"><div class="widget-dot"></div>Audio: music toggle, sound effects toggle, volume slider</li>
+            <li class="widget-item"><div class="widget-dot"></div>Display: text size selector, high contrast toggle</li>
+            <li class="widget-item"><div class="widget-dot"></div>Accessibility: voiceover speed, reduce animations</li>
+            <li class="widget-item"><div class="widget-dot"></div>Account: change password, sign out, delete account</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="screen-card">
+        <div class="screen-head">
+          <span class="screen-icon">🔍</span>
+          <div>
+            <div class="screen-name">Session Detail</div>
+            <div class="screen-route">/sessions/:id</div>
+          </div>
+        </div>
+        <div class="screen-body">
+          <p>Drill-down from Progress or Home. Shows a single session's full result breakdown and parent notes.</p>
+          <ul class="widget-list">
+            <li class="widget-item"><div class="widget-dot"></div>Score breakdown (correct / prompted / incorrect)</li>
+            <li class="widget-item"><div class="widget-dot"></div>Duration and completion status</li>
+            <li class="widget-item"><div class="widget-dot"></div>Parent rating display</li>
+            <li class="widget-item"><div class="widget-dot"></div>Parent notes (editable inline)</li>
+            <li class="widget-item"><div class="widget-dot"></div>Activity name and skill domain tag</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- 02 NAVIGATION -->
+  <!-- ══════════════════════════════════════════ -->
+  <section class="section" id="navigation">
+    <div class="sec-num">// 02</div>
+    <h2 class="sec-title">Navigation Architecture</h2>
+    <p class="sec-desc">go_router handles all routing. A persistent BottomNavigationBar with 4 tabs is the primary navigation pattern. Full-screen routes (Add/Edit Child, Session Detail) push on top.</p>
+
+    <div class="nav-tree"><span class="hl">AppRouter (go_router)</span>
+<span class="cmt">│</span>
+<span class="cmt">├── /auth                    </span><span class="cmt">→ not authenticated → redirect here</span>
+<span class="cmt">│   ├── /auth/login</span>
+<span class="cmt">│   └── /auth/register</span>
+<span class="cmt">│</span>
+<span class="dir">└── /                        </span><span class="cmt">→ ShellRoute (BottomNavBar persistent)</span>
+<span class="cmt">    │</span>
+<span class="cmt">    ├── </span><span class="hl">/dashboard             </span><span class="cmt">Tab 0 — Home icon</span>
+<span class="cmt">    │   └── /sessions/:id     </span><span class="cmt">→ push (full screen, no bottom nav)</span>
+<span class="cmt">    │</span>
+<span class="cmt">    ├── </span><span class="hl">/progress              </span><span class="cmt">Tab 1 — Chart icon</span>
+<span class="cmt">    │   └── /progress/skill/:skill_id  </span><span class="cmt">→ push (expanded single-skill chart)</span>
+<span class="cmt">    │</span>
+<span class="cmt">    ├── </span><span class="hl">/children              </span><span class="cmt">Tab 2 — People icon</span>
+<span class="cmt">    │   ├── /children/add     </span><span class="cmt">→ push (full screen form)</span>
+<span class="cmt">    │   └── /children/:id/edit </span><span class="cmt">→ push (same form, pre-filled)</span>
+<span class="cmt">    │</span>
+<span class="cmt">    └── </span><span class="hl">/settings              </span><span class="cmt">Tab 3 — Gear icon</span>
+<span class="cmt">        └── /settings/change-password  </span><span class="cmt">→ push</span></div>
+
+    <div class="callout callout-info" style="margin-top:20px">
+      <div class="callout-icon">ℹ️</div>
+      <div class="callout-body"><strong>ShellRoute pattern:</strong> go_router's <code>ShellRoute</code> wraps the 4 main tabs in a single scaffold with a persistent <code>BottomNavigationBar</code>. Pushing sub-routes (e.g. <code>/children/add</code>) goes full-screen with a back arrow and hides the bottom bar — standard mobile UX.</div>
+    </div>
+
+    <div class="subsection" style="margin-top:28px">
+      <div class="sub-title">Bottom Navigation Bar Spec</div>
+      <table class="spec-table">
+        <thead><tr><th>Tab</th><th>Icon</th><th>Label</th><th>Route</th><th>Badge</th></tr></thead>
+        <tbody>
+          <tr><td>0</td><td><code>Icons.home_rounded</code></td><td>Home</td><td><code>/dashboard</code></td><td>—</td></tr>
+          <tr><td>1</td><td><code>Icons.bar_chart_rounded</code></td><td>Progress</td><td><code>/progress</code></td><td>—</td></tr>
+          <tr><td>2</td><td><code>Icons.people_rounded</code></td><td>Children</td><td><code>/children</code></td><td>Active child dot</td></tr>
+          <tr><td>3</td><td><code>Icons.settings_rounded</code></td><td>Settings</td><td><code>/settings</code></td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- 03 HOME DASHBOARD -->
+  <!-- ══════════════════════════════════════════ -->
+  <section class="section" id="home">
+    <div class="sec-num">// 03</div>
+    <h2 class="sec-title">Home Dashboard — Feature Spec</h2>
+
+    <div class="subsection">
+      <div class="sub-title">Active Child Switcher</div>
+      <p style="font-size:13.5px;color:var(--muted);margin-bottom:12px;line-height:1.7">A horizontally scrollable row of child avatar chips at the top of the screen. Tapping a chip sets that child as active — all data on Home and Progress screens updates reactively via Riverpod.</p>
+      <div class="callout callout-tip">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body"><strong>Active child is global state.</strong> Store <code>activeChildId</code> in a top-level Riverpod <code>StateProvider</code>. All providers that depend on child data (sessions, progress, goals) watch this provider and re-fetch when it changes. This single pattern eliminates prop-drilling across the entire app.</div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">Streak Card</div>
+      <p style="font-size:13.5px;color:var(--muted);margin-bottom:12px;line-height:1.7">Shows consecutive days with at least one completed session. Computed client-side by scanning <code>session_history</code> dates in descending order. No server endpoint needed — derive from existing sessions data.</p>
+      <div class="code-block">
+        <div class="code-head"><span class="code-lang">Dart</span><span class="code-file">lib/features/home/streak_calculator.dart</span></div>
+        <div class="code-body"><span class="k">int</span> <span class="f">calculateStreak</span>(List&lt;<span class="n">Session</span>&gt; sessions) {
+  <span class="k">if</span> (sessions.isEmpty) <span class="k">return</span> <span class="num">0</span>;
+
+  <span class="c">// Get unique dates with at least one completed session</span>
+  <span class="k">final</span> completedDates = sessions
+    .where((s) => s.completed)
+    .map((s) => <span class="n">DateUtils</span>.dateOnly(s.playedAt))
+    .toSet()
+    .toList()
+    ..sort((a, b) => b.compareTo(a)); <span class="c">// descending</span>
+
+  <span class="k">if</span> (completedDates.isEmpty) <span class="k">return</span> <span class="num">0</span>;
+
+  <span class="k">final</span> today = <span class="n">DateUtils</span>.dateOnly(<span class="n">DateTime</span>.now());
+  <span class="k">if</span> (completedDates.first != today &&
+      completedDates.first != today.subtract(<span class="k">const</span> <span class="n">Duration</span>(days: <span class="num">1</span>))) {
+    <span class="k">return</span> <span class="num">0</span>; <span class="c">// streak broken</span>
+  }
+
+  <span class="k">int</span> streak = <span class="num">1</span>;
+  <span class="k">for</span> (<span class="k">int</span> i = <span class="num">1</span>; i &lt; completedDates.length; i++) {
+    <span class="k">final</span> diff = completedDates[i - <span class="num">1</span>].difference(completedDates[i]).inDays;
+    <span class="k">if</span> (diff == <span class="num">1</span>) streak++;
+    <span class="k">else</span> <span class="k">break</span>;
+  }
+  <span class="k">return</span> streak;
+}</div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">Start Activity CTA Card</div>
+      <p style="font-size:13.5px;color:var(--muted);line-height:1.7">Prominent card that calls <code>GET /activities/next/{child_id}</code> and navigates to the game screen. Shows loading shimmer while fetching. If a session was already completed today — show a "Well done! Come back tomorrow" state instead of hiding the card.</p>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">Recent Sessions List</div>
+      <p style="font-size:13.5px;color:var(--muted);line-height:1.7">Last 3 sessions pulled from <code>GET /sessions/{child_id}/history?limit=3</code>. Each row shows: skill name, domain tag, score percentage, date. Tapping navigates to Session Detail.</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- 04 PROGRESS SCREEN -->
+  <!-- ══════════════════════════════════════════ -->
+  <section class="section" id="progress">
+    <div class="sec-num">// 04</div>
+    <h2 class="sec-title">Progress Screen — Feature Spec</h2>
+    <p class="sec-desc">The core feature. Shows per-skill accuracy trends so parents can see how their child is developing across all active goals.</p>
+
+    <div class="subsection">
+      <div class="sub-title">Domain Filter Tab Bar</div>
+      <p style="font-size:13.5px;color:var(--muted);margin-bottom:12px;line-height:1.7">A horizontally scrollable <code>TabBar</code> with: All · Communication · Social · Cognitive · Emotional · Daily Living · Executive. Selecting a tab filters the skill chart list below. The "All" tab is always visible and selected by default.</p>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">Per-Skill Accuracy Chart Cards</div>
+      <p style="font-size:13.5px;color:var(--muted);margin-bottom:14px;line-height:1.7">One card per active skill/goal. Each card contains a <code>LineChart</code> from <code>fl_chart</code> showing accuracy (% correct_independent) over the last 10 sessions. Cards are vertically stacked in a <code>ListView</code>.</p>
+
+      <div class="code-block">
+        <div class="code-head"><span class="code-lang">Dart</span><span class="code-file">lib/features/progress/skill_chart_card.dart</span></div>
+        <div class="code-body"><span class="c">/// Data shape expected by the chart</span>
+<span class="k">class</span> <span class="n">SkillChartData</span> {
+  <span class="k">final</span> String skillId;
+  <span class="k">final</span> String skillLabel;        <span class="c">// e.g. "Object Identification"</span>
+  <span class="k">final</span> String domain;             <span class="c">// e.g. "communication"</span>
+  <span class="k">final</span> String moduleId;           <span class="c">// e.g. "M02"</span>
+  <span class="k">final</span> String status;             <span class="c">// active | mastered | paused</span>
+  <span class="k">final</span> List&lt;<span class="n">AccuracyPoint</span>&gt; points; <span class="c">// x=session index, y=accuracy 0.0–1.0</span>
+  <span class="k">final</span> double currentAccuracy;    <span class="c">// most recent session</span>
+  <span class="k">final</span> double averageAccuracy;    <span class="c">// rolling average</span>
+  <span class="k">final</span> int totalSessions;
+}
+
+<span class="k">class</span> <span class="n">AccuracyPoint</span> {
+  <span class="k">final</span> int sessionIndex;         <span class="c">// x-axis</span>
+  <span class="k">final</span> double accuracy;          <span class="c">// y-axis: correctIndependent / total</span>
+  <span class="k">final</span> <span class="n">DateTime</span> date;
+}</div>
+      </div>
+
+      <div class="callout callout-info" style="margin-top:14px">
+        <div class="callout-icon">ℹ️</div>
+        <div class="callout-body"><strong>Accuracy calculation:</strong> <code>accuracy = correct_independent / total_trials</code>. Do NOT include <code>correct_prompted</code> in the numerator — this is intentional. Prompted correct responses are progress, but independent responses are the mastery signal. Show both in the session detail drill-down.</div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">Chart Card Anatomy</div>
+      <table class="spec-table">
+        <thead><tr><th>Element</th><th>What It Shows</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td>Chip (top-left)</td><td>Domain colour tag (e.g. "Communication")</td><td>goal.domain</td></tr>
+          <tr><td>Title</td><td>Skill name (e.g. "Object Identification")</td><td>goal.description</td></tr>
+          <tr><td>Module badge</td><td>Module ID (e.g. "M02")</td><td>goal.module_id</td></tr>
+          <tr><td>Status badge</td><td>Active / Mastered / Paused in colour</td><td>goal.status</td></tr>
+          <tr><td>Line chart</td><td>Accuracy % per session, last 10</td><td>sessions API</td></tr>
+          <tr><td>Average line</td><td>Dashed horizontal line at rolling average</td><td>Computed client-side</td></tr>
+          <tr><td>Footer stats</td><td>Current: XX% · Avg: XX% · N Sessions</td><td>Computed client-side</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">Empty State</div>
+      <p style="font-size:13.5px;color:var(--muted);line-height:1.7">If active child has no sessions: show an illustrated empty state with message "No sessions yet — start your first activity with [name]!" and a button that navigates to Home to start an activity. If active child has sessions but none for the filtered domain: show domain-specific empty state.</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- 05 CHILD MANAGEMENT -->
+  <!-- ══════════════════════════════════════════ -->
+  <section class="section" id="child-mgmt">
+    <div class="sec-num">// 05</div>
+    <h2 class="sec-title">Child Management — Feature Spec</h2>
+
+    <div class="subsection">
+      <div class="sub-title">Children List Screen</div>
+      <p style="font-size:13.5px;color:var(--muted);margin-bottom:14px;line-height:1.7">Fetches from <code>GET /children</code>. Rendered as a <code>ListView</code> of <code>ChildCard</code> widgets. No limit on number of children — the list scrolls.</p>
+
+      <div class="widget-spec">
+        <div class="widget-spec-head"><span class="widget-spec-name">ChildCard</span><span class="widget-spec-desc">Swipe reveals edit / delete actions</span></div>
+        <div class="widget-spec-body">Uses Flutter's <code>Dismissible</code> widget with secondary background (left swipe = delete confirmation, right swipe = edit). Child's avatar is an emoji displayed in a coloured circle. Card shows: avatar, name, age, number of active goals, last session date. If this is the active child: a small coloured dot indicator appears in the top-right corner of the card.</div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">Add / Edit Child Form</div>
+      <p style="font-size:13.5px;color:var(--muted);margin-bottom:14px;line-height:1.7">Single reusable form screen. In edit mode, the form is pre-populated from the existing child object. Uses <code>react_hook_form</code> equivalent — <code>TextEditingController</code> per field with a <code>GlobalKey&lt;FormState&gt;</code> for validation.</p>
+
+      <table class="spec-table">
+        <thead><tr><th>Field</th><th>Widget</th><th>Validation</th><th>API Field</th></tr></thead>
+        <tbody>
+          <tr><td>Avatar</td><td>Emoji grid picker (horizontal scroll, 20 options)</td><td>Required</td><td><code>avatar_emoji</code></td></tr>
+          <tr><td>Name</td><td><code>TextFormField</code></td><td>Required, 2–50 chars</td><td><code>name</code></td></tr>
+          <tr><td>Date of Birth</td><td><code>showDatePicker()</code> with custom theme</td><td>Required, must be in past</td><td><code>date_of_birth</code></td></tr>
+          <tr><td>Interests</td><td>Wrap of tappable <code>FilterChip</code> + custom text input</td><td>Min 1 required</td><td><code>interests[]</code></td></tr>
+          <tr><td>Character Theme</td><td>Single-select <code>ChoiceChip</code> row</td><td>Optional, defaults to first interest</td><td><code>character_theme</code></td></tr>
+          <tr><td>Diagnosis Notes</td><td>Multi-line <code>TextFormField</code></td><td>Optional, max 500 chars</td><td><code>diagnosis_notes</code></td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-warn" style="margin-top:14px">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body"><strong>Diagnosis notes sensitivity.</strong> Add a visible disclaimer below the field: "This information is private and only shared with your care team." Do not show diagnosis_notes anywhere in the UI outside of the edit form — it should never appear on cards, charts, or summaries visible in public settings.</div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">Goals Sub-Section (within Add/Edit form)</div>
+      <p style="font-size:13.5px;color:var(--muted);margin-bottom:14px;line-height:1.7">Below the child info fields, an expandable "Learning Goals" section. Parents can see existing goals and add new ones via a bottom sheet. Goals added here are POSTed to <code>/children/{id}/goals</code>.</p>
+
+      <div class="widget-spec">
+        <div class="widget-spec-head"><span class="widget-spec-name">AddGoalBottomSheet</span><span class="widget-spec-desc">Modal bottom sheet for adding a goal</span></div>
+        <div class="widget-spec-body">Fields: Domain selector (segmented button or dropdown), Description text field (free text — what should the child achieve?), Priority (1–3 radio buttons: High / Medium / Low), Set By (Parent / Clinician toggle). Save button POSTs and dismisses the sheet. The goals list in the form updates optimistically.</div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">Delete Child Flow</div>
+      <p style="font-size:13.5px;color:var(--muted);line-height:1.7">Swipe-left or a delete option in the edit screen triggers a confirmation <code>AlertDialog</code>: "Delete [name]? This will permanently remove all their sessions and progress. This cannot be undone." Two buttons: Cancel (dismisses) and "Delete [name]" (red, calls <code>DELETE /children/{id}</code>). On success, if deleted child was the active child, switch active child to the next available child or show empty state.</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- 06 SETTINGS SCREEN -->
+  <!-- ══════════════════════════════════════════ -->
+  <section class="section" id="settings">
+    <div class="sec-num">// 06</div>
+    <h2 class="sec-title">Settings Screen — Feature Spec</h2>
+    <p class="sec-desc">All preferences are client-side using SharedPreferences. Only personal info (name, email) calls the API on save. Settings take effect immediately — no "Apply" button needed.</p>
+
+    <div class="subsection">
+      <div class="sub-title">Settings Sections</div>
+
+      <div class="widget-spec">
+        <div class="widget-spec-head"><span class="widget-spec-name">Personal Info</span><span class="widget-spec-desc">Calls PATCH /users/me on save</span></div>
+        <div class="widget-spec-body">Full name field (editable inline), email (read-only, shown for reference), "Change Password" list tile navigates to dedicated screen. All changes are held in local state until "Save" is tapped — show a save button only when a change has been made (dirty state detection).</div>
+      </div>
+
+      <div class="widget-spec" style="margin-top:10px">
+        <div class="widget-spec-head"><span class="widget-spec-name">Audio Settings</span><span class="widget-spec-desc">Client-side only — SharedPreferences</span></div>
+        <div class="widget-spec-body">
+          <strong>Background Music</strong> — <code>SwitchListTile</code>. Key: <code>pref_music_enabled</code>. Default: true.<br><br>
+          <strong>Sound Effects</strong> — <code>SwitchListTile</code>. Key: <code>pref_sfx_enabled</code>. Default: true. When disabled, all in-game tap sounds and reward sounds are silenced.<br><br>
+          <strong>Volume</strong> — <code>Slider</code> (0.0–1.0). Key: <code>pref_volume</code>. Default: 0.8. Only visible when music or sfx is enabled. Debounce saves by 500ms to prevent excessive SharedPreferences writes on drag.
+        </div>
+      </div>
+
+      <div class="widget-spec" style="margin-top:10px">
+        <div class="widget-spec-head"><span class="widget-spec-name">Display Settings</span><span class="widget-spec-desc">Client-side only — SharedPreferences</span></div>
+        <div class="widget-spec-body">
+          <strong>Text Size</strong> — Three-option segmented button: Small / Normal / Large. Key: <code>pref_text_scale</code>. Values: 0.85 / 1.0 / 1.2. Applied via a top-level <code>MediaQuery</code> textScaleFactor override in <code>MaterialApp</code>. Default: Normal.<br><br>
+          <strong>High Contrast Mode</strong> — <code>SwitchListTile</code>. Key: <code>pref_high_contrast</code>. Default: false. When enabled, replaces the SDUI theme colors with high-contrast equivalents (dark backgrounds, white text, thick borders). Applied via a <code>ThemeMode</code> wrapper that the SDUI engine reads.
+        </div>
+      </div>
+
+      <div class="widget-spec" style="margin-top:10px">
+        <div class="widget-spec-head"><span class="widget-spec-name">Accessibility Settings</span><span class="widget-spec-desc">Client-side only — SharedPreferences</span></div>
+        <div class="widget-spec-body">
+          <strong>Voiceover Speed</strong> — <code>Slider</code> (0.5–1.5). Key: <code>pref_tts_rate</code>. Default: 1.0. Passed to the TTS engine as the speech rate for all voiceover_text fields in the SDUI payload.<br><br>
+          <strong>Reduce Animations</strong> — <code>SwitchListTile</code>. Key: <code>pref_reduce_animations</code>. Default: false. When true, replaces all Lottie celebration animations with static images and disables flutter_animate entrance effects throughout the app.
+        </div>
+      </div>
+
+      <div class="widget-spec" style="margin-top:10px">
+        <div class="widget-spec-head"><span class="widget-spec-name">Account Actions</span><span class="widget-spec-desc">Danger zone — confirm before executing</span></div>
+        <div class="widget-spec-body">
+          <strong>Sign Out</strong> — Clears JWT tokens from flutter_secure_storage, clears all cached Riverpod state, navigates to <code>/auth/login</code>. No confirmation dialog needed — not destructive.<br><br>
+          <strong>Delete Account</strong> — Shows a two-step confirmation: first dialog "Are you sure?" then a second dialog requiring the user to type "DELETE" before the button becomes active. Calls <code>DELETE /users/me</code>. On success: clears all local storage and navigates to login.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- 07 STATE MANAGEMENT -->
+  <!-- ══════════════════════════════════════════ -->
+  <section class="section" id="state">
+    <div class="sec-num">// 07</div>
+    <h2 class="sec-title">State Management Design</h2>
+    <p class="sec-desc">All state is managed via Riverpod. Providers are organized by feature domain and kept in <code>lib/providers/</code>.</p>
+
+    <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:20px">
+      <div style="display:grid;grid-template-columns:200px 180px 1fr;background:var(--ink-mid);border-bottom:1px solid var(--border)">
+        <div style="padding:10px 16px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Provider</div>
+        <div style="padding:10px 16px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Type</div>
+        <div style="padding:10px 16px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Purpose</div>
+      </div>
+      <div class="state-row"><div class="state-cell state-key">activeChildId</div><div class="state-cell state-type">StateProvider&lt;String?&gt;</div><div class="state-cell state-desc">Currently selected child ID. Watched by all child-dependent providers. Persisted to SharedPreferences so selection survives app restart.</div></div>
+      <div class="state-row"><div class="state-cell state-key">authProvider</div><div class="state-cell state-type">StateNotifierProvider</div><div class="state-cell state-desc">Auth state (user object, loading, error). Holds JWT tokens. go_router redirect listens to auth state.</div></div>
+      <div class="state-row"><div class="state-cell state-key">childrenProvider</div><div class="state-cell state-type">FutureProvider&lt;List&gt;</div><div class="state-cell state-desc">Fetches GET /children. Cached by Riverpod. Invalidated on add/edit/delete mutations.</div></div>
+      <div class="state-row"><div class="state-cell state-key">sessionsProvider</div><div class="state-cell state-type">FutureProvider.family</div><div class="state-cell state-desc">Keyed by childId. Fetches session history. Re-evaluates when activeChildId changes.</div></div>
+      <div class="state-row"><div class="state-cell state-key">progressProvider</div><div class="state-cell state-type">FutureProvider.family</div><div class="state-cell state-desc">Keyed by childId. Fetches /progress endpoint. Transforms API response into SkillChartData list.</div></div>
+      <div class="state-row"><div class="state-cell state-key">settingsProvider</div><div class="state-cell state-type">StateNotifierProvider</div><div class="state-cell state-desc">All client-side preferences. Loaded from SharedPreferences on app startup. Writes back on every change.</div></div>
+      <div class="state-row"><div class="state-cell state-key">streakProvider</div><div class="state-cell state-type">Provider.family</div><div class="state-cell state-desc">Derived from sessionsProvider. Computes streak integer. No API call — pure computation.</div></div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-head"><span class="code-lang">Dart</span><span class="code-file">lib/providers/settings_provider.dart</span></div>
+      <div class="code-body"><span class="k">class</span> <span class="n">AppSettings</span> {
+  <span class="k">final</span> <span class="k">bool</span>   musicEnabled;
+  <span class="k">final</span> <span class="k">bool</span>   sfxEnabled;
+  <span class="k">final</span> <span class="k">double</span> volume;
+  <span class="k">final</span> <span class="k">double</span> textScale;        <span class="c">// 0.85 | 1.0 | 1.2</span>
+  <span class="k">final</span> <span class="k">bool</span>   highContrast;
+  <span class="k">final</span> <span class="k">double</span> ttsRate;           <span class="c">// 0.5–1.5</span>
+  <span class="k">final</span> <span class="k">bool</span>   reduceAnimations;
+
+  <span class="k">const</span> <span class="n">AppSettings</span>({
+    <span class="k">this</span>.musicEnabled       = <span class="k">true</span>,
+    <span class="k">this</span>.sfxEnabled         = <span class="k">true</span>,
+    <span class="k">this</span>.volume             = <span class="num">0.8</span>,
+    <span class="k">this</span>.textScale          = <span class="num">1.0</span>,
+    <span class="k">this</span>.highContrast       = <span class="k">false</span>,
+    <span class="k">this</span>.ttsRate            = <span class="num">1.0</span>,
+    <span class="k">this</span>.reduceAnimations   = <span class="k">false</span>,
+  });
+
+  <span class="n">AppSettings</span> <span class="f">copyWith</span>({...}) => <span class="n">AppSettings</span>(...);
+}
+
+<span class="k">class</span> <span class="n">SettingsNotifier</span> <span class="k">extends</span> <span class="n">StateNotifier</span>&lt;<span class="n">AppSettings</span>&gt; {
+  <span class="n">SettingsNotifier</span>(<span class="k">this</span>._prefs) : <span class="k">super</span>(<span class="f">_loadFromPrefs</span>(_prefs));
+
+  <span class="k">final</span> <span class="n">SharedPreferences</span> _prefs;
+
+  <span class="k">void</span> <span class="f">setMusicEnabled</span>(<span class="k">bool</span> value) {
+    state = state.copyWith(musicEnabled: value);
+    _prefs.setBool(<span class="s">'pref_music_enabled'</span>, value);
+  }
+
+  <span class="k">void</span> <span class="f">setVolume</span>(<span class="k">double</span> value) {
+    state = state.copyWith(volume: value);
+    _prefs.setDouble(<span class="s">'pref_volume'</span>, value);  <span class="c">// debounced at widget level</span>
+  }
+  <span class="c">// ... similar setters for each preference</span>
+}</div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- 08 CLIENT-SIDE STORAGE -->
+  <!-- ══════════════════════════════════════════ -->
+  <section class="section" id="storage">
+    <div class="sec-num">// 08</div>
+    <h2 class="sec-title">Client-Side Storage Design</h2>
+    <p class="sec-desc">Two storage layers. <code>flutter_secure_storage</code> for credentials only. <code>shared_preferences</code> for all settings and UI state.</p>
+
+    <div class="subsection">
+      <div class="sub-title">flutter_secure_storage (Encrypted)</div>
+      <table class="spec-table">
+        <thead><tr><th>Key</th><th>Value</th><th>When Written</th><th>When Cleared</th></tr></thead>
+        <tbody>
+          <tr><td><code>auth_access_token</code></td><td>JWT string</td><td>Login / token refresh</td><td>Sign out / delete account</td></tr>
+          <tr><td><code>auth_refresh_token</code></td><td>JWT string</td><td>Login</td><td>Sign out / delete account</td></tr>
+          <tr><td><code>auth_user_id</code></td><td>UUID string</td><td>Login</td><td>Sign out / delete account</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">shared_preferences (Settings + UI State)</div>
+      <table class="spec-table">
+        <thead><tr><th>Key</th><th>Type</th><th>Default</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><code>pref_music_enabled</code></td><td>bool</td><td>true</td><td>Background music on/off</td></tr>
+          <tr><td><code>pref_sfx_enabled</code></td><td>bool</td><td>true</td><td>Sound effects on/off</td></tr>
+          <tr><td><code>pref_volume</code></td><td>double</td><td>0.8</td><td>Master audio volume</td></tr>
+          <tr><td><code>pref_text_scale</code></td><td>double</td><td>1.0</td><td>App-wide text scale factor</td></tr>
+          <tr><td><code>pref_high_contrast</code></td><td>bool</td><td>false</td><td>High contrast mode</td></tr>
+          <tr><td><code>pref_tts_rate</code></td><td>double</td><td>1.0</td><td>Voiceover speech rate</td></tr>
+          <tr><td><code>pref_reduce_animations</code></td><td>bool</td><td>false</td><td>Disables Lottie + flutter_animate</td></tr>
+          <tr><td><code>ui_active_child_id</code></td><td>String?</td><td>null</td><td>Last selected child — survives app restart</td></tr>
+          <tr><td><code>ui_progress_domain_filter</code></td><td>String</td><td>"all"</td><td>Last selected domain tab on Progress screen</td></tr>
+          <tr><td><code>ui_onboarding_complete</code></td><td>bool</td><td>false</td><td>Whether parent has seen onboarding flow</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-tip" style="margin-top:14px">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body"><strong>Settings apply globally via MaterialApp.</strong> Wrap <code>MaterialApp</code> with a <code>Consumer</code> that watches <code>settingsProvider</code>. Pass <code>textScaleFactor</code> into a <code>MediaQuery</code> override. Pass <code>themeMode</code> based on <code>highContrast</code>. This means every widget in the app inherits settings automatically — no prop drilling needed.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- 09 CHART COMPONENTS -->
+  <!-- ══════════════════════════════════════════ -->
+  <section class="section" id="charts">
+    <div class="sec-num">// 09</div>
+    <h2 class="sec-title">Chart Components</h2>
+    <p class="sec-desc">All charts use the <code>fl_chart</code> package. Two chart types are needed for MVP.</p>
+
+    <div class="subsection">
+      <div class="sub-title">SkillAccuracyLineChart</div>
+      <div class="code-block">
+        <div class="code-head"><span class="code-lang">Dart</span><span class="code-file">lib/features/progress/skill_accuracy_line_chart.dart</span></div>
+        <div class="code-body"><span class="n">LineChartData</span> <span class="f">buildChartData</span>(<span class="n">SkillChartData</span> data) {
+  <span class="k">return</span> <span class="n">LineChartData</span>(
+    gridData: <span class="n">FlGridData</span>(
+      show: <span class="k">true</span>,
+      drawHorizontalLine: <span class="k">true</span>,
+      drawVerticalLine: <span class="k">false</span>,
+      horizontalInterval: <span class="num">0.25</span>,          <span class="c">// lines at 25%, 50%, 75%, 100%</span>
+    ),
+    titlesData: <span class="n">FlTitlesData</span>(
+      leftTitles: <span class="n">AxisTitles</span>(
+        sideTitles: <span class="n">SideTitles</span>(
+          showTitles: <span class="k">true</span>,
+          reservedSize: <span class="num">36</span>,
+          getTitlesWidget: (value, _) =>
+            <span class="n">Text</span>(<span class="s">'</span><span class="v">${(value * 100).toInt()}</span><span class="s">%'</span>, style: <span class="k">const</span> <span class="n">TextStyle</span>(fontSize: <span class="num">10</span>)),
+        ),
+      ),
+      bottomTitles: <span class="n">AxisTitles</span>(
+        sideTitles: <span class="n">SideTitles</span>(
+          showTitles: <span class="k">true</span>,
+          reservedSize: <span class="num">22</span>,
+          getTitlesWidget: (value, _) =>
+            <span class="n">Text</span>(<span class="s">'S</span><span class="v">${value.toInt() + 1}</span><span class="s">'</span>, style: <span class="k">const</span> <span class="n">TextStyle</span>(fontSize: <span class="num">10</span>)),
+        ),
+      ),
+    ),
+    borderData: <span class="n">FlBorderData</span>(show: <span class="k">false</span>),
+    minX: <span class="num">0</span>, maxX: (data.points.length - <span class="num">1</span>).toDouble(),
+    minY: <span class="num">0</span>, maxY: <span class="num">1</span>,
+    lineBarsData: [
+      <span class="c">// Main accuracy line</span>
+      <span class="n">LineChartBarData</span>(
+        spots: data.points.map((p) =>
+          <span class="n">FlSpot</span>(p.sessionIndex.toDouble(), p.accuracy)).toList(),
+        isCurved: <span class="k">true</span>,
+        color: <span class="f">_domainColor</span>(data.domain),
+        barWidth: <span class="num">2.5</span>,
+        dotData: <span class="n">FlDotData</span>(show: <span class="k">true</span>),
+        belowBarData: <span class="n">BarAreaData</span>(
+          show: <span class="k">true</span>,
+          color: <span class="f">_domainColor</span>(data.domain).withOpacity(<span class="num">0.1</span>),
+        ),
+      ),
+      <span class="c">// Dashed average line</span>
+      <span class="n">LineChartBarData</span>(
+        spots: [
+          <span class="n">FlSpot</span>(<span class="num">0</span>, data.averageAccuracy),
+          <span class="n">FlSpot</span>((data.points.length - <span class="num">1</span>).toDouble(), data.averageAccuracy),
+        ],
+        color: <span class="n">Colors</span>.grey.withOpacity(<span class="num">0.5</span>),
+        barWidth: <span class="num">1</span>,
+        dashArray: [<span class="num">5</span>, <span class="num">5</span>],
+        dotData: <span class="n">FlDotData</span>(show: <span class="k">false</span>),
+      ),
+    ],
+  );
+}</div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="sub-title">Domain Colour Mapping</div>
+      <table class="spec-table">
+        <thead><tr><th>Domain</th><th>Colour</th><th>Hex</th></tr></thead>
+        <tbody>
+          <tr><td>Communication</td><td style="background:rgba(88,166,255,.2)">Blue</td><td><code>#58A6FF</code></td></tr>
+          <tr><td>Social Interaction</td><td style="background:rgba(188,140,255,.2)">Purple</td><td><code>#BC8CFF</code></td></tr>
+          <tr><td>Cognitive Skills</td><td style="background:rgba(63,185,80,.2)">Green</td><td><code>#3FB950</code></td></tr>
+          <tr><td>Emotional Regulation</td><td style="background:rgba(227,179,65,.2)">Amber</td><td><code>#E3B341</code></td></tr>
+          <tr><td>Daily Living</td><td style="background:rgba(255,166,87,.2)">Orange</td><td><code>#FFA657</code></td></tr>
+          <tr><td>Executive Function</td><td style="background:rgba(248,81,73,.2)">Red</td><td><code>#F85149</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- 10 FOLDER STRUCTURE -->
+  <!-- ══════════════════════════════════════════ -->
+  <section class="section" id="flutter-structure">
+    <div class="sec-num">// 10</div>
+    <h2 class="sec-title">Folder Structure — Dashboard Addition</h2>
+    <div class="nav-tree"><span class="dir">lib/</span>
+<span class="cmt">├── </span><span class="dir">features/</span>
+<span class="cmt">│   │</span>
+<span class="cmt">│   ├── </span><span class="dir">home/</span>
+<span class="cmt">│   │   ├── </span><span class="file">home_screen.dart</span>          <span class="cmt"># Tab 0</span>
+<span class="cmt">│   │   ├── </span><span class="file">child_switcher.dart</span>       <span class="cmt"># Horizontal child chip row</span>
+<span class="cmt">│   │   ├── </span><span class="file">streak_card.dart</span>
+<span class="cmt">│   │   ├── </span><span class="file">start_activity_card.dart</span>
+<span class="cmt">│   │   ├── </span><span class="file">recent_sessions_list.dart</span>
+<span class="cmt">│   │   └── </span><span class="file">streak_calculator.dart</span>    <span class="cmt"># Pure function, unit testable</span>
+<span class="cmt">│   │</span>
+<span class="cmt">│   ├── </span><span class="dir">progress/</span>
+<span class="cmt">│   │   ├── </span><span class="file">progress_screen.dart</span>      <span class="cmt"># Tab 1</span>
+<span class="cmt">│   │   ├── </span><span class="file">domain_filter_tabs.dart</span>
+<span class="cmt">│   │   ├── </span><span class="file">skill_chart_card.dart</span>     <span class="cmt"># One card per skill</span>
+<span class="cmt">│   │   ├── </span><span class="file">skill_accuracy_line_chart.dart</span>
+<span class="cmt">│   │   ├── </span><span class="file">progress_empty_state.dart</span>
+<span class="cmt">│   │   └── </span><span class="file">skill_chart_data.dart</span>     <span class="cmt"># Data model</span>
+<span class="cmt">│   │</span>
+<span class="cmt">│   ├── </span><span class="dir">children/</span>
+<span class="cmt">│   │   ├── </span><span class="file">children_screen.dart</span>      <span class="cmt"># Tab 2 — list</span>
+<span class="cmt">│   │   ├── </span><span class="file">child_card.dart</span>           <span class="cmt"># Dismissible swipe card</span>
+<span class="cmt">│   │   ├── </span><span class="file">child_form_screen.dart</span>    <span class="cmt"># Add + Edit (same screen)</span>
+<span class="cmt">│   │   ├── </span><span class="file">avatar_picker.dart</span>        <span class="cmt"># Emoji grid picker</span>
+<span class="cmt">│   │   ├── </span><span class="file">interests_chip_input.dart</span>
+<span class="cmt">│   │   ├── </span><span class="file">add_goal_bottom_sheet.dart</span>
+<span class="cmt">│   │   └── </span><span class="file">delete_child_dialog.dart</span>
+<span class="cmt">│   │</span>
+<span class="cmt">│   ├── </span><span class="dir">settings/</span>
+<span class="cmt">│   │   ├── </span><span class="file">settings_screen.dart</span>      <span class="cmt"># Tab 3</span>
+<span class="cmt">│   │   ├── </span><span class="file">personal_info_section.dart</span>
+<span class="cmt">│   │   ├── </span><span class="file">audio_settings_section.dart</span>
+<span class="cmt">│   │   ├── </span><span class="file">display_settings_section.dart</span>
+<span class="cmt">│   │   ├── </span><span class="file">accessibility_section.dart</span>
+<span class="cmt">│   │   ├── </span><span class="file">account_actions_section.dart</span>
+<span class="cmt">│   │   └── </span><span class="file">change_password_screen.dart</span>
+<span class="cmt">│   │</span>
+<span class="cmt">│   └── </span><span class="dir">session_detail/</span>
+<span class="cmt">│       └── </span><span class="file">session_detail_screen.dart</span>
+<span class="cmt">│</span>
+<span class="cmt">├── </span><span class="dir">providers/</span>
+<span class="cmt">│   ├── </span><span class="file">auth_provider.dart</span>
+<span class="cmt">│   ├── </span><span class="hl">settings_provider.dart</span>        <span class="cmt"># NEW — client-side prefs</span>
+<span class="cmt">│   ├── </span><span class="hl">active_child_provider.dart</span>    <span class="cmt"># NEW — global child switcher</span>
+<span class="cmt">│   ├── </span><span class="file">children_provider.dart</span>
+<span class="cmt">│   ├── </span><span class="file">sessions_provider.dart</span>
+<span class="cmt">│   ├── </span><span class="hl">progress_provider.dart</span>        <span class="cmt"># NEW — transforms API → chart data</span>
+<span class="cmt">│   └── </span><span class="hl">streak_provider.dart</span>          <span class="cmt"># NEW — derived from sessions</span>
+<span class="cmt">│</span>
+<span class="cmt">└── </span><span class="dir">core/</span>
+<span class="cmt">    ├── </span><span class="hl">settings_storage.dart</span>         <span class="cmt"># NEW — SharedPreferences wrapper</span>
+<span class="cmt">    └── </span><span class="file">router.dart</span>                   <span class="cmt"># Updated with ShellRoute</span></div>
+  </section>
+
+  <hr>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- PHASES -->
+  <!-- ══════════════════════════════════════════ -->
+  <section class="section" id="phase1">
+    <div class="sec-num">// 11 — Implementation</div>
+    <h2 class="sec-title">Step-by-Step Build Plan</h2>
+    <p class="sec-desc">4 phases. Each phase is independently shippable and testable. Total estimated time: 3 weeks.</p>
+
+    <div class="phase-card">
+      <div class="phase-head">
+        <span class="phase-badge ph1">Phase 1</span>
+        <span class="phase-title">Shell, Navigation & Settings Storage</span>
+        <span class="phase-meta">Week 1 · Days 1–5</span>
+      </div>
+      <div class="phase-body">
+        <ul class="task-list">
+          <li class="task-item">
+            <div class="task-check"></div>
+            <div class="task-content">
+              <div class="task-title">Implement go_router ShellRoute with BottomNavigationBar</div>
+              <div class="task-desc">Set up the 4-tab shell. Each tab renders a placeholder screen for now. The shell preserves tab scroll position using <code>IndexedStack</code> so switching tabs doesn't lose state.</div>
+              <div class="task-tags"><span class="task-tag tag-nav">Navigation</span><span class="task-tag tag-ui">UI</span></div>
+            </div>
+          </li>
+          <li class="task-item">
+            <div class="task-check"></div>
+            <div class="task-content">
+              <div class="task-title">Build SettingsProvider + SharedPreferences storage layer</div>
+              <div class="task-desc">Implement <code>AppSettings</code> model, <code>SettingsNotifier</code>, and <code>SettingsStorage</code> wrapper. Load from SharedPreferences at app startup using <code>ProviderScope</code> overrides. Write on every state change.</div>
+              <div class="task-tags"><span class="task-tag tag-state">State</span><span class="task-tag tag-storage">Storage</span></div>
+            </div>
+          </li>
+          <li class="task-item">
+            <div class="task-check"></div>
+            <div class="task-content">
+              <div class="task-title">Wire settings into MaterialApp (text scale, high contrast, animations)</div>
+              <div class="task-desc">Wrap <code>MaterialApp</code> with a <code>Consumer</code> watching <code>settingsProvider</code>. Apply <code>textScaleFactor</code> via MediaQuery override, <code>reduceAnimations</code> via a global <code>InheritedWidget</code> that game widgets read.</div>
+              <div class="task-tags"><span class="task-tag tag-state">State</span><span class="task-tag tag-ui">UI</span></div>
+            </div>
+          </li>
+          <li class="task-item">
+            <div class="task-check"></div>
+            <div class="task-content">
+              <div class="task-title">Build the full Settings screen — all 5 sections</div>
+              <div class="task-desc">Audio (music toggle, SFX toggle, volume slider), Display (text size segmented button, high contrast), Accessibility (TTS rate slider, reduce animations), Personal Info (name/email fields), Account Actions (sign out, delete account dialogs). All settings take effect immediately.</div>
+              <div class="task-tags"><span class="task-tag tag-ui">UI</span><span class="task-tag tag-storage">Storage</span></div>
+            </div>
+          </li>
+          <li class="task-item">
+            <div class="task-check"></div>
+            <div class="task-content">
+              <div class="task-title">Implement ActiveChildProvider and child switcher chip row</div>
+              <div class="task-desc">Global <code>StateProvider&lt;String?&gt;</code> for active child ID. Persisted to SharedPreferences. Build the horizontal chip row widget used on Home and Progress. When a new child is selected, all FutureProvider.family providers depending on childId auto-invalidate.</div>
+              <div class="task-tags"><span class="task-tag tag-state">State</span><span class="task-tag tag-storage">Storage</span></div>
+            </div>
+          </li>
+        </ul>
+        <div class="milestone">
+          <div class="milestone-icon">✅</div>
+          <div class="milestone-body"><strong>Phase 1 milestone:</strong> App launches with 4-tab navigation. Settings screen is fully functional — toggling music/SFX/animations/text size works and persists across app restarts. Active child selection persists. Shell navigation and routing are complete.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase-card" id="phase2">
+      <div class="phase-head">
+        <span class="phase-badge ph2">Phase 2</span>
+        <span class="phase-title">Progress Screen & Charts</span>
+        <span class="phase-meta">Week 1–2 · Days 6–11</span>
+      </div>
+      <div class="phase-body">
+        <ul class="task-list">
+          <li class="task-item">
+            <div class="task-check"></div>
+            <div class="task-content">
+              <div class="task-title">Build ProgressProvider — fetch and transform /progress API response</div>
+              <div class="task-desc">Fetch <code>GET /sessions/{child_id}/progress</code>. Transform the API response into a list of <code>SkillChartData</code> objects. Compute <code>accuracy = correct_independent / total</code>, rolling average, and session count per skill. This provider is keyed by childId via <code>FutureProvider.family</code>.</div>
+              <div class="task-tags"><span class="task-tag tag-state">State</span><span class="task-tag tag-api">API</span><span class="task-tag tag-chart">Charts</span></div>
+            </div>
+          </li>
+          <li class="task-item">
+            <div class="task-check"></div>
+            <div class="task-content">
+              <div class="task-title">Build SkillAccuracyLineChart widget using fl_chart</div>
+              <div class="task-desc">Implement the LineChart with accuracy % y-axis, session index x-axis, dashed average line, and domain colour fill. Ensure chart renders correctly with 1 data point (edge case) and up to 20+ data points. Add a loading shimmer state and error state.</div>
+              <div class="task-tags"><span class="task-tag tag-chart">Charts</span><span class="task-tag tag-ui">UI</span></div>
+            </div>
+          </li>
+          <li class="task-item">
+            <div class="task-check"></div>
+            <div class="task-content">
+              <div class="task-title">Build SkillChartCard — full card with header, chart, and footer stats</div>
+              <div class="task-desc">Domain chip, skill title, module badge, status badge, chart widget, footer row (Current: XX% · Avg: XX% · N Sessions). Tapping the card navigates to the expanded single-skill detail view. Status badge colour: active=blue, mastered=green, paused=grey.</div>
+              <div class="task-tags"><span class="task-tag tag-ui">UI</span><span class="task-tag tag-chart">Charts</span></div>
+            </div>
+          </li>
+          <li class="task-item">
+            <div class="task-check"></div>
+            <div class="task-content">
+              <div class="task-title">Build Progress screen with domain filter tabs</div>
+              <div class="task-desc">Horizontally scrollable <code>TabBar</code> with "All" + 6 domain tabs. Filtering is client-side — filter the <code>SkillChartData</code> list from the provider. Persist last selected tab to SharedPreferences via <code>ui_progress_domain_filter</code>.</div>
+              <div class="task-tags"><span class="task-tag tag-ui">UI</span><span class="task-tag tag-storage">Storage</span></div>
+            </div>
+          </li>
+          <li class="task-item">
+            <div class="task-check"></div>
+            <div class="task-content">
+              <div class="task-title">Build empty states — no sessions, no goals, no data for domain</div>
+              <div class="task-desc">Three distinct empty states: (1) Child has no sessions at all → encourage first activity. (2) Child has sessions but no goals set → prompt to add goals. (3) Child has sessions but none for this domain filter → show domain-specific message.</div>
+              <div class="task-tags"><span class="task-tag tag-ui">UI</span></div>
+            </div>
+          </li>
+        </ul>
+        <div class="milestone">
+          <div class="milestone-icon">✅</div>
+          <div class="milestone-body"><strong>Phase 2 milestone:</strong> Progress screen fully functional. Per-skill accuracy line charts render from real API data. Domain filter tabs work. Child switcher updates charts reactively. Empty states all handled. Charts respect reduce_animations setting.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase-card" id="phase3">
+      <div class="phase-head">
+        <span class="phase-badge ph3">Phase 3</span>
+        <span class="phase-title">Child Management — List, Add, Edit, Delete</span>
+        <span class="phase-meta">Week 2 · Days 12–17</span>
+      </div>
+      <div class="phase-body">
+        <ul class="task-list">
+          <li class="task-item">
+            <div class="task-check"></div>
+            <div class="task-content">
+              <div class="task-title">Build Children list screen with ChildCard and swipe actions</div>
+              <div class="task-desc">Fetch from <code>GET /children</code>. Render as <code>ListView.builder</code> of <code>Dismissible</code> <code>ChildCard</code> widgets. Left swipe reveals delete (red). Right swipe navigates to edit. Active child shows indicator dot. Empty state: "No children added yet — add your first child" with Add button.</div>
+              <div class="task-tags"><span class="task-tag tag-ui">UI</span><span class="task-tag tag-api">API</span></div>
+            </div>
+          </li>
+          <li class="task-item">
+            <div class="task-check"></div>
+            <div class="task-content">
+              <div class="task-title">Build AvatarPicker — emoji grid modal</div>
+              <div class="task-desc">20 child-appropriate emojis in a 5×4 grid inside a <code>BottomSheet</code>. Selected emoji is displayed in a coloured circle on the card and form. Colour is deterministically derived from the child's name (hash-based) so it's consistent without needing to store it separately.</div>
+              <div class="task-tags"><span class="task-tag tag-ui">UI</span></div>
+            </div>
+          </li>
+          <li class="task-item">
+            <div class="task-check"></div>
+            <div class="task-content">
+              <div class="task-title">Build InterestsChipInput — multi-select with custom text entry</div>
+              <div class="task-desc">A <code>Wrap</code> of preset interest options (e.g. "Dinosaurs", "Trains", "Art", "Animals", "Space", "Vehicles", "Music", "Sports") as tappable <code>FilterChip</code> widgets. Plus a "Type your own..." text field that adds custom interests. Selected chips appear below in a removable chip row.</div>
+              <div class="task-tags"><span class="task-tag tag-ui">UI</span></div>
+            </div>
+          </li>
+          <li class="task-item">
+            <div class="task-check"></div>
+            <div class="task-content">
+              <div class="task-title">Build ChildFormScreen — unified Add/Edit form</div>
+              <div class="task-desc">Single screen serving both add and edit flows. In add mode, all fields are blank. In edit mode, fields pre-populated from the existing child object passed via go_router <code>extra</code>. Calls <code>POST /children</code> (add) or <code>PUT /children/{id}</code> (edit) on save. Invalidates <code>childrenProvider</code> on success.</div>
+              <div class="task-tags"><span class="task-tag tag-ui">UI</span><span class="task-tag tag-api">API</span></div>
+            </div>
+          </li>
+          <li class="task-item">
+            <div class="task-check"></div>
+            <div class="task-content">
+              <div class="task-title">Build AddGoalBottomSheet and Goals section in form</div>
+              <div class="task-desc">Expandable section at the bottom of the form showing existing goals as small cards with domain chips and a delete icon. FAB-style "Add Goal" button opens the <code>AddGoalBottomSheet</code>. Goals are submitted to <code>POST /children/{id}/goals</code> independently from the main form save.</div>
+              <div class="task-tags"><span class="task-tag tag-ui">UI</span><span class="task-tag tag-api">API</span></div>
+            </div>
+          </li>
+          <li class="task-item">
+            <div class="task-check"></div>
+            <div class="task-content">
+              <div class="task-title">Implement Delete Child flow with two-step confirmation</div>
+              <div class="task-desc">First <code>AlertDialog</code> confirms intent. Second dialog shows a red "Delete [Name]" button that only activates after user types the child's name to confirm. On delete: calls <code>DELETE /children/{id}</code>, invalidates childrenProvider, clears activeChildId if it was this child.</div>
+              <div class="task-tags"><span class="task-tag tag-ui">UI</span><span class="task-tag tag-api">API</span></div>
+            </div>
+          </li>
+        </ul>
+        <div class="milestone">
+          <div class="milestone-icon">✅</div>
+          <div class="milestone-body"><strong>Phase 3 milestone:</strong> Parents can add, edit, and delete children. Interests and goals are manageable from the app. Child switcher on Home and Progress screens reflects real children. Form validates correctly and handles API errors with user-facing messages.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase-card" id="phase4">
+      <div class="phase-head">
+        <span class="phase-badge ph4">Phase 4</span>
+        <span class="phase-title">Home Dashboard & Session Detail Polish</span>
+        <span class="phase-meta">Week 3 · Days 18–22</span>
+      </div>
+      <div class="phase-body">
+        <ul class="task-list">
+          <li class="task-item">
+            <div class="task-check"></div>
+            <div class="task-content">
+              <div class="task-title">Build StreakProvider + StreakCard widget</div>
+              <div class="task-desc">Implement <code>calculateStreak()</code> as a pure function (unit testable). StreakProvider derives from <code>sessionsProvider</code> — no API call. StreakCard shows fire emoji, streak count, and a mini 7-day dot row showing which days had completed sessions.</div>
+              <div class="task-tags"><span class="task-tag tag-state">State</span><span class="task-tag tag-ui">UI</span></div>
+            </div>
+          </li>
+          <li class="task-item">
+            <div class="task-check"></div>
+            <div class="task-content">
+              <div class="task-title">Build StartActivityCard with loading, ready, and completed-today states</div>
+              <div class="task-desc">Three states: (1) Loading shimmer while fetching next activity. (2) Ready — shows skill name, domain, estimated duration, large "Start Activity" button. (3) Completed today — shows today's session score, "Great work!" message, and a dimmed "Start Another" link. State driven by sessionsProvider checking today's date.</div>
+              <div class="task-tags"><span class="task-tag tag-ui">UI</span><span class="task-tag tag-api">API</span></div>
+            </div>
+          </li>
+          <li class="task-item">
+            <div class="task-check"></div>
+            <div class="task-content">
+              <div class="task-title">Build RecentSessionsList and SessionDetailScreen</div>
+              <div class="task-desc">Home screen shows last 3 sessions as compact rows (skill name, domain tag, score %, date). Tapping navigates to SessionDetailScreen which shows full breakdown: correct / prompted / incorrect / no_response counts, duration, parent rating stars, and an editable notes field that PATCHes <code>/sessions/{id}</code> on blur.</div>
+              <div class="task-tags"><span class="task-tag tag-ui">UI</span><span class="task-tag tag-api">API</span></div>
+            </div>
+          </li>
+          <li class="task-item">
+            <div class="task-check"></div>
+            <div class="task-content">
+              <div class="task-title">Active goal domain pills on Home screen</div>
+              <div class="task-desc">A horizontally scrollable row of pill chips showing the active child's goal domains (e.g. "Communication", "Social"). Tapping a pill deep-links to the Progress screen filtered to that domain. Derived from children provider — no extra API call.</div>
+              <div class="task-tags"><span class="task-tag tag-ui">UI</span><span class="task-tag tag-nav">Navigation</span></div>
+            </div>
+          </li>
+          <li class="task-item">
+            <div class="task-check"></div>
+            <div class="task-content">
+              <div class="task-title">Loading skeletons, error states, and pull-to-refresh on all data screens</div>
+              <div class="task-desc">Add shimmer loading skeletons (using the <code>shimmer</code> package) on Home, Progress, and Children list screens. Add error banners with retry buttons for all API failures. Add <code>RefreshIndicator</code> pull-to-refresh on Progress and Children screens — calls <code>ref.invalidate()</code> on the relevant providers.</div>
+              <div class="task-tags"><span class="task-tag tag-ui">UI</span></div>
+            </div>
+          </li>
+        </ul>
+        <div class="milestone">
+          <div class="milestone-icon">✅</div>
+          <div class="milestone-body"><strong>Phase 4 milestone:</strong> Complete parent dashboard. Home shows streak, today's activity, recent sessions, and active goals. Progress shows all skill charts. Child management is fully operational. Settings persist across restarts. All error and loading states are handled. Pull-to-refresh works everywhere.</div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-l">Synergy · Parent Dashboard Plan · Flutter Mobile · 4 Phases</div>
+    <div class="footer-r">~22 days · SharedPreferences · Riverpod · fl_chart</div>
+  </div>
+
+</main>
+</body>
+</html>

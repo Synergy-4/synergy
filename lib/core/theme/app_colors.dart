@@ -30,6 +30,13 @@ class AppColors {
   static const Color textSecondary = Color(0xFF7F8C8D);
   static const Color textLight = Color(0xFFBDC3C7);
 
+  // Dark Mode Colors
+  static const Color darkBackground = Color(0xFF121212);
+  static const Color darkScaffoldBackground = Color(0xFF1A1A1A);
+  static const Color darkCardBackground = Color(0xFF242424);
+  static const Color darkTextPrimary = Color(0xFFF5F7FA);
+  static const Color darkTextSecondary = Color(0xFFBDC3C7);
+
   // Gradients
   static const LinearGradient primaryGradient = LinearGradient(
     colors: [primaryBlue, Color(0xFF90CAF9)],

@@ -66,6 +66,20 @@ class RegisterRequest with _$RegisterRequest {
 /// }
 /// ```
 @freezed
+class UserModel with _$UserModel {
+  const factory UserModel({
+    required int id,
+    required String email,
+    @JsonKey(name: 'full_name') required String fullName,
+    @JsonKey(name: 'is_active') required bool isActive,
+    required String role,
+  }) = _UserModel;
+
+  factory UserModel.fromJson(Map<String, dynamic> json) =>
+      _$UserModelFromJson(json);
+}
+
+@freezed
 class AuthTokenResponse with _$AuthTokenResponse {
   const factory AuthTokenResponse({
     @JsonKey(name: 'access_token') required String accessToken,

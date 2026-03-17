@@ -54,8 +54,10 @@ class _MeadowDashboardState extends State<MeadowDashboard> {
                     Row(
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.logout_rounded,
-                              color: AppColors.textSecondary),
+                          icon: const Icon(
+                            Icons.logout_rounded,
+                            color: AppColors.textSecondary,
+                          ),
                           tooltip: 'Logout',
                           onPressed: () async {
                             await const TokenStore().clearToken();
@@ -68,8 +70,10 @@ class _MeadowDashboardState extends State<MeadowDashboard> {
                         const CircleAvatar(
                           radius: 28,
                           backgroundColor: AppColors.softBlue,
-                          child:
-                              Icon(Icons.person, color: AppColors.primaryBlue),
+                          child: Icon(
+                            Icons.person,
+                            color: AppColors.primaryBlue,
+                          ),
                         ),
                       ],
                     ),
@@ -152,9 +156,9 @@ class _ActivityDiscoveryCard extends StatelessWidget {
           Text(
             title,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: AppColors.textPrimary,
-                  fontSize: 18,
-                ),
+              color: AppColors.textPrimary,
+              fontSize: 18,
+            ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -188,7 +192,7 @@ class _ParentGateBar extends StatelessWidget {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Entering Parent Settings...')),
               );
-              context.push('/parent/settings');
+              context.go('/dashboard');
             },
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -198,14 +202,18 @@ class _ParentGateBar extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.lock_outline, size: 18, color: AppColors.textSecondary),
+                  const Icon(
+                    Icons.lock_outline,
+                    size: 18,
+                    color: AppColors.textSecondary,
+                  ),
                   const SizedBox(width: 8),
                   Text(
                     'Hold 3s for Settings',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textSecondary,
-                        ),
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textSecondary,
+                    ),
                   ),
                 ],
               ),

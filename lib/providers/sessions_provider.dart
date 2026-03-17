@@ -1,0 +1,17 @@
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:synergy/models/session_model.dart';
+import '../core/utility.dart';
+
+part 'sessions_provider.g.dart';
+
+@riverpod
+Future<List<SessionResult>> sessions(SessionsRef ref, int childId) async {
+  final result = await ApiClient.instance.getList('/sessions/$childId/history');
+
+  if (result is ApiSuccess) {
+    final List<dynamic> data = result.data;
+    return data.map((json) => SessionResult.fromJson(json)).toList();
+  } else {
+    return [];
+  }
+}

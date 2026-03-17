@@ -37,19 +37,55 @@ class ChildrenList extends _$ChildrenList {
     required String name,
     required String dateOfBirth,
     required List<String> interests,
+    required List<Map<String, String>> goals,
     String? diagnosisNotes,
   }) async {
     final body = {
       'name': name,
       'date_of_birth': dateOfBirth,
       'interests': interests,
+      'goals': goals,
       'diagnosis_notes': diagnosisNotes,
     };
 
     final result = await ApiClient.instance.postJson('/children', body: body);
 
     if (result is ApiSuccess) {
-      // Refresh the whole list after adding
+      await _refreshFromApi();
+    } else if (result is ApiFailure) {
+      throw result;
+    }
+  }
+
+  Future<void> updateChild({
+    required int id,
+    required String name,
+    required String dateOfBirth,
+    required List<String> interests,
+    required List<Map<String, String>> goals,
+    String? diagnosisNotes,
+  }) async {
+    final body = {
+      'name': name,
+      'date_of_birth': dateOfBirth,
+      'interests': interests,
+      'goals': goals,
+      'diagnosis_notes': diagnosisNotes,
+    };
+
+    final result = await ApiClient.instance.patch('/children/$id', body: body);
+
+    if (result is ApiSuccess) {
+      await _refreshFromApi();
+    } else if (result is ApiFailure) {
+      throw result;
+    }
+  }
+
+  Future<void> deleteChild(int id) async {
+    final result = await ApiClient.instance.delete('/children/$id');
+
+    if (result is ApiSuccess) {
       await _refreshFromApi();
     } else if (result is ApiFailure) {
       throw result;

@@ -363,6 +363,28 @@ class ApiClient {
     }
   }
 
+  /// Sends a DELETE request to [endpoint].
+  ///
+  /// [queryParams] are appended to the URL as query-string parameters.
+  Future<ApiResponse<Map<String, dynamic>>> delete(
+    String endpoint, {
+    Map<String, dynamic>? queryParams,
+    bool withAuth = true,
+  }) async {
+    try {
+      final options = await _buildOptions(withAuth: withAuth);
+      final response = await _dio.delete<Map<String, dynamic>>(
+        endpoint,
+        queryParameters: queryParams,
+        options: options,
+      );
+      return ApiSuccess(response.data ?? {});
+    } catch (e) {
+      print(e);
+      return _handleError(e);
+    }
+  }
+
   /// Sends a POST request to [endpoint] with [body] as the JSON payload.
   Future<ApiResponse<Map<String, dynamic>>> post(
     String endpoint, {
