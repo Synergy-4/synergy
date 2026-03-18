@@ -4,7 +4,7 @@ part 'activity_models.freezed.dart';
 part 'activity_models.g.dart';
 
 @freezed
-class ActivityPayload with _$ActivityPayload {
+abstract class ActivityPayload with _$ActivityPayload {
   const factory ActivityPayload({
     @Default('1.0.0') String version,
     required ThemeConfigData theme,
@@ -16,7 +16,7 @@ class ActivityPayload with _$ActivityPayload {
 }
 
 @freezed
-class ThemeConfigData with _$ThemeConfigData {
+abstract class ThemeConfigData with _$ThemeConfigData {
   const factory ThemeConfigData({
     @JsonKey(name: 'primary_color') required String primaryColor,
     @JsonKey(name: 'secondary_color') required String secondaryColor,
@@ -33,7 +33,7 @@ class ThemeConfigData with _$ThemeConfigData {
 }
 
 @freezed
-class FontConfig with _$FontConfig {
+abstract class FontConfig with _$FontConfig {
   const factory FontConfig({
     required String family,
     required double size,
@@ -46,7 +46,7 @@ class FontConfig with _$FontConfig {
 }
 
 @freezed
-class StepConfig with _$StepConfig {
+abstract class StepConfig with _$StepConfig {
   const factory StepConfig({
     required String id,
     required String type, // "instruction", "game", "reward"
@@ -62,7 +62,7 @@ class StepConfig with _$StepConfig {
 }
 
 @freezed
-class GameConfig with _$GameConfig {
+abstract class GameConfig with _$GameConfig {
   const factory GameConfig({
     @JsonKey(name: 'game_type') required String gameType,
     required String difficulty,
@@ -77,7 +77,7 @@ class GameConfig with _$GameConfig {
 }
 
 @freezed
-class GameEvent with _$GameEvent {
+abstract class GameEvent with _$GameEvent {
   const factory GameEvent({
     required String type, // "animation", "sound", "navigation"
     required String action,

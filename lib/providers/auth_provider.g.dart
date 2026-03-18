@@ -6,21 +6,48 @@ part of 'auth_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
+@ProviderFor(Auth)
+final authProvider = AuthProvider._();
+
+final class AuthProvider extends $AsyncNotifierProvider<Auth, UserModel?> {
+  AuthProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'authProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$authHash();
+
+  @$internal
+  @override
+  Auth create() => Auth();
+}
+
 String _$authHash() => r'43eb4dabbf3569f7a353804f3b3c02de08862429';
 
-/// See also [Auth].
-@ProviderFor(Auth)
-final authProvider =
-    AutoDisposeAsyncNotifierProvider<Auth, UserModel?>.internal(
-      Auth.new,
-      name: r'authProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$authHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
-
-typedef _$Auth = AutoDisposeAsyncNotifier<UserModel?>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+abstract class _$Auth extends $AsyncNotifier<UserModel?> {
+  FutureOr<UserModel?> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<AsyncValue<UserModel?>, UserModel?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<UserModel?>, UserModel?>,
+              AsyncValue<UserModel?>,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}

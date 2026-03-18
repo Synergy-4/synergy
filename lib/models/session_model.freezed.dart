@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,417 +9,301 @@ part of 'session_model.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
-
-SessionResult _$SessionResultFromJson(Map<String, dynamic> json) {
-  return _SessionResult.fromJson(json);
-}
 
 /// @nodoc
 mixin _$SessionResult {
-  int get id => throw _privateConstructorUsedError;
-  @JsonKey(name: 'child_id')
-  int get childId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'activity_type')
-  String get activityType => throw _privateConstructorUsedError;
-  @JsonKey(name: 'accuracy_score')
-  double get accuracyScore => throw _privateConstructorUsedError;
-  @JsonKey(name: 'correct_count')
-  int? get correctCount => throw _privateConstructorUsedError;
-  @JsonKey(name: 'prompted_count')
-  int? get promptedCount => throw _privateConstructorUsedError;
-  @JsonKey(name: 'incorrect_count')
-  int? get incorrectCount => throw _privateConstructorUsedError;
-  @JsonKey(name: 'duration_seconds')
-  int? get durationSeconds => throw _privateConstructorUsedError;
-  String get status =>
-      throw _privateConstructorUsedError; // "completed", "partial"
-  @JsonKey(name: 'played_at')
-  DateTime get playedAt => throw _privateConstructorUsedError;
-  String? get notes => throw _privateConstructorUsedError;
+
+ int get id;@JsonKey(name: 'child_id') int get childId;@JsonKey(name: 'activity_type') String get activityType;@JsonKey(name: 'accuracy_score') double get accuracyScore;@JsonKey(name: 'correct_count') int? get correctCount;@JsonKey(name: 'prompted_count') int? get promptedCount;@JsonKey(name: 'incorrect_count') int? get incorrectCount;@JsonKey(name: 'duration_seconds') int? get durationSeconds; String get status;// "completed", "partial"
+@JsonKey(name: 'played_at') DateTime get playedAt; String? get notes;
+/// Create a copy of SessionResult
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SessionResultCopyWith<SessionResult> get copyWith => _$SessionResultCopyWithImpl<SessionResult>(this as SessionResult, _$identity);
 
   /// Serializes this SessionResult to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of SessionResult
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $SessionResultCopyWith<SessionResult> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionResult&&(identical(other.id, id) || other.id == id)&&(identical(other.childId, childId) || other.childId == childId)&&(identical(other.activityType, activityType) || other.activityType == activityType)&&(identical(other.accuracyScore, accuracyScore) || other.accuracyScore == accuracyScore)&&(identical(other.correctCount, correctCount) || other.correctCount == correctCount)&&(identical(other.promptedCount, promptedCount) || other.promptedCount == promptedCount)&&(identical(other.incorrectCount, incorrectCount) || other.incorrectCount == incorrectCount)&&(identical(other.durationSeconds, durationSeconds) || other.durationSeconds == durationSeconds)&&(identical(other.status, status) || other.status == status)&&(identical(other.playedAt, playedAt) || other.playedAt == playedAt)&&(identical(other.notes, notes) || other.notes == notes));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,childId,activityType,accuracyScore,correctCount,promptedCount,incorrectCount,durationSeconds,status,playedAt,notes);
+
+@override
+String toString() {
+  return 'SessionResult(id: $id, childId: $childId, activityType: $activityType, accuracyScore: $accuracyScore, correctCount: $correctCount, promptedCount: $promptedCount, incorrectCount: $incorrectCount, durationSeconds: $durationSeconds, status: $status, playedAt: $playedAt, notes: $notes)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $SessionResultCopyWith<$Res> {
-  factory $SessionResultCopyWith(
-    SessionResult value,
-    $Res Function(SessionResult) then,
-  ) = _$SessionResultCopyWithImpl<$Res, SessionResult>;
-  @useResult
-  $Res call({
-    int id,
-    @JsonKey(name: 'child_id') int childId,
-    @JsonKey(name: 'activity_type') String activityType,
-    @JsonKey(name: 'accuracy_score') double accuracyScore,
-    @JsonKey(name: 'correct_count') int? correctCount,
-    @JsonKey(name: 'prompted_count') int? promptedCount,
-    @JsonKey(name: 'incorrect_count') int? incorrectCount,
-    @JsonKey(name: 'duration_seconds') int? durationSeconds,
-    String status,
-    @JsonKey(name: 'played_at') DateTime playedAt,
-    String? notes,
-  });
-}
+abstract mixin class $SessionResultCopyWith<$Res>  {
+  factory $SessionResultCopyWith(SessionResult value, $Res Function(SessionResult) _then) = _$SessionResultCopyWithImpl;
+@useResult
+$Res call({
+ int id,@JsonKey(name: 'child_id') int childId,@JsonKey(name: 'activity_type') String activityType,@JsonKey(name: 'accuracy_score') double accuracyScore,@JsonKey(name: 'correct_count') int? correctCount,@JsonKey(name: 'prompted_count') int? promptedCount,@JsonKey(name: 'incorrect_count') int? incorrectCount,@JsonKey(name: 'duration_seconds') int? durationSeconds, String status,@JsonKey(name: 'played_at') DateTime playedAt, String? notes
+});
 
+
+
+
+}
 /// @nodoc
-class _$SessionResultCopyWithImpl<$Res, $Val extends SessionResult>
+class _$SessionResultCopyWithImpl<$Res>
     implements $SessionResultCopyWith<$Res> {
-  _$SessionResultCopyWithImpl(this._value, this._then);
+  _$SessionResultCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final SessionResult _self;
+  final $Res Function(SessionResult) _then;
 
-  /// Create a copy of SessionResult
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? childId = null,
-    Object? activityType = null,
-    Object? accuracyScore = null,
-    Object? correctCount = freezed,
-    Object? promptedCount = freezed,
-    Object? incorrectCount = freezed,
-    Object? durationSeconds = freezed,
-    Object? status = null,
-    Object? playedAt = null,
-    Object? notes = freezed,
-  }) {
-    return _then(
-      _value.copyWith(
-            id: null == id
-                ? _value.id
-                : id // ignore: cast_nullable_to_non_nullable
-                      as int,
-            childId: null == childId
-                ? _value.childId
-                : childId // ignore: cast_nullable_to_non_nullable
-                      as int,
-            activityType: null == activityType
-                ? _value.activityType
-                : activityType // ignore: cast_nullable_to_non_nullable
-                      as String,
-            accuracyScore: null == accuracyScore
-                ? _value.accuracyScore
-                : accuracyScore // ignore: cast_nullable_to_non_nullable
-                      as double,
-            correctCount: freezed == correctCount
-                ? _value.correctCount
-                : correctCount // ignore: cast_nullable_to_non_nullable
-                      as int?,
-            promptedCount: freezed == promptedCount
-                ? _value.promptedCount
-                : promptedCount // ignore: cast_nullable_to_non_nullable
-                      as int?,
-            incorrectCount: freezed == incorrectCount
-                ? _value.incorrectCount
-                : incorrectCount // ignore: cast_nullable_to_non_nullable
-                      as int?,
-            durationSeconds: freezed == durationSeconds
-                ? _value.durationSeconds
-                : durationSeconds // ignore: cast_nullable_to_non_nullable
-                      as int?,
-            status: null == status
-                ? _value.status
-                : status // ignore: cast_nullable_to_non_nullable
-                      as String,
-            playedAt: null == playedAt
-                ? _value.playedAt
-                : playedAt // ignore: cast_nullable_to_non_nullable
-                      as DateTime,
-            notes: freezed == notes
-                ? _value.notes
-                : notes // ignore: cast_nullable_to_non_nullable
-                      as String?,
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of SessionResult
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? childId = null,Object? activityType = null,Object? accuracyScore = null,Object? correctCount = freezed,Object? promptedCount = freezed,Object? incorrectCount = freezed,Object? durationSeconds = freezed,Object? status = null,Object? playedAt = null,Object? notes = freezed,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,childId: null == childId ? _self.childId : childId // ignore: cast_nullable_to_non_nullable
+as int,activityType: null == activityType ? _self.activityType : activityType // ignore: cast_nullable_to_non_nullable
+as String,accuracyScore: null == accuracyScore ? _self.accuracyScore : accuracyScore // ignore: cast_nullable_to_non_nullable
+as double,correctCount: freezed == correctCount ? _self.correctCount : correctCount // ignore: cast_nullable_to_non_nullable
+as int?,promptedCount: freezed == promptedCount ? _self.promptedCount : promptedCount // ignore: cast_nullable_to_non_nullable
+as int?,incorrectCount: freezed == incorrectCount ? _self.incorrectCount : incorrectCount // ignore: cast_nullable_to_non_nullable
+as int?,durationSeconds: freezed == durationSeconds ? _self.durationSeconds : durationSeconds // ignore: cast_nullable_to_non_nullable
+as int?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as String,playedAt: null == playedAt ? _self.playedAt : playedAt // ignore: cast_nullable_to_non_nullable
+as DateTime,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
 }
 
-/// @nodoc
-abstract class _$$SessionResultImplCopyWith<$Res>
-    implements $SessionResultCopyWith<$Res> {
-  factory _$$SessionResultImplCopyWith(
-    _$SessionResultImpl value,
-    $Res Function(_$SessionResultImpl) then,
-  ) = __$$SessionResultImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({
-    int id,
-    @JsonKey(name: 'child_id') int childId,
-    @JsonKey(name: 'activity_type') String activityType,
-    @JsonKey(name: 'accuracy_score') double accuracyScore,
-    @JsonKey(name: 'correct_count') int? correctCount,
-    @JsonKey(name: 'prompted_count') int? promptedCount,
-    @JsonKey(name: 'incorrect_count') int? incorrectCount,
-    @JsonKey(name: 'duration_seconds') int? durationSeconds,
-    String status,
-    @JsonKey(name: 'played_at') DateTime playedAt,
-    String? notes,
-  });
 }
 
-/// @nodoc
-class __$$SessionResultImplCopyWithImpl<$Res>
-    extends _$SessionResultCopyWithImpl<$Res, _$SessionResultImpl>
-    implements _$$SessionResultImplCopyWith<$Res> {
-  __$$SessionResultImplCopyWithImpl(
-    _$SessionResultImpl _value,
-    $Res Function(_$SessionResultImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of SessionResult
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? childId = null,
-    Object? activityType = null,
-    Object? accuracyScore = null,
-    Object? correctCount = freezed,
-    Object? promptedCount = freezed,
-    Object? incorrectCount = freezed,
-    Object? durationSeconds = freezed,
-    Object? status = null,
-    Object? playedAt = null,
-    Object? notes = freezed,
-  }) {
-    return _then(
-      _$SessionResultImpl(
-        id: null == id
-            ? _value.id
-            : id // ignore: cast_nullable_to_non_nullable
-                  as int,
-        childId: null == childId
-            ? _value.childId
-            : childId // ignore: cast_nullable_to_non_nullable
-                  as int,
-        activityType: null == activityType
-            ? _value.activityType
-            : activityType // ignore: cast_nullable_to_non_nullable
-                  as String,
-        accuracyScore: null == accuracyScore
-            ? _value.accuracyScore
-            : accuracyScore // ignore: cast_nullable_to_non_nullable
-                  as double,
-        correctCount: freezed == correctCount
-            ? _value.correctCount
-            : correctCount // ignore: cast_nullable_to_non_nullable
-                  as int?,
-        promptedCount: freezed == promptedCount
-            ? _value.promptedCount
-            : promptedCount // ignore: cast_nullable_to_non_nullable
-                  as int?,
-        incorrectCount: freezed == incorrectCount
-            ? _value.incorrectCount
-            : incorrectCount // ignore: cast_nullable_to_non_nullable
-                  as int?,
-        durationSeconds: freezed == durationSeconds
-            ? _value.durationSeconds
-            : durationSeconds // ignore: cast_nullable_to_non_nullable
-                  as int?,
-        status: null == status
-            ? _value.status
-            : status // ignore: cast_nullable_to_non_nullable
-                  as String,
-        playedAt: null == playedAt
-            ? _value.playedAt
-            : playedAt // ignore: cast_nullable_to_non_nullable
-                  as DateTime,
-        notes: freezed == notes
-            ? _value.notes
-            : notes // ignore: cast_nullable_to_non_nullable
-                  as String?,
-      ),
-    );
-  }
+/// Adds pattern-matching-related methods to [SessionResult].
+extension SessionResultPatterns on SessionResult {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SessionResult value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SessionResult() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SessionResult value)  $default,){
+final _that = this;
+switch (_that) {
+case _SessionResult():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SessionResult value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SessionResult() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id, @JsonKey(name: 'child_id')  int childId, @JsonKey(name: 'activity_type')  String activityType, @JsonKey(name: 'accuracy_score')  double accuracyScore, @JsonKey(name: 'correct_count')  int? correctCount, @JsonKey(name: 'prompted_count')  int? promptedCount, @JsonKey(name: 'incorrect_count')  int? incorrectCount, @JsonKey(name: 'duration_seconds')  int? durationSeconds,  String status, @JsonKey(name: 'played_at')  DateTime playedAt,  String? notes)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SessionResult() when $default != null:
+return $default(_that.id,_that.childId,_that.activityType,_that.accuracyScore,_that.correctCount,_that.promptedCount,_that.incorrectCount,_that.durationSeconds,_that.status,_that.playedAt,_that.notes);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id, @JsonKey(name: 'child_id')  int childId, @JsonKey(name: 'activity_type')  String activityType, @JsonKey(name: 'accuracy_score')  double accuracyScore, @JsonKey(name: 'correct_count')  int? correctCount, @JsonKey(name: 'prompted_count')  int? promptedCount, @JsonKey(name: 'incorrect_count')  int? incorrectCount, @JsonKey(name: 'duration_seconds')  int? durationSeconds,  String status, @JsonKey(name: 'played_at')  DateTime playedAt,  String? notes)  $default,) {final _that = this;
+switch (_that) {
+case _SessionResult():
+return $default(_that.id,_that.childId,_that.activityType,_that.accuracyScore,_that.correctCount,_that.promptedCount,_that.incorrectCount,_that.durationSeconds,_that.status,_that.playedAt,_that.notes);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id, @JsonKey(name: 'child_id')  int childId, @JsonKey(name: 'activity_type')  String activityType, @JsonKey(name: 'accuracy_score')  double accuracyScore, @JsonKey(name: 'correct_count')  int? correctCount, @JsonKey(name: 'prompted_count')  int? promptedCount, @JsonKey(name: 'incorrect_count')  int? incorrectCount, @JsonKey(name: 'duration_seconds')  int? durationSeconds,  String status, @JsonKey(name: 'played_at')  DateTime playedAt,  String? notes)?  $default,) {final _that = this;
+switch (_that) {
+case _SessionResult() when $default != null:
+return $default(_that.id,_that.childId,_that.activityType,_that.accuracyScore,_that.correctCount,_that.promptedCount,_that.incorrectCount,_that.durationSeconds,_that.status,_that.playedAt,_that.notes);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$SessionResultImpl implements _SessionResult {
-  const _$SessionResultImpl({
-    required this.id,
-    @JsonKey(name: 'child_id') required this.childId,
-    @JsonKey(name: 'activity_type') required this.activityType,
-    @JsonKey(name: 'accuracy_score') required this.accuracyScore,
-    @JsonKey(name: 'correct_count') this.correctCount,
-    @JsonKey(name: 'prompted_count') this.promptedCount,
-    @JsonKey(name: 'incorrect_count') this.incorrectCount,
-    @JsonKey(name: 'duration_seconds') this.durationSeconds,
-    required this.status,
-    @JsonKey(name: 'played_at') required this.playedAt,
-    this.notes,
-  });
 
-  factory _$SessionResultImpl.fromJson(Map<String, dynamic> json) =>
-      _$$SessionResultImplFromJson(json);
+class _SessionResult implements SessionResult {
+  const _SessionResult({required this.id, @JsonKey(name: 'child_id') required this.childId, @JsonKey(name: 'activity_type') required this.activityType, @JsonKey(name: 'accuracy_score') required this.accuracyScore, @JsonKey(name: 'correct_count') this.correctCount, @JsonKey(name: 'prompted_count') this.promptedCount, @JsonKey(name: 'incorrect_count') this.incorrectCount, @JsonKey(name: 'duration_seconds') this.durationSeconds, required this.status, @JsonKey(name: 'played_at') required this.playedAt, this.notes});
+  factory _SessionResult.fromJson(Map<String, dynamic> json) => _$SessionResultFromJson(json);
 
-  @override
-  final int id;
-  @override
-  @JsonKey(name: 'child_id')
-  final int childId;
-  @override
-  @JsonKey(name: 'activity_type')
-  final String activityType;
-  @override
-  @JsonKey(name: 'accuracy_score')
-  final double accuracyScore;
-  @override
-  @JsonKey(name: 'correct_count')
-  final int? correctCount;
-  @override
-  @JsonKey(name: 'prompted_count')
-  final int? promptedCount;
-  @override
-  @JsonKey(name: 'incorrect_count')
-  final int? incorrectCount;
-  @override
-  @JsonKey(name: 'duration_seconds')
-  final int? durationSeconds;
-  @override
-  final String status;
-  // "completed", "partial"
-  @override
-  @JsonKey(name: 'played_at')
-  final DateTime playedAt;
-  @override
-  final String? notes;
+@override final  int id;
+@override@JsonKey(name: 'child_id') final  int childId;
+@override@JsonKey(name: 'activity_type') final  String activityType;
+@override@JsonKey(name: 'accuracy_score') final  double accuracyScore;
+@override@JsonKey(name: 'correct_count') final  int? correctCount;
+@override@JsonKey(name: 'prompted_count') final  int? promptedCount;
+@override@JsonKey(name: 'incorrect_count') final  int? incorrectCount;
+@override@JsonKey(name: 'duration_seconds') final  int? durationSeconds;
+@override final  String status;
+// "completed", "partial"
+@override@JsonKey(name: 'played_at') final  DateTime playedAt;
+@override final  String? notes;
 
-  @override
-  String toString() {
-    return 'SessionResult(id: $id, childId: $childId, activityType: $activityType, accuracyScore: $accuracyScore, correctCount: $correctCount, promptedCount: $promptedCount, incorrectCount: $incorrectCount, durationSeconds: $durationSeconds, status: $status, playedAt: $playedAt, notes: $notes)';
-  }
+/// Create a copy of SessionResult
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SessionResultCopyWith<_SessionResult> get copyWith => __$SessionResultCopyWithImpl<_SessionResult>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$SessionResultImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.childId, childId) || other.childId == childId) &&
-            (identical(other.activityType, activityType) ||
-                other.activityType == activityType) &&
-            (identical(other.accuracyScore, accuracyScore) ||
-                other.accuracyScore == accuracyScore) &&
-            (identical(other.correctCount, correctCount) ||
-                other.correctCount == correctCount) &&
-            (identical(other.promptedCount, promptedCount) ||
-                other.promptedCount == promptedCount) &&
-            (identical(other.incorrectCount, incorrectCount) ||
-                other.incorrectCount == incorrectCount) &&
-            (identical(other.durationSeconds, durationSeconds) ||
-                other.durationSeconds == durationSeconds) &&
-            (identical(other.status, status) || other.status == status) &&
-            (identical(other.playedAt, playedAt) ||
-                other.playedAt == playedAt) &&
-            (identical(other.notes, notes) || other.notes == notes));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    id,
-    childId,
-    activityType,
-    accuracyScore,
-    correctCount,
-    promptedCount,
-    incorrectCount,
-    durationSeconds,
-    status,
-    playedAt,
-    notes,
-  );
-
-  /// Create a copy of SessionResult
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$SessionResultImplCopyWith<_$SessionResultImpl> get copyWith =>
-      __$$SessionResultImplCopyWithImpl<_$SessionResultImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$SessionResultImplToJson(this);
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$SessionResultToJson(this, );
 }
 
-abstract class _SessionResult implements SessionResult {
-  const factory _SessionResult({
-    required final int id,
-    @JsonKey(name: 'child_id') required final int childId,
-    @JsonKey(name: 'activity_type') required final String activityType,
-    @JsonKey(name: 'accuracy_score') required final double accuracyScore,
-    @JsonKey(name: 'correct_count') final int? correctCount,
-    @JsonKey(name: 'prompted_count') final int? promptedCount,
-    @JsonKey(name: 'incorrect_count') final int? incorrectCount,
-    @JsonKey(name: 'duration_seconds') final int? durationSeconds,
-    required final String status,
-    @JsonKey(name: 'played_at') required final DateTime playedAt,
-    final String? notes,
-  }) = _$SessionResultImpl;
-
-  factory _SessionResult.fromJson(Map<String, dynamic> json) =
-      _$SessionResultImpl.fromJson;
-
-  @override
-  int get id;
-  @override
-  @JsonKey(name: 'child_id')
-  int get childId;
-  @override
-  @JsonKey(name: 'activity_type')
-  String get activityType;
-  @override
-  @JsonKey(name: 'accuracy_score')
-  double get accuracyScore;
-  @override
-  @JsonKey(name: 'correct_count')
-  int? get correctCount;
-  @override
-  @JsonKey(name: 'prompted_count')
-  int? get promptedCount;
-  @override
-  @JsonKey(name: 'incorrect_count')
-  int? get incorrectCount;
-  @override
-  @JsonKey(name: 'duration_seconds')
-  int? get durationSeconds;
-  @override
-  String get status; // "completed", "partial"
-  @override
-  @JsonKey(name: 'played_at')
-  DateTime get playedAt;
-  @override
-  String? get notes;
-
-  /// Create a copy of SessionResult
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SessionResultImplCopyWith<_$SessionResultImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionResult&&(identical(other.id, id) || other.id == id)&&(identical(other.childId, childId) || other.childId == childId)&&(identical(other.activityType, activityType) || other.activityType == activityType)&&(identical(other.accuracyScore, accuracyScore) || other.accuracyScore == accuracyScore)&&(identical(other.correctCount, correctCount) || other.correctCount == correctCount)&&(identical(other.promptedCount, promptedCount) || other.promptedCount == promptedCount)&&(identical(other.incorrectCount, incorrectCount) || other.incorrectCount == incorrectCount)&&(identical(other.durationSeconds, durationSeconds) || other.durationSeconds == durationSeconds)&&(identical(other.status, status) || other.status == status)&&(identical(other.playedAt, playedAt) || other.playedAt == playedAt)&&(identical(other.notes, notes) || other.notes == notes));
 }
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,childId,activityType,accuracyScore,correctCount,promptedCount,incorrectCount,durationSeconds,status,playedAt,notes);
+
+@override
+String toString() {
+  return 'SessionResult(id: $id, childId: $childId, activityType: $activityType, accuracyScore: $accuracyScore, correctCount: $correctCount, promptedCount: $promptedCount, incorrectCount: $incorrectCount, durationSeconds: $durationSeconds, status: $status, playedAt: $playedAt, notes: $notes)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SessionResultCopyWith<$Res> implements $SessionResultCopyWith<$Res> {
+  factory _$SessionResultCopyWith(_SessionResult value, $Res Function(_SessionResult) _then) = __$SessionResultCopyWithImpl;
+@override @useResult
+$Res call({
+ int id,@JsonKey(name: 'child_id') int childId,@JsonKey(name: 'activity_type') String activityType,@JsonKey(name: 'accuracy_score') double accuracyScore,@JsonKey(name: 'correct_count') int? correctCount,@JsonKey(name: 'prompted_count') int? promptedCount,@JsonKey(name: 'incorrect_count') int? incorrectCount,@JsonKey(name: 'duration_seconds') int? durationSeconds, String status,@JsonKey(name: 'played_at') DateTime playedAt, String? notes
+});
+
+
+
+
+}
+/// @nodoc
+class __$SessionResultCopyWithImpl<$Res>
+    implements _$SessionResultCopyWith<$Res> {
+  __$SessionResultCopyWithImpl(this._self, this._then);
+
+  final _SessionResult _self;
+  final $Res Function(_SessionResult) _then;
+
+/// Create a copy of SessionResult
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? childId = null,Object? activityType = null,Object? accuracyScore = null,Object? correctCount = freezed,Object? promptedCount = freezed,Object? incorrectCount = freezed,Object? durationSeconds = freezed,Object? status = null,Object? playedAt = null,Object? notes = freezed,}) {
+  return _then(_SessionResult(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,childId: null == childId ? _self.childId : childId // ignore: cast_nullable_to_non_nullable
+as int,activityType: null == activityType ? _self.activityType : activityType // ignore: cast_nullable_to_non_nullable
+as String,accuracyScore: null == accuracyScore ? _self.accuracyScore : accuracyScore // ignore: cast_nullable_to_non_nullable
+as double,correctCount: freezed == correctCount ? _self.correctCount : correctCount // ignore: cast_nullable_to_non_nullable
+as int?,promptedCount: freezed == promptedCount ? _self.promptedCount : promptedCount // ignore: cast_nullable_to_non_nullable
+as int?,incorrectCount: freezed == incorrectCount ? _self.incorrectCount : incorrectCount // ignore: cast_nullable_to_non_nullable
+as int?,durationSeconds: freezed == durationSeconds ? _self.durationSeconds : durationSeconds // ignore: cast_nullable_to_non_nullable
+as int?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as String,playedAt: null == playedAt ? _self.playedAt : playedAt // ignore: cast_nullable_to_non_nullable
+as DateTime,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
+// dart format on

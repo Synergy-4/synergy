@@ -6,9 +6,9 @@ import '../providers/active_child_provider.dart';
 part 'streak_provider.g.dart';
 
 @riverpod
-int currentStreak(CurrentStreakRef ref, int childId) {
+int currentStreak(Ref ref, int childId) {
   final sessionsAsync = ref.watch(sessionsProvider(childId));
-  
+
   return sessionsAsync.maybeWhen(
     data: (sessions) => StreakCalculator.calculateStreak(sessions),
     orElse: () => 0,

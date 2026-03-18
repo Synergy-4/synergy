@@ -6,21 +6,56 @@ part of 'active_child_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$activeChildHash() => r'957fd6c961aed04a6797e363b59ab052fb675983';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// See also [ActiveChild].
 @ProviderFor(ActiveChild)
-final activeChildProvider =
-    AutoDisposeNotifierProvider<ActiveChild, int?>.internal(
-      ActiveChild.new,
-      name: r'activeChildProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$activeChildHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+final activeChildProvider = ActiveChildProvider._();
 
-typedef _$ActiveChild = AutoDisposeNotifier<int?>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+final class ActiveChildProvider extends $NotifierProvider<ActiveChild, int?> {
+  ActiveChildProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'activeChildProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$activeChildHash();
+
+  @$internal
+  @override
+  ActiveChild create() => ActiveChild();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int? value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<int?>(value),
+    );
+  }
+}
+
+String _$activeChildHash() => r'903d950321481b7bef9efcb040d09bd048cdd083';
+
+abstract class _$ActiveChild extends $Notifier<int?> {
+  int? build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<int?, int?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<int?, int?>,
+              int?,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}

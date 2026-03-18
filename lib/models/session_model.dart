@@ -4,7 +4,7 @@ part 'session_model.freezed.dart';
 part 'session_model.g.dart';
 
 @freezed
-class SessionResult with _$SessionResult {
+abstract class SessionResult with _$SessionResult {
   const factory SessionResult({
     required int id,
     @JsonKey(name: 'child_id') required int childId,

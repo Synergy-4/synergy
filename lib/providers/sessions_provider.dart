@@ -5,7 +5,7 @@ import '../core/utility.dart';
 part 'sessions_provider.g.dart';
 
 @riverpod
-Future<List<SessionResult>> sessions(SessionsRef ref, int childId) async {
+Future<List<SessionResult>> sessions(Ref ref, int childId) async {
   final result = await ApiClient.instance.getList('/sessions/$childId/history');
 
   if (result is ApiSuccess) {

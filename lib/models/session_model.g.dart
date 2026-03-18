@@ -6,8 +6,8 @@ part of 'session_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$SessionResultImpl _$$SessionResultImplFromJson(Map<String, dynamic> json) =>
-    _$SessionResultImpl(
+_SessionResult _$SessionResultFromJson(Map<String, dynamic> json) =>
+    _SessionResult(
       id: (json['id'] as num).toInt(),
       childId: (json['child_id'] as num).toInt(),
       activityType: json['activity_type'] as String,
@@ -21,7 +21,7 @@ _$SessionResultImpl _$$SessionResultImplFromJson(Map<String, dynamic> json) =>
       notes: json['notes'] as String?,
     );
 
-Map<String, dynamic> _$$SessionResultImplToJson(_$SessionResultImpl instance) =>
+Map<String, dynamic> _$SessionResultToJson(_SessionResult instance) =>
     <String, dynamic>{
       'id': instance.id,
       'child_id': instance.childId,

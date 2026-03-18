@@ -4,7 +4,7 @@ import '../../providers/progress_provider.dart';
 import '../../providers/active_child_provider.dart';
 import '../../providers/settings_provider.dart';
 import '../../providers/children_list_provider.dart';
-// import '../parent/child_form_screen.dart';
+import '../parent/child_form_screen.dart';
 import 'skill_chart_card.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:go_router/go_router.dart';
@@ -79,44 +79,36 @@ class _ProgressScreenState extends ConsumerState<ProgressScreen>
           unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.normal),
         ),
       ),
-      body: activeChildId == null
+      body: (activeChildId == null)
           ? const _NoChildSelected()
           : progressAsync.when(
               data: (data) {
-                final child = childrenAsync.whenOrNull(
-                  data: (list) => list.firstWhere((c) => c.id == activeChildId),
-                );
-
                 return TabBarView(
                   controller: _tabController,
                   children: _domains.map((domain) {
                     final filteredData = domain == 'All'
                         ? data
-                        : data.where((d) => d.domain == domain).toList();
+                        : data.where((d) {
+                            // Robust comparison: normalize both to lower case and handle potential snake_case from backend
+                            final normalizedDataDomain = d.domain
+                                .toLowerCase()
+                                .replaceAll(' ', '_');
+                            final normalizedTabDomain = domain
+                                .toLowerCase()
+                                .replaceAll(' ', '_');
+                            return normalizedDataDomain == normalizedTabDomain;
+                          }).toList();
 
                     if (filteredData.isEmpty) {
                       // Logic for 3 distinct empty states
                       if (data.isEmpty) {
                         // (1) No sessions at all or (2) no goals set
-                        if (child != null && child.goals.isEmpty) {
-                          return _EmptyState(
-                            icon: Icons.flag_outlined,
-                            title: 'No Goals Set',
-                            message:
-                                'Set some goals for ${child.name} to start tracking progress.',
-                            actionText: 'Add Goals',
-                            onAction: () => context.push(
-                              '/parent/child-form',
-                              extra: child,
-                            ),
-                          );
-                        }
+
                         return _EmptyState(
                           icon: Icons.history_rounded,
-                          title: 'No Sessions Yet',
-                          message:
-                              '${child?.name ?? "Your child"} hasn\'t completed any skill-based sessions yet.',
-                          actionText: 'Start Play',
+                          title: 'No sessions recorded',
+                          message: 'Start a game to begin tracking progress.',
+                          actionText: 'Start a game',
                           onAction: () => context.go('/dashboard'),
                         );
                       } else {

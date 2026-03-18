@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'settings_provider.dart';
+import 'children_list_provider.dart';
 
 part 'active_child_provider.g.dart';
 
@@ -8,7 +9,15 @@ class ActiveChild extends _$ActiveChild {
   @override
   int? build() {
     final storage = ref.watch(settingsStorageProvider);
-    return storage.activeChildId;
+    final storedId = storage.activeChildId;
+    
+    if (storedId != null) return storedId;
+
+    // Default to first child if available
+    final childrenAsync = ref.watch(childrenListProvider);
+    return childrenAsync.whenOrNull(
+      data: (list) => list.isNotEmpty ? list.first.id : null,
+    );
   }
 
   void setActiveChild(int? childId) {

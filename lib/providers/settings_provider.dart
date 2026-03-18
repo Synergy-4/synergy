@@ -51,12 +51,12 @@ class AppSettings {
 
 // Provider for SharedPreferences instance
 @Riverpod(keepAlive: true)
-SharedPreferences sharedPreferences(SharedPreferencesRef ref) {
+SharedPreferences sharedPreferences(Ref ref) {
   throw UnimplementedError(); // Initialized in main.dart
 }
 
 @Riverpod(keepAlive: true)
-SettingsStorage settingsStorage(SettingsStorageRef ref) {
+SettingsStorage settingsStorage(Ref ref) {
   final prefs = ref.watch(sharedPreferencesProvider);
   return SettingsStorage(prefs);
 }
