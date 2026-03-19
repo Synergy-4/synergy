@@ -5,6 +5,7 @@ import '../core/utility.dart';
 
 part 'children_list_provider.g.dart';
 
+// @Riverpod(keepAlive: true)
 @riverpod
 class ChildrenList extends _$ChildrenList {
   @override

@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ActivityPayload {
 
- String get version; ThemeConfigData get theme; List<StepConfig> get steps;
+@JsonKey(name: 'activity_id') int? get activityId; String get version; ThemeConfigData get theme; List<StepConfig> get steps;
 /// Create a copy of ActivityPayload
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $ActivityPayloadCopyWith<ActivityPayload> get copyWith => _$ActivityPayloadCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ActivityPayload&&(identical(other.version, version) || other.version == version)&&(identical(other.theme, theme) || other.theme == theme)&&const DeepCollectionEquality().equals(other.steps, steps));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ActivityPayload&&(identical(other.activityId, activityId) || other.activityId == activityId)&&(identical(other.version, version) || other.version == version)&&(identical(other.theme, theme) || other.theme == theme)&&const DeepCollectionEquality().equals(other.steps, steps));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,version,theme,const DeepCollectionEquality().hash(steps));
+int get hashCode => Object.hash(runtimeType,activityId,version,theme,const DeepCollectionEquality().hash(steps));
 
 @override
 String toString() {
-  return 'ActivityPayload(version: $version, theme: $theme, steps: $steps)';
+  return 'ActivityPayload(activityId: $activityId, version: $version, theme: $theme, steps: $steps)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $ActivityPayloadCopyWith<$Res>  {
   factory $ActivityPayloadCopyWith(ActivityPayload value, $Res Function(ActivityPayload) _then) = _$ActivityPayloadCopyWithImpl;
 @useResult
 $Res call({
- String version, ThemeConfigData theme, List<StepConfig> steps
+@JsonKey(name: 'activity_id') int? activityId, String version, ThemeConfigData theme, List<StepConfig> steps
 });
 
 
@@ -65,9 +65,10 @@ class _$ActivityPayloadCopyWithImpl<$Res>
 
 /// Create a copy of ActivityPayload
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? version = null,Object? theme = null,Object? steps = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? activityId = freezed,Object? version = null,Object? theme = null,Object? steps = null,}) {
   return _then(_self.copyWith(
-version: null == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
+activityId: freezed == activityId ? _self.activityId : activityId // ignore: cast_nullable_to_non_nullable
+as int?,version: null == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
 as String,theme: null == theme ? _self.theme : theme // ignore: cast_nullable_to_non_nullable
 as ThemeConfigData,steps: null == steps ? _self.steps : steps // ignore: cast_nullable_to_non_nullable
 as List<StepConfig>,
@@ -164,10 +165,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String version,  ThemeConfigData theme,  List<StepConfig> steps)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'activity_id')  int? activityId,  String version,  ThemeConfigData theme,  List<StepConfig> steps)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ActivityPayload() when $default != null:
-return $default(_that.version,_that.theme,_that.steps);case _:
+return $default(_that.activityId,_that.version,_that.theme,_that.steps);case _:
   return orElse();
 
 }
@@ -185,10 +186,10 @@ return $default(_that.version,_that.theme,_that.steps);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String version,  ThemeConfigData theme,  List<StepConfig> steps)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'activity_id')  int? activityId,  String version,  ThemeConfigData theme,  List<StepConfig> steps)  $default,) {final _that = this;
 switch (_that) {
 case _ActivityPayload():
-return $default(_that.version,_that.theme,_that.steps);case _:
+return $default(_that.activityId,_that.version,_that.theme,_that.steps);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -205,10 +206,10 @@ return $default(_that.version,_that.theme,_that.steps);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String version,  ThemeConfigData theme,  List<StepConfig> steps)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'activity_id')  int? activityId,  String version,  ThemeConfigData theme,  List<StepConfig> steps)?  $default,) {final _that = this;
 switch (_that) {
 case _ActivityPayload() when $default != null:
-return $default(_that.version,_that.theme,_that.steps);case _:
+return $default(_that.activityId,_that.version,_that.theme,_that.steps);case _:
   return null;
 
 }
@@ -220,9 +221,10 @@ return $default(_that.version,_that.theme,_that.steps);case _:
 @JsonSerializable()
 
 class _ActivityPayload implements ActivityPayload {
-  const _ActivityPayload({this.version = '1.0.0', required this.theme, required final  List<StepConfig> steps}): _steps = steps;
+  const _ActivityPayload({@JsonKey(name: 'activity_id') this.activityId, this.version = '1.0.0', required this.theme, required final  List<StepConfig> steps}): _steps = steps;
   factory _ActivityPayload.fromJson(Map<String, dynamic> json) => _$ActivityPayloadFromJson(json);
 
+@override@JsonKey(name: 'activity_id') final  int? activityId;
 @override@JsonKey() final  String version;
 @override final  ThemeConfigData theme;
  final  List<StepConfig> _steps;
@@ -246,16 +248,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ActivityPayload&&(identical(other.version, version) || other.version == version)&&(identical(other.theme, theme) || other.theme == theme)&&const DeepCollectionEquality().equals(other._steps, _steps));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ActivityPayload&&(identical(other.activityId, activityId) || other.activityId == activityId)&&(identical(other.version, version) || other.version == version)&&(identical(other.theme, theme) || other.theme == theme)&&const DeepCollectionEquality().equals(other._steps, _steps));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,version,theme,const DeepCollectionEquality().hash(_steps));
+int get hashCode => Object.hash(runtimeType,activityId,version,theme,const DeepCollectionEquality().hash(_steps));
 
 @override
 String toString() {
-  return 'ActivityPayload(version: $version, theme: $theme, steps: $steps)';
+  return 'ActivityPayload(activityId: $activityId, version: $version, theme: $theme, steps: $steps)';
 }
 
 
@@ -266,7 +268,7 @@ abstract mixin class _$ActivityPayloadCopyWith<$Res> implements $ActivityPayload
   factory _$ActivityPayloadCopyWith(_ActivityPayload value, $Res Function(_ActivityPayload) _then) = __$ActivityPayloadCopyWithImpl;
 @override @useResult
 $Res call({
- String version, ThemeConfigData theme, List<StepConfig> steps
+@JsonKey(name: 'activity_id') int? activityId, String version, ThemeConfigData theme, List<StepConfig> steps
 });
 
 
@@ -283,9 +285,10 @@ class __$ActivityPayloadCopyWithImpl<$Res>
 
 /// Create a copy of ActivityPayload
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? version = null,Object? theme = null,Object? steps = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? activityId = freezed,Object? version = null,Object? theme = null,Object? steps = null,}) {
   return _then(_ActivityPayload(
-version: null == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
+activityId: freezed == activityId ? _self.activityId : activityId // ignore: cast_nullable_to_non_nullable
+as int?,version: null == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
 as String,theme: null == theme ? _self.theme : theme // ignore: cast_nullable_to_non_nullable
 as ThemeConfigData,steps: null == steps ? _self._steps : steps // ignore: cast_nullable_to_non_nullable
 as List<StepConfig>,

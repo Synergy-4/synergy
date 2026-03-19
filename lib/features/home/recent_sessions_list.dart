@@ -29,14 +29,11 @@ class RecentSessionsList extends StatelessWidget {
             children: [
               Text(
                 'Recent Sessions',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
               ),
-              TextButton(
-                onPressed: () {},
-                child: const Text('View All'),
-              ),
+              TextButton(onPressed: () {}, child: const Text('View All')),
             ],
           ),
         ),
@@ -60,7 +57,9 @@ class RecentSessionsList extends StatelessWidget {
                 _getActivityLabel(session.activityType),
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
-              subtitle: Text(DateFormat('MMM d, h:mm a').format(session.playedAt)),
+              subtitle: Text(
+                DateFormat('MMM d, h:mm a').format(session.playedAt),
+              ),
               trailing: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -73,7 +72,10 @@ class RecentSessionsList extends StatelessWidget {
                       color: Colors.blue,
                     ),
                   ),
-                  const Text('Accuracy', style: TextStyle(fontSize: 10, color: Colors.grey)),
+                  const Text(
+                    'Accuracy',
+                    style: TextStyle(fontSize: 10, color: Colors.grey),
+                  ),
                 ],
               ),
               onTap: () => context.push('/sessions/${session.id}'),

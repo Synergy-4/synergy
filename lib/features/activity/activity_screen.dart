@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/activity_provider.dart';
-import '../../providers/child_provider.dart';
+import '../../providers/active_child_provider.dart';
+import '../../providers/sessions_provider.dart';
+import '../../models/session_record_request.dart';
 import 'engine/sdui_renderer.dart';
 import '../../core/theme/app_colors.dart';
 
@@ -15,16 +17,27 @@ class ActivityScreen extends ConsumerStatefulWidget {
 }
 
 class _ActivityScreenState extends ConsumerState<ActivityScreen> {
+  DateTime? _startTime;
+
   @override
   void initState() {
     super.initState();
+    _startTime = DateTime.now();
     // Fetch appropriate activity based on the selected child
-    Future.microtask(() async {
-      final child = await ref.read(childStateProvider.future);
-      if (child != null) {
+    Future.microtask(() {
+      final childId = ref.read(activeChildProvider);
+      if (childId != null) {
         ref
             .read(activityStateProvider.notifier)
-            .fetchNextActivity(child.id.toString(), gameType: widget.type);
+            .fetchNextActivity(childId.toString(), gameType: widget.type);
+      } else {
+        // Handle no active child
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('No active child selected.')),
+          );
+          Navigator.pop(context);
+        }
       }
     });
   }
@@ -46,18 +59,50 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
       body: activityAsync.when(
         data: (payload) {
           if (payload == null) {
-            return const Center(child: Text('No activity found.'));
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const CircularProgressIndicator(color: AppColors.primaryBlue),
+                  const SizedBox(height: 24),
+                  Text(
+                    'Preparing your adventure...',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ],
+              ),
+            );
           }
           return SduiRenderer(
             payload: payload,
-            onActivityComplete: () {
-              // Handle overall activity completion (e.g., save session, show final reward)
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Activity Complete! Saving session...'),
-                ),
-              );
-              Navigator.pop(context);
+            onActivityComplete: () async {
+              final childId = ref.read(activeChildProvider);
+              if (childId != null) {
+                final durationSeconds = _startTime != null
+                    ? DateTime.now().difference(_startTime!).inSeconds
+                    : 0;
+
+                final request = SessionRecordRequest(
+                  gameTypes: [], // To be populated if game engine returns it
+                  scores: {}, // To be populated if game engine returns it
+                  parentRating: 0,
+                  completed: true,
+                  durationSeconds: durationSeconds,
+                  childId: childId,
+                  activityId: payload.activityId,
+                );
+
+                await recordSession(request);
+
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Activity Complete! Session saved.'),
+                    ),
+                  );
+                  Navigator.pop(context);
+                }
+              }
             },
           );
         },
@@ -94,12 +139,15 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
                 Text(error.toString(), textAlign: TextAlign.center),
                 const SizedBox(height: 24),
                 ElevatedButton(
-                  onPressed: () async {
-                    final child = await ref.read(childStateProvider.future);
-                    if (child != null) {
+                  onPressed: () {
+                    final childId = ref.read(activeChildProvider);
+                    if (childId != null) {
                       ref
                           .read(activityStateProvider.notifier)
-                          .fetchNextActivity(child.id.toString());
+                          .fetchNextActivity(
+                            childId.toString(),
+                            gameType: widget.type,
+                          );
                     }
                   },
                   child: const Text('Try Again'),

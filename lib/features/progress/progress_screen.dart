@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/progress_provider.dart';
 import '../../providers/active_child_provider.dart';
 import '../../providers/settings_provider.dart';
-import '../../providers/children_list_provider.dart';
-import '../parent/child_form_screen.dart';
+// import '../../providers/children_list_provider.dart';
+// import '../parent/child_form_screen.dart';
 import 'skill_chart_card.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:go_router/go_router.dart';
@@ -66,7 +66,7 @@ class _ProgressScreenState extends ConsumerState<ProgressScreen>
         ? ref.watch(progressProvider(activeChildId))
         : const AsyncValue<List<SkillChartData>>.data([]);
 
-    final childrenAsync = ref.watch(childrenListProvider);
+    // final childrenAsync = ref.watch(childrenListProvider);
 
     return Scaffold(
       appBar: AppBar(

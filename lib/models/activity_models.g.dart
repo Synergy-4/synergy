@@ -8,6 +8,7 @@ part of 'activity_models.dart';
 
 _ActivityPayload _$ActivityPayloadFromJson(Map<String, dynamic> json) =>
     _ActivityPayload(
+      activityId: (json['activity_id'] as num?)?.toInt(),
       version: json['version'] as String? ?? '1.0.0',
       theme: ThemeConfigData.fromJson(json['theme'] as Map<String, dynamic>),
       steps: (json['steps'] as List<dynamic>)
@@ -17,6 +18,7 @@ _ActivityPayload _$ActivityPayloadFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$ActivityPayloadToJson(_ActivityPayload instance) =>
     <String, dynamic>{
+      'activity_id': instance.activityId,
       'version': instance.version,
       'theme': instance.theme,
       'steps': instance.steps,

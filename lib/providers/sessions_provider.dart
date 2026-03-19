@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:synergy/models/session_model.dart';
+import 'package:synergy/models/session_record_request.dart';
 import '../core/utility.dart';
 
 part 'sessions_provider.g.dart';
@@ -14,4 +15,12 @@ Future<List<SessionResult>> sessions(Ref ref, int childId) async {
   } else {
     return [];
   }
+}
+
+Future<bool> recordSession(SessionRecordRequest request) async {
+  final result = await ApiClient.instance.postJson(
+    '/sessions/',
+    body: request.toJson(),
+  );
+  return result is ApiSuccess;
 }

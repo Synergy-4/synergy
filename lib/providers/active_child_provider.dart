@@ -4,13 +4,14 @@ import 'children_list_provider.dart';
 
 part 'active_child_provider.g.dart';
 
+// @Riverpod(keepAlive: true)
 @riverpod
 class ActiveChild extends _$ActiveChild {
   @override
   int? build() {
     final storage = ref.watch(settingsStorageProvider);
     final storedId = storage.activeChildId;
-    
+
     if (storedId != null) return storedId;
 
     // Default to first child if available

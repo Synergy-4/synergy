@@ -192,7 +192,10 @@ class _GameStep extends StatelessWidget {
         children: [
           const Icon(Icons.record_voice_over, size: 80, color: Colors.blue),
           const SizedBox(height: 16),
-          Text('Phonics Session', style: Theme.of(context).textTheme.titleLarge),
+          Text(
+            'Phonics Session',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           const SizedBox(height: 24),
           AppButton(
             text: 'I\'m Done!',

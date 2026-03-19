@@ -6,6 +6,7 @@ part 'activity_models.g.dart';
 @freezed
 abstract class ActivityPayload with _$ActivityPayload {
   const factory ActivityPayload({
+    @JsonKey(name: 'activity_id') int? activityId,
     @Default('1.0.0') String version,
     required ThemeConfigData theme,
     required List<StepConfig> steps,

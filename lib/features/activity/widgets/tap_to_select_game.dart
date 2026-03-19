@@ -29,11 +29,8 @@ class _TapToSelectGameState extends State<TapToSelectGame> {
     final data = widget.config.data;
     _targetItem = data['target_item'] as Map<String, dynamic>;
     _distractors = data['distractors'] as List<dynamic>? ?? [];
-    
-    _allItems = [
-      _targetItem,
-      ..._distractors.cast<Map<String, dynamic>>(),
-    ];
+
+    _allItems = [_targetItem, ..._distractors.cast<Map<String, dynamic>>()];
     _allItems.shuffle();
   }
 
@@ -48,9 +45,9 @@ class _TapToSelectGameState extends State<TapToSelectGame> {
       Future.delayed(const Duration(milliseconds: 500), widget.onComplete);
     } else {
       // Handle failure (e.g., shake animation, feedback)
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Try again!')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Try again!')));
     }
   }
 
@@ -59,6 +56,7 @@ class _TapToSelectGameState extends State<TapToSelectGame> {
     final data = widget.config.data;
     final instructionText = data['instruction_text'] ?? 'Find the object';
     final gridColumns = data['grid_columns'] ?? 2;
+    print(data);
 
     return Column(
       children: [
