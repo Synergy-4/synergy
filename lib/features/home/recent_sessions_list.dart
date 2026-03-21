@@ -94,6 +94,8 @@ class RecentSessionsList extends StatelessWidget {
         return 'Tap to Select';
       case 'phonics':
         return 'Phonics Fun';
+      case 'color_matching':
+        return 'Match the Colours';
       default:
         return 'Activity';
     }

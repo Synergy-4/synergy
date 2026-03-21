@@ -1,0 +1,114 @@
+{
+  "version": "1.0.0",
+  "theme": {
+    "primary_color": "#E53935",
+    "secondary_color": "#FFCDD2",
+    "background_color": "#FFF8F8",
+    "card_color": "#FFFFFF",
+    "success_color": "#4CAF50",
+    "error_color": "#F44336",
+    "heading_font": {
+      "family": "Comic Sans MS",
+      "size": 24,
+      "weight": "bold",
+      "color": "#B71C1C"
+    },
+    "body_font": {
+      "family": "Arial",
+      "size": 16,
+      "weight": "normal",
+      "color": "#4E342E"
+    }
+  },
+  "steps": [
+    {
+      "id": "intro_1",
+      "type": "instruction",
+      "title": "Let's match the colours, Mia!",
+      "description": "Look at the cards in the middle. Tap a card from your hand that has the same colour. How many can you match?",
+      "voiceover_text": "Let's match the colours, Mia! Look at the cards in the middle and tap a card from your hand that has the same colour. How many can you match?",
+      "game_config": null,
+      "lottie_url": null
+    },
+    {
+      "id": "game_1",
+      "type": "game",
+      "title": "Colour Match",
+      "description": null,
+      "voiceover_text": null,
+      "game_config": {
+        "game_type": "colour_matching",
+        "difficulty": "easy",
+        "time_limit_seconds": null,
+        "prompt_level": 3,
+        "skill_id": "colour_identification",
+        "module_id": "M02",
+        "reinforcement_schedule": "continuous",
+        "ebp_applied": [
+          "DTT",
+          "Errorless Learning",
+          "Differential Reinforcement",
+          "Prompt Hierarchy"
+        ],
+        "therapist_flag": false,
+        "therapist_flag_reason": null,
+        "parent_instruction": "Sit next to your child and say each colour name out loud as they tap it — 'Yes, that's red!' This verbal pairing helps connect the colour word to what they see on screen. If they get stuck, point gently to a matching card without tapping it yourself.",
+        "data": {
+          "colour_set": "basic_4",
+          "timed": false,
+          "hand_size": 2,
+          "guaranteed_match_in_hand": true,
+          "middle_zone": {
+            "card_count": 3,
+            "cards": [
+              {
+                "id": "t_001",
+                "colour": "red",
+                "hex": "#E53935",
+                "label": "Red",
+                "quantity": 2
+              },
+              {
+                "id": "t_002",
+                "colour": "blue",
+                "hex": "#1E88E5",
+                "label": "Blue",
+                "quantity": 1
+              }
+            ]
+          },
+          "pool": {
+            "total_cards": 10,
+            "cards": [
+              { "id": "p_001", "colour": "red",    "hex": "#E53935", "label": "Red"    },
+              { "id": "p_002", "colour": "blue",   "hex": "#1E88E5", "label": "Blue"   },
+              { "id": "p_003", "colour": "green",  "hex": "#43A047", "label": "Green"  },
+              { "id": "p_004", "colour": "red",    "hex": "#E53935", "label": "Red"    },
+              { "id": "p_005", "colour": "yellow", "hex": "#FDD835", "label": "Yellow" },
+              { "id": "p_006", "colour": "blue",   "hex": "#1E88E5", "label": "Blue"   },
+              { "id": "p_007", "colour": "green",  "hex": "#43A047", "label": "Green"  },
+              { "id": "p_008", "colour": "red",    "hex": "#E53935", "label": "Red"    },
+              { "id": "p_009", "colour": "yellow", "hex": "#FDD835", "label": "Yellow" },
+              { "id": "p_010", "colour": "blue",   "hex": "#1E88E5", "label": "Blue"   }
+            ]
+          },
+          "scoring": {
+            "base_points_per_card": 10,
+            "speed_multiplier_enabled": false,
+            "perfect_bonus": 50
+          }
+        }
+      },
+      "lottie_url": null
+    },
+    {
+      "id": "reward_1",
+      "type": "reward",
+      "title": "Amazing work, Mia! 🌟",
+      "description": "You matched all the colours! You're getting really good at spotting red and blue.",
+      "voiceover_text": "Amazing work, Mia! You matched all the colours! You're getting really good at spotting red and blue.",
+      "game_config": null,
+      "lottie_url": "https://assets2.lottiefiles.com/packages/lf20_touohxv0.json"
+    }
+  ]
+}
