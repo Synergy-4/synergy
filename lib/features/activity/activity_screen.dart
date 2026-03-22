@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/activity_provider.dart';
 import '../../providers/active_child_provider.dart';
 import '../../providers/sessions_provider.dart';
+import '../../providers/children_list_provider.dart';
 import '../../models/session_record_request.dart';
 import 'engine/sdui_renderer.dart';
 import '../../core/theme/app_colors.dart';
@@ -17,33 +18,94 @@ class ActivityScreen extends ConsumerStatefulWidget {
 }
 
 class _ActivityScreenState extends ConsumerState<ActivityScreen> {
-  DateTime? _startTime;
+  bool _hasFetched = false;
+  DateTime _startTime = DateTime(2020);
 
   @override
   void initState() {
     super.initState();
     _startTime = DateTime.now();
-    // Fetch appropriate activity based on the selected child
-    Future.microtask(() {
-      final childId = ref.read(activeChildProvider);
-      if (childId != null) {
-        ref
-            .read(activityStateProvider.notifier)
-            .fetchNextActivity(childId.toString(), gameType: widget.type);
-      } else {
-        // Handle no active child
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('No active child selected.')),
-          );
-          Navigator.pop(context);
-        }
-      }
-    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final childId = ref.watch(activeChildProvider);
+
+    // Automatically fetch activity once childId becomes available
+    if (childId != null && !_hasFetched) {
+      _hasFetched = true;
+      Future.microtask(() {
+        if (mounted) {
+          ref
+              .read(activityStateProvider.notifier)
+              .fetchNextActivity(childId.toString(), gameType: widget.type);
+        }
+      });
+    }
+
+    if (childId == null) {
+      final childrenAsync = ref.watch(childrenListProvider);
+      final isLoading = childrenAsync.isLoading || !childrenAsync.hasValue;
+
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(
+            widget.type.replaceAll(RegExp(r'[^a-zA-Z0-9]'), ' ').toUpperCase(),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          leading: IconButton(
+            icon: const Icon(Icons.close_rounded),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ),
+        body: Center(
+          child: isLoading
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const CircularProgressIndicator(
+                      color: AppColors.primaryBlue,
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      'Checking child profile...',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ],
+                )
+              : Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.person_off,
+                        size: 60,
+                        color: Colors.orange,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'No active child selected.',
+                        style: Theme.of(context).textTheme.titleLarge,
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Please make sure you have added a child profile and selected them as active before starting an activity.',
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 32),
+                      ElevatedButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Go Back'),
+                      ),
+                    ],
+                  ),
+                ),
+        ),
+      );
+    }
+
     final activityAsync = ref.watch(activityStateProvider);
     return Scaffold(
       appBar: AppBar(
@@ -78,9 +140,9 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
             onActivityComplete: () async {
               final childId = ref.read(activeChildProvider);
               if (childId != null) {
-                final durationSeconds = _startTime != null
-                    ? DateTime.now().difference(_startTime!).inSeconds
-                    : 0;
+                final durationSeconds = DateTime.now()
+                    .difference(_startTime)
+                    .inSeconds;
 
                 final request = SessionRecordRequest(
                   gameTypes: [], // To be populated if game engine returns it

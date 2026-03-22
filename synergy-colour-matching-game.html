@@ -1,0 +1,2267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Synergy — Colour Matching Game Design</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+    :root {
+      --ink: #0d1117;
+      --ink-mid: #161b22;
+      --ink-light: #21262d;
+      --border: #30363d;
+      --border-lt: #3d4450;
+      --muted: #8b949e;
+      --body: #c9d1d9;
+      --white: #f0f6fc;
+      --green: #3fb950;
+      --green-dim: #1a3a24;
+      --blue: #58a6ff;
+      --blue-dim: #0d2a4a;
+      --amber: #e3b341;
+      --amber-dim: #3a2a0a;
+      --purple: #bc8cff;
+      --purple-dim: #2a1a4a;
+      --red: #f85149;
+      --red-dim: #3a0d0d;
+      --cyan: #79c0ff;
+      --orange: #ffa657;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      font-family: 'Sora', system-ui, sans-serif;
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--body);
+      background: var(--ink)
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 264px;
+      background: var(--ink-mid);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      z-index: 100;
+      padding: 28px 0 40px
+    }
+
+    .sidebar::-webkit-scrollbar {
+      width: 4px
+    }
+
+    .sidebar::-webkit-scrollbar-thumb {
+      background: var(--border-lt);
+      border-radius: 2px
+    }
+
+    .logo {
+      padding: 0 24px 24px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px
+    }
+
+    .logo-name {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .logo-pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+      animation: pulse 2s infinite
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .45
+      }
+    }
+
+    .logo-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px
+    }
+
+    .nav-group {
+      margin-bottom: 4px
+    }
+
+    .nav-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 8px 24px 4px
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 24px;
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: all .15s;
+      border-left: 2px solid transparent;
+      cursor: pointer
+    }
+
+    .nav-item:hover {
+      color: var(--white);
+      background: var(--ink-light)
+    }
+
+    .nav-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--border-lt);
+      min-width: 18px
+    }
+
+    .main {
+      margin-left: 264px;
+      padding: 60px 72px;
+      max-width: calc(264px + 960px)
+    }
+
+    /* HEADER */
+    .doc-header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 48px;
+      margin-bottom: 64px
+    }
+
+    .doc-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(88, 166, 255, .12);
+      border: 1px solid rgba(88, 166, 255, .3);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--blue);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 20px
+    }
+
+    .doc-title {
+      font-size: clamp(28px, 3.5vw, 48px);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.1;
+      letter-spacing: -.02em;
+      margin-bottom: 14px
+    }
+
+    .doc-title span {
+      color: var(--amber)
+    }
+
+    .doc-sub {
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--muted);
+      max-width: 580px;
+      line-height: 1.7
+    }
+
+    .doc-meta {
+      display: flex;
+      gap: 28px;
+      margin-top: 24px;
+      flex-wrap: wrap
+    }
+
+    .meta-item {
+      font-size: 12px;
+      color: var(--muted)
+    }
+
+    .meta-item strong {
+      color: var(--body);
+      font-weight: 500
+    }
+
+    .section {
+      margin-bottom: 72px;
+      scroll-margin-top: 40px
+    }
+
+    .sec-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      letter-spacing: .08em
+    }
+
+    .sec-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -.01em;
+      margin-bottom: 8px
+    }
+
+    .sec-desc {
+      font-size: 14px;
+      color: var(--muted);
+      max-width: 600px;
+      line-height: 1.7;
+      margin-bottom: 28px
+    }
+
+    .sub-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .sub-title::before {
+      content: '';
+      width: 3px;
+      height: 16px;
+      border-radius: 2px;
+      background: var(--blue);
+      flex-shrink: 0
+    }
+
+    .subsection {
+      margin-bottom: 36px
+    }
+
+    /* GAME BOARD DIAGRAM */
+    .board-diagram {
+      background: var(--ink-light);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      margin: 20px 0;
+      position: relative
+    }
+
+    .board-zone {
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin-bottom: 16px;
+      border: 2px dashed
+    }
+
+    .zone-middle {
+      border-color: rgba(88, 166, 255, .4);
+      background: rgba(88, 166, 255, .05)
+    }
+
+    .zone-hand {
+      border-color: rgba(63, 185, 80, .4);
+      background: rgba(63, 185, 80, .05)
+    }
+
+    .zone-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .zone-label-mid {
+      color: var(--blue)
+    }
+
+    .zone-label-hand {
+      color: var(--green)
+    }
+
+    .card-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center
+    }
+
+    .demo-card {
+      width: 56px;
+      height: 72px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: white;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, .5);
+      flex-shrink: 0;
+      border: 2px solid rgba(255, 255, 255, .2);
+      position: relative
+    }
+
+    .card-dup {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: var(--amber);
+      color: var(--ink);
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      font-size: 9px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center
+    }
+
+    .c-red {
+      background: #e53935
+    }
+
+    .c-blue {
+      background: #1e88e5
+    }
+
+    .c-green {
+      background: #43a047
+    }
+
+    .c-yellow {
+      background: #fdd835;
+      color: #333;
+      text-shadow: none
+    }
+
+    .c-orange {
+      background: #fb8c00
+    }
+
+    .c-purple {
+      background: #8e24aa
+    }
+
+    .c-pink {
+      background: #e91e8c
+    }
+
+    .c-teal {
+      background: #00897b
+    }
+
+    .c-blank {
+      background: var(--ink-light);
+      border: 2px dashed var(--border-lt)
+    }
+
+    .c-empty {
+      background: transparent;
+      border: 2px dashed var(--border);
+      color: var(--muted)
+    }
+
+    .pool-indicator {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: rgba(227, 179, 65, .08);
+      border: 1px solid rgba(227, 179, 65, .2);
+      border-radius: 8px
+    }
+
+    .pool-label {
+      font-size: 12px;
+      color: var(--amber);
+      font-weight: 600
+    }
+
+    .pool-bar {
+      flex: 1;
+      height: 6px;
+      background: var(--ink-mid);
+      border-radius: 3px;
+      overflow: hidden
+    }
+
+    .pool-fill {
+      height: 100%;
+      background: var(--amber);
+      border-radius: 3px;
+      width: 70%
+    }
+
+    /* TABLES */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin: 14px 0
+    }
+
+    .spec-table th {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 10px 16px;
+      border-bottom: 2px solid var(--border);
+      background: var(--ink-mid)
+    }
+
+    .spec-table td {
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--body);
+      vertical-align: top
+    }
+
+    .spec-table tr:last-child td {
+      border-bottom: none
+    }
+
+    .spec-table tr:hover td {
+      background: rgba(255, 255, 255, .02)
+    }
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--cyan);
+      background: var(--ink-light);
+      padding: 2px 6px;
+      border-radius: 3px;
+      border: 1px solid var(--border)
+    }
+
+    /* CALLOUTS */
+    .callout {
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 14px 0;
+      display: flex;
+      gap: 14px
+    }
+
+    .callout-info {
+      background: var(--blue-dim);
+      border: 1px solid rgba(88, 166, 255, .2)
+    }
+
+    .callout-warn {
+      background: var(--amber-dim);
+      border: 1px solid rgba(227, 179, 65, .2)
+    }
+
+    .callout-tip {
+      background: var(--green-dim);
+      border: 1px solid rgba(63, 185, 80, .2)
+    }
+
+    .callout-danger {
+      background: var(--red-dim);
+      border: 1px solid rgba(248, 81, 73, .2)
+    }
+
+    .callout-icon {
+      font-size: 16px;
+      flex-shrink: 0;
+      margin-top: 1px
+    }
+
+    .callout-body {
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--body)
+    }
+
+    .callout-body strong {
+      font-weight: 600;
+      color: var(--white)
+    }
+
+    /* DIFFICULTY TIERS */
+    .diff-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
+      margin: 16px 0
+    }
+
+    .diff-card {
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border)
+    }
+
+    .diff-head {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .diff-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace
+    }
+
+    .d-easy {
+      background: rgba(63, 185, 80, .15);
+      color: var(--green);
+      border: 1px solid rgba(63, 185, 80, .3)
+    }
+
+    .d-medium {
+      background: rgba(227, 179, 65, .15);
+      color: var(--amber);
+      border: 1px solid rgba(227, 179, 65, .3)
+    }
+
+    .d-hard {
+      background: rgba(248, 81, 73, .15);
+      color: var(--red);
+      border: 1px solid rgba(248, 81, 73, .3)
+    }
+
+    .diff-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--white)
+    }
+
+    .diff-body {
+      padding: 14px 18px;
+      background: var(--ink-mid)
+    }
+
+    .diff-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 5px 0;
+      border-bottom: 1px solid rgba(48, 54, 61, .5)
+    }
+
+    .diff-row:last-child {
+      border-bottom: none
+    }
+
+    .diff-key {
+      font-size: 12px;
+      color: var(--muted)
+    }
+
+    .diff-val {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--white);
+      font-family: 'JetBrains Mono', monospace
+    }
+
+    /* STATE MACHINE */
+    .state-machine {
+      background: var(--ink-light);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      line-height: 2;
+      color: var(--body);
+      white-space: pre;
+      overflow-x: auto
+    }
+
+    .st-state {
+      color: var(--blue)
+    }
+
+    .st-event {
+      color: var(--amber)
+    }
+
+    .st-action {
+      color: var(--green)
+    }
+
+    .st-comment {
+      color: var(--muted);
+      font-style: italic
+    }
+
+    /* PHASE CARDS */
+    .phase-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 18px
+    }
+
+    .phase-head {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 15px 20px;
+      background: var(--ink-mid);
+      border-bottom: 1px solid var(--border)
+    }
+
+    .phase-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 4px;
+      white-space: nowrap
+    }
+
+    .ph1 {
+      background: rgba(88, 166, 255, .15);
+      color: var(--blue);
+      border: 1px solid rgba(88, 166, 255, .3)
+    }
+
+    .ph2 {
+      background: rgba(63, 185, 80, .15);
+      color: var(--green);
+      border: 1px solid rgba(63, 185, 80, .3)
+    }
+
+    .ph3 {
+      background: rgba(227, 179, 65, .15);
+      color: var(--amber);
+      border: 1px solid rgba(227, 179, 65, .3)
+    }
+
+    .ph4 {
+      background: rgba(188, 140, 255, .15);
+      color: var(--purple);
+      border: 1px solid rgba(188, 140, 255, .3)
+    }
+
+    .phase-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--white);
+      flex: 1
+    }
+
+    .phase-meta {
+      font-size: 12px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace
+    }
+
+    .phase-body {
+      padding: 20px 24px
+    }
+
+    .task-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px
+    }
+
+    .task-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start
+    }
+
+    .task-check {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      border: 1.5px solid var(--border-lt);
+      flex-shrink: 0;
+      margin-top: 2px
+    }
+
+    .task-content {
+      flex: 1
+    }
+
+    .task-title {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--white);
+      margin-bottom: 3px
+    }
+
+    .task-desc {
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.6
+    }
+
+    .task-tags {
+      display: flex;
+      gap: 6px;
+      margin-top: 7px;
+      flex-wrap: wrap
+    }
+
+    .task-tag {
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 3px;
+      letter-spacing: .04em
+    }
+
+    .tag-ui {
+      background: rgba(88, 166, 255, .12);
+      color: var(--blue)
+    }
+
+    .tag-logic {
+      background: rgba(63, 185, 80, .12);
+      color: var(--green)
+    }
+
+    .tag-anim {
+      background: rgba(188, 140, 255, .12);
+      color: var(--purple)
+    }
+
+    .tag-state {
+      background: rgba(227, 179, 65, .12);
+      color: var(--amber)
+    }
+
+    .tag-ebp {
+      background: rgba(248, 81, 73, .12);
+      color: var(--red)
+    }
+
+    /* CODE */
+    .code-block {
+      background: var(--ink-light);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 14px 0;
+      font-family: 'JetBrains Mono', monospace
+    }
+
+    .code-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: var(--ink-mid);
+      border-bottom: 1px solid var(--border)
+    }
+
+    .code-lang {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: .08em;
+      text-transform: uppercase
+    }
+
+    .code-file {
+      font-size: 11px;
+      color: var(--blue)
+    }
+
+    .code-body {
+      padding: 20px 24px;
+      font-size: 12.5px;
+      line-height: 1.85;
+      color: var(--body);
+      overflow-x: auto;
+      white-space: pre
+    }
+
+    .k {
+      color: #ff7b72
+    }
+
+    .s {
+      color: #a5d6ff
+    }
+
+    .c {
+      color: #8b949e;
+      font-style: italic
+    }
+
+    .f {
+      color: #d2a8ff
+    }
+
+    .n {
+      color: #79c0ff
+    }
+
+    .v {
+      color: #ffa657
+    }
+
+    .num {
+      color: #79c0ff
+    }
+
+    /* MILESTONE */
+    .milestone {
+      background: var(--green-dim);
+      border: 1px solid rgba(63, 185, 80, .25);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-top: 20px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start
+    }
+
+    .milestone-icon {
+      font-size: 18px;
+      flex-shrink: 0
+    }
+
+    .milestone-body {
+      font-size: 13px;
+      color: var(--body);
+      line-height: 1.7
+    }
+
+    .milestone-body strong {
+      color: var(--white);
+      font-weight: 600
+    }
+
+    /* COLOUR PALETTE */
+    .colour-grid {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 14px 0
+    }
+
+    .colour-chip {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px
+    }
+
+    .colour-swatch {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      border: 2px solid rgba(255, 255, 255, .15)
+    }
+
+    .colour-name {
+      font-size: 10px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace
+    }
+
+    /* ANIMATION TIMELINE */
+    .anim-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 14px 0
+    }
+
+    .anim-row {
+      display: grid;
+      grid-template-columns: 100px 80px 1fr;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .anim-row:last-child {
+      border-bottom: none
+    }
+
+    .anim-cell {
+      padding: 10px 14px;
+      font-size: 12.5px
+    }
+
+    .anim-time {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--amber);
+      font-size: 11px
+    }
+
+    .anim-event {
+      font-weight: 600;
+      color: var(--white)
+    }
+
+    .anim-desc {
+      color: var(--muted)
+    }
+
+    .anim-head .anim-cell {
+      background: var(--ink-mid);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted)
+    }
+
+    /* SCORE FORMULA */
+    .formula-box {
+      background: var(--ink-light);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin: 14px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--body);
+      line-height: 2
+    }
+
+    .formula-hl {
+      color: var(--amber);
+      font-weight: 600
+    }
+
+    .formula-op {
+      color: var(--purple)
+    }
+
+    .formula-comment {
+      color: var(--muted);
+      font-style: italic;
+      font-size: 12px
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 52px 0
+    }
+
+    .footer {
+      border-top: 1px solid var(--border);
+      padding-top: 28px;
+      margin-top: 56px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px
+    }
+
+    .footer-l {
+      font-size: 12px;
+      color: var(--muted)
+    }
+
+    .footer-r {
+      font-size: 12px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace
+    }
+
+    @media(max-width:900px) {
+      .sidebar {
+        display: none
+      }
+
+      .main {
+        margin-left: 0;
+        padding: 40px 24px
+      }
+
+      .diff-grid {
+        grid-template-columns: 1fr
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="sidebar">
+    <div class="logo">
+      <div class="logo-name">
+        <div class="logo-pulse"></div>Synergy
+      </div>
+      <div class="logo-sub">Colour Matching Game Design</div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-label">Design</div>
+      <a href="#overview" class="nav-item"><span class="nav-num">00</span>Game Overview</a>
+      <a href="#board" class="nav-item"><span class="nav-num">01</span>Board Layout</a>
+      <a href="#loop" class="nav-item"><span class="nav-num">02</span>Core Game Loop</a>
+      <a href="#colours" class="nav-item"><span class="nav-num">03</span>Colour System</a>
+      <a href="#difficulty" class="nav-item"><span class="nav-num">04</span>Difficulty Tiers</a>
+      <a href="#scoring" class="nav-item"><span class="nav-num">05</span>Scoring & Penalties</a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-label">Technical</div>
+      <a href="#states" class="nav-item"><span class="nav-num">06</span>Game State Machine</a>
+      <a href="#animations" class="nav-item"><span class="nav-num">07</span>Animation Spec</a>
+      <a href="#data-contract" class="nav-item"><span class="nav-num">08</span>SDUI Data Contract</a>
+      <a href="#models" class="nav-item"><span class="nav-num">09</span>Flutter Data Models</a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-label">Build Plan</div>
+      <a href="#phase1" class="nav-item"><span class="nav-num">10</span>Phase 1 — Core Loop</a>
+      <a href="#phase2" class="nav-item"><span class="nav-num">11</span>Phase 2 — Animations</a>
+      <a href="#phase3" class="nav-item"><span class="nav-num">12</span>Phase 3 — Difficulty</a>
+      <a href="#phase4" class="nav-item"><span class="nav-num">13</span>Phase 4 — EBP & SDUI</a>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <!-- HEADER -->
+    <div class="doc-header" id="overview">
+      <div class="doc-tag">Game Design Specification</div>
+      <h1 class="doc-title">Colour <span>Matching</span> Game</h1>
+      <p class="doc-sub">A solid-colour card matching game for pure colour recognition. The player clears a middle board
+        by tapping hand cards that match colours displayed in the target zone. Penalty on mismatch, scales from 10-card
+        beginner to 100-card mastery.</p>
+      <div class="doc-meta">
+        <div class="meta-item"><strong>Module:</strong> M02 / M23 (Colour Identification)</div>
+        <div class="meta-item"><strong>Mechanic:</strong> tap_to_match</div>
+        <div class="meta-item"><strong>Flutter widget:</strong> ColourMatchingGame</div>
+        <div class="meta-item"><strong>Timed:</strong> Optional per difficulty</div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════ -->
+    <!-- 01: BOARD LAYOUT -->
+    <!-- ════════════════════════════════════ -->
+    <section class="section" id="board">
+      <div class="sec-num">// 01</div>
+      <h2 class="sec-title">Board Layout</h2>
+      <p class="sec-desc">The screen is divided into three horizontal zones stacked vertically. The layout is fixed — it
+        never changes regardless of difficulty. Only the content of each zone changes.</p>
+
+      <!-- LIVE BOARD DIAGRAM -->
+      <div class="board-diagram">
+        <!-- HUD -->
+        <div
+          style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding:10px 14px;background:rgba(255,255,255,.04);border-radius:8px;border:1px solid var(--border)">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">
+            HUD ZONE</div>
+          <div style="display:flex;gap:20px;font-size:12px">
+            <span style="color:var(--blue)">Score: <strong style="color:var(--white)">240</strong></span>
+            <span style="color:var(--amber)">Pool: <strong style="color:var(--white)">6/10</strong></span>
+            <span style="color:var(--red)">❌ Errors: <strong style="color:var(--white)">1</strong></span>
+            <span style="color:var(--green)">⏱ 00:42</span>
+          </div>
+        </div>
+
+        <!-- MIDDLE ZONE -->
+        <div class="board-zone zone-middle">
+          <div class="zone-label zone-label-mid">🎯 TARGET ZONE — middle of screen (1–10 cards)</div>
+          <div class="card-row">
+            <div class="demo-card c-red">RED<div class="card-dup">×2</div>
+            </div>
+            <div class="demo-card c-blue">BLUE</div>
+            <div class="demo-card c-green">GREEN</div>
+            <div class="demo-card c-yellow">YEL</div>
+            <div class="demo-card c-purple">PUR</div>
+            <div class="demo-card c-empty" style="width:56px;height:72px"></div>
+            <div class="demo-card c-empty" style="width:56px;height:72px"></div>
+          </div>
+          <p style="font-size:11px;color:var(--muted);margin-top:10px">Note: RED has ×2 — a duplicate. One tap of a RED
+            hand card clears BOTH red targets simultaneously.</p>
+        </div>
+
+        <!-- SPACER / FEEDBACK AREA -->
+        <div style="height:32px;display:flex;align-items:center;justify-content:center;margin:8px 0">
+          <div style="font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase">↑ feedback zone:
+            match burst · miss shake · draw animation ↑</div>
+        </div>
+
+        <!-- HAND ZONE -->
+        <div class="board-zone zone-hand">
+          <div class="zone-label zone-label-hand">🃏 HAND ZONE — bottom of screen (2–10 cards)</div>
+          <div class="card-row">
+            <div class="demo-card c-red" style="cursor:pointer">RED</div>
+            <div class="demo-card c-orange">ORA</div>
+            <div class="demo-card c-teal">TEAL</div>
+            <div class="demo-card c-blue">BLUE</div>
+            <div class="demo-card c-blank"></div>
+          </div>
+          <p style="font-size:11px;color:var(--muted);margin-top:10px">Player taps RED card → clears all RED targets in
+            middle zone → new card drawn from pool immediately.</p>
+        </div>
+
+        <!-- POOL BAR -->
+        <div class="pool-indicator">
+          <span class="pool-label">DECK POOL</span>
+          <div class="pool-bar">
+            <div class="pool-fill"></div>
+          </div>
+          <span style="font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--amber)">6 / 10 remaining</span>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="sub-title">Zone Proportions (Flutter layout)</div>
+        <table class="spec-table">
+          <thead>
+            <tr>
+              <th>Zone</th>
+              <th>Flex weight</th>
+              <th>Content</th>
+              <th>Scrollable</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>HUD bar</td>
+              <td>Fixed 56px</td>
+              <td>Score, pool counter, error count, timer</td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td>Target zone</td>
+              <td>Flex 3</td>
+              <td>1–10 target colour cards in a Wrap</td>
+              <td>No — cards scale to fit</td>
+            </tr>
+            <tr>
+              <td>Feedback zone</td>
+              <td>Fixed 48px</td>
+              <td>Animation feedback area</td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td>Hand zone</td>
+              <td>Flex 1</td>
+              <td>2–10 hand cards in a Row</td>
+              <td>Horizontal if overflow</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════ -->
+    <!-- 02: CORE GAME LOOP -->
+    <!-- ════════════════════════════════════ -->
+    <section class="section" id="loop">
+      <div class="sec-num">// 02</div>
+      <h2 class="sec-title">Core Game Loop</h2>
+
+      <div class="subsection">
+        <div class="sub-title">Round Initialisation</div>
+        <ol style="padding-left:20px;font-size:13.5px;color:var(--body);line-height:2.2;list-style-type:decimal">
+          <li>Server sends SDUI payload with <code>game_config</code> (pool, hand size, middle count, colour set, timer)
+          </li>
+          <li>Client shuffles the pool of colour cards</li>
+          <li>Deal <strong style="color:var(--white)">hand_size</strong> cards from pool top → player's hand</li>
+          <li>Generate <strong style="color:var(--white)">middle_count</strong> target cards. <span
+              style="color:var(--muted)">Rule: every colour in the middle MUST exist at least once in the remaining
+              pool. Prevents unwinnable state.</span></li>
+          <li>Start timer if <code>timed: true</code></li>
+          <li>Game state → <strong style="color:var(--blue)">PLAYING</strong></li>
+        </ol>
+      </div>
+
+      <div class="subsection">
+        <div class="sub-title">On Each Player Tap</div>
+
+        <div class="code-block">
+          <div class="code-head"><span class="code-lang">Pseudocode</span><span class="code-file">core game loop — tap
+              handler</span></div>
+          <div class="code-body"><span class="f">onCardTapped</span>(handCard):
+
+            <span class="c">// 1. Check for a colour match in the middle zone</span>
+            matchingTargets = middleCards.<span class="f">where</span>((t) => t.colour == handCard.colour)
+
+            <span class="k">if</span> matchingTargets.<span class="f">isNotEmpty</span>:
+            <span class="c">// MATCH — one tap clears ALL cards of that colour</span>
+            score += <span class="f">calculateMatchScore</span>(matchingTargets.length, timeRemaining)
+            middleCards.<span class="f">removeAll</span>(matchingTargets) <span class="c">// clear from target
+              zone</span>
+            <span class="f">playMatchAnimation</span>(handCard, matchingTargets) <span class="c">// burst effect</span>
+            hand.<span class="f">remove</span>(handCard) <span class="c">// remove played card</span>
+            <span class="f">drawFromPool</span>() <span class="c">// immediately replace</span>
+
+            <span class="k">else</span>:
+            <span class="c">// MISS — card is permanently lost (penalty)</span>
+            errorCount++
+            hand.<span class="f">remove</span>(handCard) <span class="c">// card discarded</span>
+            <span class="f">playMissAnimation</span>(handCard) <span class="c">// shake + dissolve</span>
+            <span class="f">drawFromPool</span>() <span class="c">// still draw replacement</span>
+            <span class="c">// Note: pool is now 1 smaller — fewer cards available to win</span>
+
+            <span class="c">// 2. Check win/lose conditions after every tap</span>
+            <span class="k">if</span> middleCards.<span class="f">isEmpty</span>:
+            <span class="f">triggerWin</span>() <span class="c">// ALL targets cleared</span>
+
+            <span class="k">elif</span> <span class="f">isWinnable</span>() == <span class="k">false</span>:
+            <span class="f">triggerLose</span>(reason: <span class="s">"no_matching_cards_left"</span>) <span
+              class="c">// unwinnable state</span>
+
+            <span class="c">// Pool exhausted mid-game</span>
+            <span class="f">drawFromPool</span>():
+            <span class="k">if</span> pool.<span class="f">isNotEmpty</span>:
+            hand.<span class="f">add</span>(pool.<span class="f">drawTop</span>())
+            <span class="c">// else: hand shrinks — player finishes with fewer cards</span>
+          </div>
+        </div>
+
+        <div class="callout callout-warn" style="margin-top:14px">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-body"><strong>Unwinnable state detection is critical.</strong> After every tap, check:
+            does the remaining pool + current hand contain at least one card of every colour still in the middle? If
+            not, the game is unwinnable. Trigger a graceful lose state rather than leaving the child stuck — this avoids
+            frustration, which is an EBP concern for this audience.</div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="sub-title">Win / Lose Conditions</div>
+        <table class="spec-table">
+          <thead>
+            <tr>
+              <th>Outcome</th>
+              <th>Trigger</th>
+              <th>Screen</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span style="color:var(--green);font-weight:600">WIN</span></td>
+              <td>All target cards in middle zone cleared</td>
+              <td>Celebration animation → reward step</td>
+            </tr>
+            <tr>
+              <td><span style="color:var(--red);font-weight:600">LOSE — Time up</span></td>
+              <td>Timer reaches 0 with targets remaining</td>
+              <td>Gentle "Time's up" → show remaining targets → retry option</td>
+            </tr>
+            <tr>
+              <td><span style="color:var(--amber);font-weight:600">LOSE — No matches</span></td>
+              <td>Pool + hand contains no colour matching any middle card</td>
+              <td>"Oops, no more matching cards" → show what colours were needed → retry</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-info">
+        <div class="callout-icon">ℹ️</div>
+        <div class="callout-body"><strong>Duplicate colour rule:</strong> When the middle zone has two RED cards,
+          tapping a RED hand card clears both simultaneously. This rewards efficient colour recognition. The score
+          multiplier applies — clearing 2 cards with 1 tap scores higher than 2 separate taps would (if that were
+          possible).</div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════ -->
+    <!-- 03: COLOUR SYSTEM -->
+    <!-- ════════════════════════════════════ -->
+    <section class="section" id="colours">
+      <div class="sec-num">// 03</div>
+      <h2 class="sec-title">Colour System</h2>
+      <p class="sec-desc">Colours are introduced progressively by difficulty. The server specifies which colour set to
+        use in the SDUI config. All colours are bold, high-saturation, and perceptually distinct — chosen for
+        accessibility and therapy efficacy.</p>
+
+      <div class="subsection">
+        <div class="sub-title">Colour Progression by Difficulty</div>
+
+        <div class="colour-grid">
+          <div class="colour-chip">
+            <div class="colour-swatch" style="background:#e53935"></div>
+            <div class="colour-name">red</div>
+          </div>
+          <div class="colour-chip">
+            <div class="colour-swatch" style="background:#1e88e5"></div>
+            <div class="colour-name">blue</div>
+          </div>
+          <div class="colour-chip">
+            <div class="colour-swatch" style="background:#43a047"></div>
+            <div class="colour-name">green</div>
+          </div>
+          <div class="colour-chip">
+            <div class="colour-swatch" style="background:#fdd835;border-color:rgba(0,0,0,.2)"></div>
+            <div class="colour-name">yellow</div>
+          </div>
+          <div class="colour-chip">
+            <div class="colour-swatch" style="background:#fb8c00"></div>
+            <div class="colour-name">orange</div>
+          </div>
+          <div class="colour-chip">
+            <div class="colour-swatch" style="background:#8e24aa"></div>
+            <div class="colour-name">purple</div>
+          </div>
+          <div class="colour-chip">
+            <div class="colour-swatch" style="background:#e91e8c"></div>
+            <div class="colour-name">pink</div>
+          </div>
+          <div class="colour-chip">
+            <div class="colour-swatch" style="background:#00897b"></div>
+            <div class="colour-name">teal</div>
+          </div>
+          <div class="colour-chip">
+            <div class="colour-swatch" style="background:#6d4c41"></div>
+            <div class="colour-name">brown</div>
+          </div>
+          <div class="colour-chip">
+            <div class="colour-swatch" style="background:#546e7a"></div>
+            <div class="colour-name">grey</div>
+          </div>
+        </div>
+
+        <table class="spec-table">
+          <thead>
+            <tr>
+              <th>Difficulty</th>
+              <th>Colour Set</th>
+              <th>Colours Used</th>
+              <th>Rationale</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span style="color:var(--green)">Easy</span></td>
+              <td><code>basic_4</code></td>
+              <td>Red, Blue, Green, Yellow</td>
+              <td>Primary + yellow — most distinct perceptually, first colours learned developmentally</td>
+            </tr>
+            <tr>
+              <td><span style="color:var(--amber)">Medium</span></td>
+              <td><code>extended_6</code></td>
+              <td>+ Orange, Purple</td>
+              <td>Introduces secondary colours. Orange/Red confusion is a deliberate challenge</td>
+            </tr>
+            <tr>
+              <td><span style="color:var(--red)">Hard</span></td>
+              <td><code>full_10</code></td>
+              <td>+ Pink, Teal, Brown, Grey</td>
+              <td>Full set including perceptually similar pairs (Teal/Green, Pink/Red, Brown/Orange)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout callout-tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-body"><strong>EBP note — distractor proximity:</strong> At Easy difficulty, colours in the
+            pool are only drawn from <code>basic_4</code> — so hand cards only ever contain Red, Blue, Green, or Yellow.
+            At Hard difficulty, perceptually similar colours (Pink/Red, Teal/Green, Orange/Brown) appear together
+            intentionally. This mirrors the DTT errorless-to-errorful progression from the Synergy module spec.</div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="sub-title">Card Visual Specification</div>
+        <table class="spec-table">
+          <thead>
+            <tr>
+              <th>Property</th>
+              <th>Value</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Shape</td>
+              <td>Rounded rectangle, radius 12</td>
+              <td>Friendly, not sharp</td>
+            </tr>
+            <tr>
+              <td>Size (hand)</td>
+              <td>64×88dp</td>
+              <td>Large enough for small fingers, scales down if hand > 7</td>
+            </tr>
+            <tr>
+              <td>Size (target)</td>
+              <td>56×72dp</td>
+              <td>Slightly smaller than hand cards — visual hierarchy</td>
+            </tr>
+            <tr>
+              <td>Label</td>
+              <td>Colour name text, centre, white bold</td>
+              <td>Supports language learning alongside colour. Yellow uses dark text for contrast.</td>
+            </tr>
+            <tr>
+              <td>Label font size</td>
+              <td>11sp hand / 9sp target</td>
+              <td>Respects <code>pref_text_scale</code> setting</td>
+            </tr>
+            <tr>
+              <td>Border</td>
+              <td>2px white at 30% opacity</td>
+              <td>Card definition on all backgrounds</td>
+            </tr>
+            <tr>
+              <td>Shadow</td>
+              <td>elevation: 4, offset (0,3)</td>
+              <td>Lifts cards visually from background</td>
+            </tr>
+            <tr>
+              <td>Duplicate badge</td>
+              <td>Amber circle top-right, shows ×N</td>
+              <td>Only on target cards. Tells player how many will clear</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════ -->
+    <!-- 04: DIFFICULTY TIERS -->
+    <!-- ════════════════════════════════════ -->
+    <section class="section" id="difficulty">
+      <div class="sec-num">// 04</div>
+      <h2 class="sec-title">Difficulty Tiers</h2>
+      <p class="sec-desc">All parameters are set by the server in the SDUI config. The client never computes difficulty
+        — it just renders what the server sends.</p>
+
+      <div class="diff-grid">
+        <div class="diff-card">
+          <div class="diff-head"><span class="diff-badge d-easy">EASY</span><span class="diff-title">Beginner</span>
+          </div>
+          <div class="diff-body">
+            <div class="diff-row"><span class="diff-key">Pool size</span><span class="diff-val">10</span></div>
+            <div class="diff-row"><span class="diff-key">Hand size</span><span class="diff-val">2–3</span></div>
+            <div class="diff-row"><span class="diff-key">Middle cards</span><span class="diff-val">1–3</span></div>
+            <div class="diff-row"><span class="diff-key">Colour set</span><span class="diff-val">basic_4</span></div>
+            <div class="diff-row"><span class="diff-key">Duplicates</span><span class="diff-val">none</span></div>
+            <div class="diff-row"><span class="diff-key">Timer</span><span class="diff-val">none</span></div>
+            <div class="diff-row"><span class="diff-key">Guaranteed match</span><span class="diff-val">yes</span></div>
+          </div>
+        </div>
+        <div class="diff-card">
+          <div class="diff-head"><span class="diff-badge d-medium">MEDIUM</span><span
+              class="diff-title">Progressing</span></div>
+          <div class="diff-body">
+            <div class="diff-row"><span class="diff-key">Pool size</span><span class="diff-val">30</span></div>
+            <div class="diff-row"><span class="diff-key">Hand size</span><span class="diff-val">4–6</span></div>
+            <div class="diff-row"><span class="diff-key">Middle cards</span><span class="diff-val">4–6</span></div>
+            <div class="diff-row"><span class="diff-key">Colour set</span><span class="diff-val">extended_6</span></div>
+            <div class="diff-row"><span class="diff-key">Duplicates</span><span class="diff-val">max ×2</span></div>
+            <div class="diff-row"><span class="diff-key">Timer</span><span class="diff-val">90s</span></div>
+            <div class="diff-row"><span class="diff-key">Guaranteed match</span><span class="diff-val">~80% of
+                draws</span></div>
+          </div>
+        </div>
+        <div class="diff-card">
+          <div class="diff-head"><span class="diff-badge d-hard">HARD</span><span class="diff-title">Mastery</span>
+          </div>
+          <div class="diff-body">
+            <div class="diff-row"><span class="diff-key">Pool size</span><span class="diff-val">100</span></div>
+            <div class="diff-row"><span class="diff-key">Hand size</span><span class="diff-val">7–10</span></div>
+            <div class="diff-row"><span class="diff-key">Middle cards</span><span class="diff-val">7–10</span></div>
+            <div class="diff-row"><span class="diff-key">Colour set</span><span class="diff-val">full_10</span></div>
+            <div class="diff-row"><span class="diff-key">Duplicates</span><span class="diff-val">max ×3</span></div>
+            <div class="diff-row"><span class="diff-key">Timer</span><span class="diff-val">60s</span></div>
+            <div class="diff-row"><span class="diff-key">Guaranteed match</span><span class="diff-val">no
+                guarantee</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-info">
+        <div class="callout-icon">ℹ️</div>
+        <div class="callout-body"><strong>Guaranteed match (Easy):</strong> At Easy difficulty, the client must ensure
+          at least one hand card always matches a middle target. This is implemented during pool generation on the
+          server — the pool is seeded so a match always exists. This is the Errorless Learning principle from the EBP
+          spec: early success is essential before introducing failure.</div>
+      </div>
+
+      <div class="subsection" style="margin-top:24px">
+        <div class="sub-title">Pool Composition Rules</div>
+        <p style="font-size:13.5px;color:var(--muted);margin-bottom:14px;line-height:1.7">The server generates the pool
+          and must follow these constraints before sending the SDUI payload:</p>
+        <table class="spec-table">
+          <thead>
+            <tr>
+              <th>Rule</th>
+              <th>Easy</th>
+              <th>Medium</th>
+              <th>Hard</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Every middle colour must appear ≥ N times in pool</td>
+              <td>3×</td>
+              <td>2×</td>
+              <td>1×</td>
+            </tr>
+            <tr>
+              <td>Non-matching distractor colours in pool</td>
+              <td>0–20%</td>
+              <td>20–40%</td>
+              <td>Up to 60%</td>
+            </tr>
+            <tr>
+              <td>Max duplicate of any single colour in pool</td>
+              <td>3</td>
+              <td>5</td>
+              <td>Unlimited</td>
+            </tr>
+            <tr>
+              <td>Pool validated before sending to client</td>
+              <td colspan="3" style="text-align:center;color:var(--green)">ALWAYS — server rejects any unwinnable pool
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════ -->
+    <!-- 05: SCORING -->
+    <!-- ════════════════════════════════════ -->
+    <section class="section" id="scoring">
+      <div class="sec-num">// 05</div>
+      <h2 class="sec-title">Scoring & Penalties</h2>
+
+      <div class="formula-box">
+        <span class="formula-comment">// Base score per tap</span>
+        <span class="formula-hl">matchScore</span> <span class="formula-op">=</span> basePoints <span
+          class="formula-op">×</span> cardsCleared <span class="formula-op">×</span> speedMultiplier
+
+        basePoints <span class="formula-op">=</span> <span class="num">10</span> <span class="formula-comment">// per
+          target card cleared</span>
+        cardsCleared <span class="formula-op">=</span> count of duplicate colours removed <span
+          class="formula-comment">// 1 normally, 2-3 if duplicates</span>
+        speedMultiplier <span class="formula-op">=</span> 1.0 (untimed) | 1.0–2.0 (timed, based on time remaining %)
+
+        <span class="formula-comment">// Speed multiplier (timed games only)</span>
+        <span class="formula-hl">speedMultiplier</span> <span class="formula-op">=</span> 1.0 <span
+          class="formula-op">+</span> (timeRemaining / totalTime)
+        <span class="formula-comment">// e.g. 30s remaining out of 90s → multiplier = 1.33 → score × 1.33</span>
+
+        <span class="formula-comment">// End-of-round bonus</span>
+        <span class="formula-hl">completionBonus</span> <span class="formula-op">=</span> 50 <span
+          class="formula-op">×</span> (1 <span class="formula-op">-</span> (errorCount / totalTaps))
+        <span class="formula-comment">// perfect game = +50 bonus. Every error erodes it.</span>
+
+        <span class="formula-comment">// Final score</span>
+        <span class="formula-hl">roundScore</span> <span class="formula-op">=</span> Σ matchScore <span
+          class="formula-op">+</span> completionBonus
+      </div>
+
+      <div class="subsection" style="margin-top:20px">
+        <div class="sub-title">Penalty System</div>
+        <table class="spec-table">
+          <thead>
+            <tr>
+              <th>Action</th>
+              <th>Consequence</th>
+              <th>Visual Feedback</th>
+              <th>EBP Note</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Correct match (single)</td>
+              <td>+10 pts × speed multiplier. Card cleared.</td>
+              <td>Burst animation, card flies up and dissolves</td>
+              <td>Continuous reinforcement</td>
+            </tr>
+            <tr>
+              <td>Correct match (×N duplicates)</td>
+              <td>+10 × N pts. All N cards cleared simultaneously.</td>
+              <td>Multi-burst, score pops with ×N indicator</td>
+              <td>Bonus for efficiency</td>
+            </tr>
+            <tr>
+              <td>Miss (no middle match)</td>
+              <td>Card permanently lost. Error count +1. No score deducted — loss is the card itself.</td>
+              <td>Card shakes → dissolves with grey tint. Subtle sound.</td>
+              <td>Natural consequence, no punishment sound</td>
+            </tr>
+            <tr>
+              <td>3 misses in a row</td>
+              <td>No additional penalty. Parent prompt becomes visible if configured.</td>
+              <td>Parent hint panel slides up</td>
+              <td>Prompt hierarchy trigger</td>
+            </tr>
+            <tr>
+              <td>Round complete — no errors</td>
+              <td>Perfect bonus +50</td>
+              <td>Gold star overlay on celebration</td>
+              <td>Variable reinforcement at mastery</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-danger">
+        <div class="callout-icon">🚫</div>
+        <div class="callout-body"><strong>Never use a negative score.</strong> Score never decreases — it only stops
+          growing. Losing a card is sufficient consequence. A decreasing score is psychologically punishing, which
+          violates the EBP constraint. The penalty is opportunity cost (fewer cards to win with), not point deduction.
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════ -->
+    <!-- 06: STATE MACHINE -->
+    <!-- ════════════════════════════════════ -->
+    <section class="section" id="states">
+      <div class="sec-num">// 06</div>
+      <h2 class="sec-title">Game State Machine</h2>
+
+      <div class="state-machine"><span class="st-comment">// Complete game state machine — implemented as a Riverpod
+          StateNotifier</span>
+
+        <span class="st-state">IDLE</span>
+        <span class="st-event">onConfigReceived(GameConfig)</span> → <span class="st-state">LOADING</span>
+        <span class="st-action">action: validate config, build pool, deal hand, populate middle</span>
+
+        <span class="st-state">LOADING</span>
+        <span class="st-event">onReady()</span> → <span class="st-state">INTRO</span>
+        <span class="st-action">action: show card deal animation (cards fly in from top)</span>
+
+        <span class="st-state">INTRO</span>
+        <span class="st-event">onIntroComplete()</span> → <span class="st-state">PLAYING</span>
+        <span class="st-action">action: start timer if timed, enable card tap interactions</span>
+
+        <span class="st-state">PLAYING</span>
+        <span class="st-event">onCardTapped(card)</span> [MATCH] → <span class="st-state">ANIMATING_MATCH</span>
+        <span class="st-event">onCardTapped(card)</span> [MISS] → <span class="st-state">ANIMATING_MISS</span>
+        <span class="st-event">onTimerExpired()</span> → <span class="st-state">LOSE_TIME</span>
+        <span class="st-event">onUnwinnable()</span> → <span class="st-state">LOSE_STUCK</span>
+
+        <span class="st-state">ANIMATING_MATCH</span> <span class="st-comment">// ~600ms lock — prevents
+          double-taps</span>
+        <span class="st-event">onAnimationComplete()</span>
+        [middleEmpty] → <span class="st-state">WIN</span>
+        [else] → <span class="st-state">PLAYING</span>
+        <span class="st-action">action: remove matched targets, draw new hand card, update score</span>
+
+        <span class="st-state">ANIMATING_MISS</span> <span class="st-comment">// ~400ms lock</span>
+        <span class="st-event">onAnimationComplete()</span>
+        [unwinnable] → <span class="st-state">LOSE_STUCK</span>
+        [else] → <span class="st-state">PLAYING</span>
+        <span class="st-action">action: discard hand card, draw replacement, increment errorCount</span>
+
+        <span class="st-state">WIN</span>
+        <span class="st-action">action: stop timer, play celebration animation, compute final score</span>
+        <span class="st-event">onCelebrationComplete()</span> → <span class="st-state">RESULTS</span>
+
+        <span class="st-state">LOSE_TIME</span>
+        <span class="st-action">action: freeze board, show "Time's up" overlay</span>
+        <span class="st-event">onRetryTapped()</span> → <span class="st-state">LOADING</span>
+        <span class="st-event">onExitTapped()</span> → <span class="st-state">IDLE</span>
+
+        <span class="st-state">LOSE_STUCK</span>
+        <span class="st-action">action: show which colours were still needed, gentle message</span>
+        <span class="st-event">onRetryTapped()</span> → <span class="st-state">LOADING</span>
+        <span class="st-event">onExitTapped()</span> → <span class="st-state">IDLE</span>
+
+        <span class="st-state">RESULTS</span>
+        <span class="st-action">action: POST session result to /sessions, show reward step</span>
+        <span class="st-event">onResultsAcknowledged()</span> → <span class="st-state">IDLE</span>
+      </div>
+
+      <div class="callout callout-info" style="margin-top:14px">
+        <div class="callout-icon">ℹ️</div>
+        <div class="callout-body"><strong>Animation lock states are non-negotiable.</strong>
+          <code>ANIMATING_MATCH</code> and <code>ANIMATING_MISS</code> disable all tap interactions. Without this, rapid
+          tapping during an animation causes double-plays, incorrect state, and visual glitches. The lock duration
+          should match the animation duration precisely.</div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════ -->
+    <!-- 07: ANIMATIONS -->
+    <!-- ════════════════════════════════════ -->
+    <section class="section" id="animations">
+      <div class="sec-num">// 07</div>
+      <h2 class="sec-title">Animation Spec</h2>
+
+      <div class="anim-timeline">
+        <div class="anim-row anim-head">
+          <div class="anim-cell">Duration</div>
+          <div class="anim-cell">Event</div>
+          <div class="anim-cell">Description</div>
+        </div>
+        <tr class="anim-row">
+          <div class="anim-cell anim-time">0–400ms</div>
+          <div class="anim-cell anim-event">Card deal (intro)</div>
+          <div class="anim-cell anim-desc">Each hand card slides in from bottom with staggered 80ms delay. Each target
+            card drops from top with staggered 60ms delay. Uses flutter_animate's <code>slideY + fadeIn</code>.</div>
+        </tr>
+        <tr class="anim-row">
+          <div class="anim-cell anim-time">0–150ms</div>
+          <div class="anim-cell anim-event">Card tap (select)</div>
+          <div class="anim-cell anim-desc">Hand card scales up to 1.15× on tap-down, back to 1.0 on tap-up. Immediate
+            haptic feedback (HapticFeedback.lightImpact).</div>
+        </tr>
+        <tr class="anim-row">
+          <div class="anim-cell anim-time">0–600ms</div>
+          <div class="anim-cell anim-event">Match animation</div>
+          <div class="anim-cell anim-desc">Hand card launches upward toward matched target card(s) via curved path
+            animation. On arrival: colour burst particle effect radiates outward. Target cards scale up to 1.2× then
+            dissolve with opacity 0. Score popup floats upward (+10, +20 for multi). Uses TickerProvider +
+            CurvedAnimation (easeInOut).</div>
+        </tr>
+        <tr class="anim-row">
+          <div class="anim-cell anim-time">0–400ms</div>
+          <div class="anim-cell anim-event">Miss animation</div>
+          <div class="anim-cell anim-desc">Hand card shakes left-right (3 oscillations, 8dp amplitude). Card then
+            desaturates to greyscale and dissolves downward. NO negative sound — use a neutral muted "whoosh". No red
+            flash or X mark.</div>
+        </tr>
+        <tr class="anim-row">
+          <div class="anim-cell anim-time">0–200ms</div>
+          <div class="anim-cell anim-event">Draw new card</div>
+          <div class="anim-cell anim-desc">New card slides in from right edge of hand zone to fill the gap. Slides in
+            simultaneously with match/miss animation completing — no perceived gap in hand size. Uses SlideTransition
+            from right.</div>
+        </tr>
+        <tr class="anim-row">
+          <div class="anim-cell anim-time">0–100ms</div>
+          <div class="anim-cell anim-event">Timer warning</div>
+          <div class="anim-cell anim-desc">When timer &lt; 10s: timer text pulses red with scale 1.0→1.15 each second.
+            When &lt; 5s: screen edge subtly flashes red on each pulse (not distracting, just peripheral urgency).</div>
+        </tr>
+        <tr class="anim-row">
+          <div class="anim-cell anim-time">0–2000ms</div>
+          <div class="anim-cell anim-event">Win celebration</div>
+          <div class="anim-cell anim-desc">All remaining hand cards fan outward like a deck spread. Lottie
+            confetti/stars animation from reward Lottie URL. Score counter animates from 0 to final score. Celebration
+            respects <code>pref_reduce_animations</code> — falls back to static star display if enabled.</div>
+        </tr>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════ -->
+    <!-- 08: SDUI DATA CONTRACT -->
+    <!-- ════════════════════════════════════ -->
+    <section class="section" id="data-contract">
+      <div class="sec-num">// 08</div>
+      <h2 class="sec-title">SDUI Data Contract</h2>
+      <p class="sec-desc">This is the exact <code>game_config.data</code> object the server sends for the colour
+        matching game. Flutter reads this and nothing else.</p>
+
+      <div class="code-block">
+        <div class="code-head"><span class="code-lang">JSON</span><span class="code-file">game_config.data —
+            colour_matching game type</span></div>
+        <div class="code-body">{
+          <span class="s">"game_type"</span>: <span class="s">"colour_matching"</span>,
+          <span class="s">"difficulty"</span>: <span class="s">"easy"</span>, <span class="c">// "easy" | "medium" |
+            "hard"</span>
+          <span class="s">"timed"</span>: <span class="k">false</span>,
+          <span class="s">"time_limit_seconds"</span>: <span class="k">null</span>,
+          <span class="s">"colour_set"</span>: <span class="s">"basic_4"</span>, <span class="c">// "basic_4" |
+            "extended_6" | "full_10"</span>
+
+          <span class="s">"middle_zone"</span>: {
+          <span class="s">"card_count"</span>: <span class="num">3</span>,
+          <span class="s">"cards"</span>: [
+          { <span class="s">"id"</span>: <span class="s">"t_001"</span>, <span class="s">"colour"</span>: <span
+            class="s">"red"</span>, <span class="s">"hex"</span>: <span class="s">"#e53935"</span>, <span
+            class="s">"label"</span>: <span class="s">"Red"</span> },
+          { <span class="s">"id"</span>: <span class="s">"t_002"</span>, <span class="s">"colour"</span>: <span
+            class="s">"red"</span>, <span class="s">"hex"</span>: <span class="s">"#e53935"</span>, <span
+            class="s">"label"</span>: <span class="s">"Red"</span> }, <span class="c">// duplicate!</span>
+          { <span class="s">"id"</span>: <span class="s">"t_003"</span>, <span class="s">"colour"</span>: <span
+            class="s">"blue"</span>, <span class="s">"hex"</span>: <span class="s">"#1e88e5"</span>, <span
+            class="s">"label"</span>: <span class="s">"Blue"</span> }
+          ]
+          },
+
+          <span class="s">"pool"</span>: {
+          <span class="s">"total_cards"</span>: <span class="num">10</span>,
+          <span class="s">"cards"</span>: [ <span class="c">// ordered — client draws from index 0</span>
+          { <span class="s">"id"</span>: <span class="s">"p_001"</span>, <span class="s">"colour"</span>: <span
+            class="s">"red"</span>, <span class="s">"hex"</span>: <span class="s">"#e53935"</span>, <span
+            class="s">"label"</span>: <span class="s">"Red"</span> },
+          { <span class="s">"id"</span>: <span class="s">"p_002"</span>, <span class="s">"colour"</span>: <span
+            class="s">"blue"</span>, <span class="s">"hex"</span>: <span class="s">"#1e88e5"</span>, <span
+            class="s">"label"</span>: <span class="s">"Blue"</span> },
+          { <span class="s">"id"</span>: <span class="s">"p_003"</span>, <span class="s">"colour"</span>: <span
+            class="s">"green"</span>, <span class="s">"hex"</span>: <span class="s">"#43a047"</span>, <span
+            class="s">"label"</span>: <span class="s">"Green"</span> },
+          { <span class="s">"id"</span>: <span class="s">"p_004"</span>, <span class="s">"colour"</span>: <span
+            class="s">"red"</span>, <span class="s">"hex"</span>: <span class="s">"#e53935"</span>, <span
+            class="s">"label"</span>: <span class="s">"Red"</span> },
+          { <span class="s">"id"</span>: <span class="s">"p_005"</span>, <span class="s">"colour"</span>: <span
+            class="s">"yellow"</span>, <span class="s">"hex"</span>: <span class="s">"#fdd835"</span>, <span
+            class="s">"label"</span>: <span class="s">"Yellow"</span> },
+          { <span class="s">"id"</span>: <span class="s">"p_006"</span>, <span class="s">"colour"</span>: <span
+            class="s">"blue"</span>, <span class="s">"hex"</span>: <span class="s">"#1e88e5"</span>, <span
+            class="s">"label"</span>: <span class="s">"Blue"</span> },
+          { <span class="s">"id"</span>: <span class="s">"p_007"</span>, <span class="s">"colour"</span>: <span
+            class="s">"green"</span>, <span class="s">"hex"</span>: <span class="s">"#43a047"</span>, <span
+            class="s">"label"</span>: <span class="s">"Green"</span> },
+          { <span class="s">"id"</span>: <span class="s">"p_008"</span>, <span class="s">"colour"</span>: <span
+            class="s">"red"</span>, <span class="s">"hex"</span>: <span class="s">"#e53935"</span>, <span
+            class="s">"label"</span>: <span class="s">"Red"</span> },
+          { <span class="s">"id"</span>: <span class="s">"p_009"</span>, <span class="s">"colour"</span>: <span
+            class="s">"yellow"</span>, <span class="s">"hex"</span>: <span class="s">"#fdd835"</span>, <span
+            class="s">"label"</span>: <span class="s">"Yellow"</span> },
+          { <span class="s">"id"</span>: <span class="s">"p_010"</span>, <span class="s">"colour"</span>: <span
+            class="s">"blue"</span>, <span class="s">"hex"</span>: <span class="s">"#1e88e5"</span>, <span
+            class="s">"label"</span>: <span class="s">"Blue"</span> }
+          ]
+          },
+
+          <span class="s">"hand_size"</span>: <span class="num">2</span>, <span class="c">// how many cards dealt to
+            player initially</span>
+          <span class="s">"guaranteed_match_in_hand"</span>: <span class="k">true</span>, <span class="c">// Easy: first
+            deal always contains a match</span>
+
+          <span class="s">"scoring"</span>: {
+          <span class="s">"base_points_per_card"</span>: <span class="num">10</span>,
+          <span class="s">"speed_multiplier_enabled"</span>: <span class="k">false</span>,
+          <span class="s">"perfect_bonus"</span>: <span class="num">50</span>
+          },
+
+          <span class="s">"prompt_level"</span>: <span class="num">2</span>, <span class="c">// 0–5, standard Synergy
+            prompt hierarchy</span>
+          <span class="s">"reinforcement_schedule"</span>: <span class="s">"continuous"</span>
+          }
+
+          <span class="c">// ── Session result the client POSTs back ──</span>
+          {
+          <span class="s">"activity_id"</span>: <span class="s">"act_xxx"</span>,
+          <span class="s">"game_type"</span>: <span class="s">"colour_matching"</span>,
+          <span class="s">"completed"</span>: <span class="k">true</span>,
+          <span class="s">"score"</span>: {
+          <span class="s">"total_points"</span>: <span class="num">130</span>,
+          <span class="s">"correct_matches"</span>: <span class="num">3</span>, <span class="c">// number of taps that
+            matched</span>
+          <span class="s">"cards_cleared"</span>: <span class="num">4</span>, <span class="c">// total target cards
+            removed (includes duplicates)</span>
+          <span class="s">"misses"</span>: <span class="num">1</span>,
+          <span class="s">"pool_remaining"</span>: <span class="num">5</span>, <span class="c">// cards left in pool at
+            end</span>
+          <span class="s">"time_used_seconds"</span>: <span class="k">null</span> <span class="c">// null if
+            untimed</span>
+          },
+          <span class="s">"outcome"</span>: <span class="s">"correct_independent"</span> <span class="c">// standard
+            Synergy outcome type</span>
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════ -->
+    <!-- 09: FLUTTER MODELS -->
+    <!-- ════════════════════════════════════ -->
+    <section class="section" id="models">
+      <div class="sec-num">// 09</div>
+      <h2 class="sec-title">Flutter Data Models</h2>
+
+      <div class="code-block">
+        <div class="code-head"><span class="code-lang">Dart</span><span
+            class="code-file">lib/games/colour_matching/models.dart</span></div>
+        <div class="code-body"><span class="k">class</span> <span class="n">ColourCard</span> {
+          <span class="k">final</span> String id;
+          <span class="k">final</span> String colour; <span class="c">// e.g. "red"</span>
+          <span class="k">final</span> Color hex; <span class="c">// parsed from hex string</span>
+          <span class="k">final</span> String label; <span class="c">// e.g. "Red"</span>
+          }
+
+          <span class="k">class</span> <span class="n">ColourMatchingConfig</span> {
+          <span class="k">final</span> String difficulty;
+          <span class="k">final</span> <span class="k">bool</span> timed;
+          <span class="k">final</span> <span class="k">int</span>? timeLimitSeconds;
+          <span class="k">final</span> String colourSet;
+          <span class="k">final</span> List&lt;<span class="n">ColourCard</span>&gt; middleCards;
+          <span class="k">final</span> List&lt;<span class="n">ColourCard</span>&gt; pool; <span class="c">// ordered,
+            draw from index 0</span>
+          <span class="k">final</span> <span class="k">int</span> handSize;
+          <span class="k">final</span> <span class="k">bool</span> guaranteedMatch;
+          <span class="k">final</span> <span class="n">ScoringConfig</span> scoring;
+          <span class="k">final</span> <span class="k">int</span> promptLevel;
+          }
+
+          <span class="k">class</span> <span class="n">ColourMatchingState</span> {
+          <span class="k">final</span> <span class="n">GamePhase</span> phase;
+          <span class="k">final</span> List&lt;<span class="n">ColourCard</span>&gt; hand;
+          <span class="k">final</span> List&lt;<span class="n">ColourCard</span>&gt; middleCards; <span class="c">//
+            mutable during game</span>
+          <span class="k">final</span> List&lt;<span class="n">ColourCard</span>&gt; poolRemaining;
+          <span class="k">final</span> <span class="k">int</span> score;
+          <span class="k">final</span> <span class="k">int</span> errorCount;
+          <span class="k">final</span> <span class="k">int</span> correctMatches;
+          <span class="k">final</span> <span class="k">int</span>? secondsRemaining;
+          <span class="k">final</span> String? animatingCardId; <span class="c">// null when not animating</span>
+          }
+
+          <span class="k">enum</span> <span class="n">GamePhase</span> {
+          idle, loading, intro, playing,
+          animatingMatch, animatingMiss,
+          win, loseTime, loseStuck, results
+          }
+        </div>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- ════════════════════════════════════ -->
+    <!-- BUILD PHASES -->
+    <!-- ════════════════════════════════════ -->
+    <section class="section" id="phase1">
+      <div class="sec-num">// 10 — Build Plan</div>
+      <h2 class="sec-title">4-Phase Implementation Plan</h2>
+
+      <div class="phase-card">
+        <div class="phase-head">
+          <span class="phase-badge ph1">Phase 1</span>
+          <span class="phase-title">Core Game Loop — No Animations</span>
+          <span class="phase-meta">Days 1–4</span>
+        </div>
+        <div class="phase-body">
+          <ul class="task-list">
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Implement ColourMatchingNotifier (Riverpod StateNotifier)</div>
+                <div class="task-desc">Full state machine with all phases. <code>onCardTapped()</code>,
+                  <code>drawFromPool()</code>, <code>checkWinnable()</code> — all pure logic with no UI. Unit test every
+                  state transition before writing a single widget.</div>
+                <div class="task-tags"><span class="task-tag tag-logic">Logic</span><span
+                    class="task-tag tag-state">State</span></div>
+              </div>
+            </li>
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Build ColourCard widget — solid colour rectangle with label</div>
+                <div class="task-desc">Stateless widget. Takes a <code>ColourCard</code> and renders: rounded rect, fill
+                  colour, white label text (dark for yellow), duplicate badge if N > 1. Respects
+                  <code>pref_high_contrast</code> via InheritedWidget.</div>
+                <div class="task-tags"><span class="task-tag tag-ui">UI</span></div>
+              </div>
+            </li>
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Build MiddleZone and HandZone layout widgets</div>
+                <div class="task-desc">MiddleZone: <code>Wrap</code> widget, cards auto-flow and scale. HandZone:
+                  <code>Row</code> with <code>SingleChildScrollView</code> for overflow. Both watch
+                  <code>ColourMatchingNotifier</code> and rebuild reactively.</div>
+                <div class="task-tags"><span class="task-tag tag-ui">UI</span><span
+                    class="task-tag tag-state">State</span></div>
+              </div>
+            </li>
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Build HUD bar — score, pool counter, error count, timer</div>
+                <div class="task-desc">Fixed 56px bar at top. Timer only renders when <code>config.timed == true</code>.
+                  Pool counter shows X/Total. Error count shown as red X icons (max 3 shown, then a number). All values
+                  watch the notifier.</div>
+                <div class="task-tags"><span class="task-tag tag-ui">UI</span></div>
+              </div>
+            </li>
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Wire tap handler + instant state update (no animation yet)</div>
+                <div class="task-desc">Cards disappear/appear instantly for now. Confirm the full loop works: tap match
+                  → middle card removed → hand card removed → new card appears. Tap miss → hand card removed → new card
+                  appears → errorCount increments.</div>
+                <div class="task-tags"><span class="task-tag tag-logic">Logic</span><span
+                    class="task-tag tag-ui">UI</span></div>
+              </div>
+            </li>
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Build Win / Lose / Stuck screens (static, no animation)</div>
+                <div class="task-desc">Simple overlay widgets for each terminal state. Win: shows score. Lose time:
+                  shows "Time's up" + remaining targets. Lose stuck: shows which colours were still needed. All have
+                  retry and exit buttons.</div>
+                <div class="task-tags"><span class="task-tag tag-ui">UI</span></div>
+              </div>
+            </li>
+          </ul>
+          <div class="milestone">
+            <div class="milestone-icon">✅</div>
+            <div class="milestone-body"><strong>Phase 1 milestone:</strong> Fully playable game with no animations. All
+              three difficulty configs work. Winnable state detection prevents getting stuck. State machine tested.
+              Timer counts down correctly on timed mode. The game is functional — just not yet beautiful.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-card" id="phase2">
+        <div class="phase-head">
+          <span class="phase-badge ph2">Phase 2</span>
+          <span class="phase-title">Animations & Haptics</span>
+          <span class="phase-meta">Days 5–9</span>
+        </div>
+        <div class="phase-body">
+          <ul class="task-list">
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Card deal intro animation — staggered slide-in</div>
+                <div class="task-desc">Hand cards slide up from bottom with 80ms stagger. Target cards drop from top
+                  with 60ms stagger. Uses <code>flutter_animate</code> with <code>slideY + fadeIn</code>. Total intro:
+                  ~400ms. Gate tap interactions until intro completes.</div>
+                <div class="task-tags"><span class="task-tag tag-anim">Animation</span></div>
+              </div>
+            </li>
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Match animation — card flies to target + burst particle effect</div>
+                <div class="task-desc">Use a custom <code>TweenAnimationBuilder</code> with a curved path. Card moves
+                  from hand position to target position. On arrival: render a burst of 8–12 small coloured dots that
+                  radiate outward using <code>AnimatedWidget</code>. Target cards scale up then fade out. Score popup
+                  floats up using <code>OverlayEntry</code>.</div>
+                <div class="task-tags"><span class="task-tag tag-anim">Animation</span></div>
+              </div>
+            </li>
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Miss animation — shake + desaturate + dissolve</div>
+                <div class="task-desc">Shake: <code>AnimationController</code> driving a
+                  <code>Tween&lt;Offset&gt;</code> with a sine curve (3 oscillations). Desaturate:
+                  <code>ColorFilter.matrix</code> grayscale transition. Dissolve: opacity 1.0→0.0 with downward
+                  translate. Neutral sound only — no negative audio cue.</div>
+                <div class="task-tags"><span class="task-tag tag-anim">Animation</span><span
+                    class="task-tag tag-ebp">EBP</span></div>
+              </div>
+            </li>
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Draw animation — new card slides in from right</div>
+                <div class="task-desc">As a hand card is removed, the replacement slides in from the right edge of the
+                  hand zone simultaneously. Use <code>AnimatedList</code> with a custom insertion animation. The hand
+                  should never visually "jump" — the new card fills the space smoothly.</div>
+                <div class="task-tags"><span class="task-tag tag-anim">Animation</span></div>
+              </div>
+            </li>
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Tap scale feedback + haptics on every card tap</div>
+                <div class="task-desc">Every card tap triggers: scale 1.0→1.15→1.0 (150ms),
+                  <code>HapticFeedback.lightImpact()</code> on tap-down. Match: add
+                  <code>HapticFeedback.mediumImpact()</code>. Miss: add <code>HapticFeedback.heavyImpact()</code>
+                  (stronger to signal the loss). Respect <code>pref_reduce_animations</code> — disable scale if set.
+                </div>
+                <div class="task-tags"><span class="task-tag tag-anim">Animation</span><span
+                    class="task-tag tag-ebp">EBP</span></div>
+              </div>
+            </li>
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Win celebration — Lottie + score count-up</div>
+                <div class="task-desc">Load Lottie URL from <code>on_complete.celebration_config.animation</code>. Score
+                  counter animates from 0 to final score over 1.5s using <code>TweenAnimationBuilder</code>. If
+                  <code>pref_reduce_animations</code> is true: show static gold star instead of Lottie.</div>
+                <div class="task-tags"><span class="task-tag tag-anim">Animation</span><span
+                    class="task-tag tag-ebp">EBP</span></div>
+              </div>
+            </li>
+          </ul>
+          <div class="milestone">
+            <div class="milestone-icon">✅</div>
+            <div class="milestone-body"><strong>Phase 2 milestone:</strong> Game feels polished and satisfying. All
+              animations run without jank. Animation lock prevents double-taps. Match feels rewarding, miss feels
+              neutral-but-clear. Reduce animations setting works throughout. Haptics fire correctly on all interactions.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-card" id="phase3">
+        <div class="phase-head">
+          <span class="phase-badge ph3">Phase 3</span>
+          <span class="phase-title">Difficulty, Timer & Edge Cases</span>
+          <span class="phase-meta">Days 10–13</span>
+        </div>
+        <div class="phase-body">
+          <ul class="task-list">
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Implement countdown timer with visual warning states</div>
+                <div class="task-desc">Use a <code>Timer.periodic</code> driven by the state notifier. Below 10s: timer
+                  text turns red and pulses. Below 5s: screen edge flashes red. Timer cancels immediately on win. On
+                  expiry: transitions to LOSE_TIME state.</div>
+                <div class="task-tags"><span class="task-tag tag-logic">Logic</span><span
+                    class="task-tag tag-ui">UI</span></div>
+              </div>
+            </li>
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Hand scaling for large hand sizes (7–10 cards)</div>
+                <div class="task-desc">At 7+ cards, card width shrinks from 64dp to fit within screen width. Use
+                  <code>LayoutBuilder</code> to calculate available width, then compute card size:
+                  <code>cardWidth = (screenWidth - padding) / handSize</code>. Minimum card width: 44dp. Below 44dp,
+                  enable horizontal scroll instead.</div>
+                <div class="task-tags"><span class="task-tag tag-ui">UI</span></div>
+              </div>
+            </li>
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Duplicate badge display and multi-clear scoring</div>
+                <div class="task-desc">Compute duplicate counts in MiddleZone: group target cards by colour, show ×N
+                  badge on each group's representative card. When a matching hand card is tapped, all cards of that
+                  colour animate out simultaneously. Score popup shows ×N multiplier.</div>
+                <div class="task-tags"><span class="task-tag tag-logic">Logic</span><span
+                    class="task-tag tag-ui">UI</span></div>
+              </div>
+            </li>
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Pool exhaustion — hand shrinks gracefully</div>
+                <div class="task-desc">When the pool is empty and a hand card is played, no replacement is drawn. The
+                  hand zone contracts smoothly (remaining cards redistribute with animated spacing). HUD pool counter
+                  shows "0" in amber. This is not a lose condition by itself.</div>
+                <div class="task-tags"><span class="task-tag tag-logic">Logic</span><span
+                    class="task-tag tag-anim">Animation</span></div>
+              </div>
+            </li>
+          </ul>
+          <div class="milestone">
+            <div class="milestone-icon">✅</div>
+            <div class="milestone-body"><strong>Phase 3 milestone:</strong> All three difficulty tiers work correctly.
+              Timer runs, warns, and triggers correctly. Large hands scale without overflow. Duplicates clear and score
+              correctly. Pool exhaustion is graceful. All edge cases tested with unit tests.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-card" id="phase4">
+        <div class="phase-head">
+          <span class="phase-badge ph4">Phase 4</span>
+          <span class="phase-title">EBP Integration, SDUI Wiring & Session Reporting</span>
+          <span class="phase-meta">Days 14–17</span>
+        </div>
+        <div class="phase-body">
+          <ul class="task-list">
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Register colour_matching in ComponentRegistry</div>
+                <div class="task-desc">Add
+                  <code>'colour_matching': (config, session) => ColourMatchingGame(config: config, session: session)</code>
+                  to the Flutter SDUI component registry. The game now receives its full config from the server without
+                  any hardcoded values in the widget.</div>
+                <div class="task-tags"><span class="task-tag tag-state">SDUI</span></div>
+              </div>
+            </li>
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Prompt hierarchy — parent hint panel at 3 consecutive misses</div>
+                <div class="task-desc">When <code>consecutiveMisses >= 3</code> AND
+                  <code>config.promptLevel >= 3</code>: a collapsible parent hint panel slides up from below the hand
+                  zone showing the <code>parent_instruction</code> text from the SDUI config. Parent can dismiss it.
+                  This is the in-game embodiment of the prompt hierarchy.</div>
+                <div class="task-tags"><span class="task-tag tag-ebp">EBP</span><span class="task-tag tag-ui">UI</span>
+                </div>
+              </div>
+            </li>
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Session result POST on game complete</div>
+                <div class="task-desc">On WIN or LOSE: build the session result object (<code>correct_matches</code>,
+                  <code>misses</code>, <code>cards_cleared</code>, <code>pool_remaining</code>,
+                  <code>time_used_seconds</code>, <code>outcome</code>) and POST to <code>/sessions</code> via the
+                  SessionController. Handle network errors gracefully — queue locally and retry if offline.</div>
+                <div class="task-tags"><span class="task-tag tag-logic">Logic</span><span
+                    class="task-tag tag-state">State</span></div>
+              </div>
+            </li>
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Audio integration — match sound, miss sound, timer warning, celebration</div>
+                <div class="task-desc">Integrate with <code>settingsProvider</code>: check <code>sfxEnabled</code> and
+                  <code>volume</code> before playing any sound. Match: bright chime. Miss: neutral whoosh (no negative
+                  sound). Timer warning: soft ticking below 10s. Celebration: fanfare. All sounds muted if
+                  <code>sfxEnabled == false</code>.</div>
+                <div class="task-tags"><span class="task-tag tag-ebp">EBP</span><span
+                    class="task-tag tag-logic">Logic</span></div>
+              </div>
+            </li>
+          </ul>
+          <div class="milestone">
+            <div class="milestone-icon">✅</div>
+            <div class="milestone-body"><strong>Phase 4 milestone:</strong> Game is fully SDUI-driven — all parameters
+              come from the server. Prompt hierarchy activates at 3 consecutive misses. Session results POST correctly
+              and queue offline. Audio respects settings. The game is ready for therapy use.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">
+      <div class="footer-l">Synergy · Colour Matching Game · Full Design Spec</div>
+      <div class="footer-r">4 phases · ~17 days · Flutter + Riverpod</div>
+    </div>
+
+  </main>
+</body>
+
+</html>

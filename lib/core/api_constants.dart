@@ -8,11 +8,10 @@ class ApiConstants {
   ApiConstants._();
 
   /// Root URL of the FastAPI backend — no trailing slash.
-  static const String baseUrl =
-      'https://719b-154-160-18-112.ngrok-free.app/api/v1/';
+  static const String baseUrl = 'http://localhost:8000/api/v1/';
   // static const String baseUrl = 'http://localhost:8000/api/v1/';
 
   /// Default timeout durations.
-  static const Duration connectTimeout = Duration(seconds: 10);
-  static const Duration receiveTimeout = Duration(seconds: 30);
+  static const Duration connectTimeout = Duration(seconds: 30);
+  static const Duration receiveTimeout = Duration(seconds: 60);
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../models/activity_models.dart';
 import '../../../core/widgets/app_button.dart';
 import '../widgets/matching_game.dart';
+import '../widgets/colour_matching_game.dart';
 import '../widgets/tap_to_select_game.dart';
 import 'event_handler.dart';
 
@@ -177,6 +178,14 @@ class _GameStep extends StatelessWidget {
 
     if (gameType == 'matching') {
       return MatchingGame(config: step.gameConfig!, onComplete: onComplete);
+    } else if (gameType == 'colour_matching') {
+      return ColourMatchingGame(
+        config: step.gameConfig!,
+        onComplete: () {
+          SduiEventHandler.handleEvent(context, step.gameConfig?.onSuccess);
+          onComplete();
+        },
+      );
     } else if (gameType == 'tap_to_select') {
       return TapToSelectGame(
         config: step.gameConfig!,

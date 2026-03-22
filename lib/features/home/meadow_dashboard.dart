@@ -95,6 +95,13 @@ class _MeadowDashboardState extends State<MeadowDashboard> {
                       onTap: () => context.push('/activity/matching'),
                     ),
                     _ActivityDiscoveryCard(
+                      title: 'Match the Colours',
+                      icon: Icons.colorize,
+                      color: AppColors.brightYellow,
+                      accentColor: AppColors.brightOrange,
+                      onTap: () => context.push('/activity/color_matching'),
+                    ),
+                    _ActivityDiscoveryCard(
                       title: 'Tap to Select',
                       icon: Icons.touch_app_rounded,
                       color: AppColors.grassGreen,
