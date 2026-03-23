@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:synergy/core/utility.dart';
 import 'package:synergy/providers/settings_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
@@ -48,7 +47,6 @@ class SynergyApp extends ConsumerWidget {
       theme: settings.highContrast ? AppTheme.darkTheme : AppTheme.lightTheme,
       routerConfig: AppRouter.router,
       debugShowCheckedModeBanner: false,
-      key: AppSnackbar.navigatorKey,
       builder: (context, child) {
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-// import 'package:synergy/core/utility.dart';
+import 'package:synergy/core/utility.dart';
 import '../features/auth/login_screen.dart';
 import '../features/auth/register_screen.dart';
 import '../features/home/meadow_dashboard.dart';
@@ -16,11 +16,10 @@ import '../features/session_detail/session_detail_screen.dart';
 import '../models/child_model.dart';
 
 class AppRouter {
-  static final _rootNavigatorKey = GlobalKey<NavigatorState>();
   static final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
   static final GoRouter router = GoRouter(
-    navigatorKey: _rootNavigatorKey,
+    navigatorKey: AppSnackbar.navigatorKey,
     initialLocation: '/login',
     routes: [
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
@@ -61,14 +60,14 @@ class AppRouter {
             routes: [
               GoRoute(
                 path: 'change-password',
-                // parentNavigatorKey: _rootNavigatorKey,
+                // parentNavigatorKey: AppSnackbar.navigatorKey,
                 builder: (context, state) => const ChangePasswordScreen(),
               ),
             ],
           ),
           GoRoute(
             path: '/sessions/:id',
-            // parentNavigatorKey: _rootNavigatorKey,
+            // parentNavigatorKey: AppSnackbar.navigatorKey,
             builder: (context, state) {
               final id = int.parse(state.pathParameters['id']!);
               return SessionDetailScreen(sessionId: id);
@@ -78,7 +77,7 @@ class AppRouter {
       ),
       GoRoute(
         path: '/parent/child-form',
-        // parentNavigatorKey: _rootNavigatorKey,
+        // parentNavigatorKey: AppSnackbar.navigatorKey,
         builder: (context, state) {
           final child = state.extra as ChildModel?;
           return ChildFormScreen(child: child);
