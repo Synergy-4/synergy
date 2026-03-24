@@ -63,8 +63,10 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+    
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Synergy needs access to your microphone to record audio for interactive learning activities.</string>
+
 </dict>
 </plist>

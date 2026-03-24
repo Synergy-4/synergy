@@ -8,6 +8,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 import 'core/theme/app_theme.dart';
 import 'core/router.dart';
+import 'core/services/permission_manager.dart';
 // import 'core/database_service.dart';
 
 Future<void> main() async {
@@ -36,11 +37,23 @@ Future<void> main() async {
   );
 }
 
-class SynergyApp extends ConsumerWidget {
+class SynergyApp extends ConsumerStatefulWidget {
   const SynergyApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SynergyApp> createState() => _SynergyAppState();
+}
+
+class _SynergyAppState extends ConsumerState<SynergyApp> {
+  @override
+  void initState() {
+    super.initState();
+    // Request required permissions as soon as the app starts
+    PermissionManager.instance.initializePermissions();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
 
     return MaterialApp.router(

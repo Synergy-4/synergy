@@ -8,8 +8,14 @@ part 'children_list_provider.g.dart';
 // @Riverpod(keepAlive: true)
 @riverpod
 class ChildrenList extends _$ChildrenList {
+  bool _isDisposed = false;
+
   @override
   FutureOr<List<ChildModel>> build() async {
+    ref.onDispose(() {
+      _isDisposed = true;
+    });
+
     // 1. Try to load from local DB first
     final localChildren = await DatabaseService.instance.getChildren();
 
@@ -21,6 +27,8 @@ class ChildrenList extends _$ChildrenList {
 
   Future<void> _refreshFromApi() async {
     final result = await ApiClient.instance.getList('/children');
+
+    if (_isDisposed) return;
 
     if (result is ApiSuccess) {
       final List<dynamic> data = result.data;
