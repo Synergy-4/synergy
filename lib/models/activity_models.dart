@@ -54,6 +54,7 @@ abstract class StepConfig with _$StepConfig {
     required String title,
     String? description,
     @JsonKey(name: 'voiceover_text') String? voiceoverText,
+    @JsonKey(name: 'voiceover_audio_url') String? voiceoverAudioUrl,
     @JsonKey(name: 'game_config') GameConfig? gameConfig,
     @JsonKey(name: 'lottie_url') String? lottieUrl,
   }) = _StepConfig;
@@ -68,6 +69,8 @@ abstract class GameConfig with _$GameConfig {
     @JsonKey(name: 'game_type') required String gameType,
     required String difficulty,
     @JsonKey(name: 'time_limit_seconds') int? timeLimitSeconds,
+    @JsonKey(name: 'parent_instruction') String? parentInstruction,
+    @JsonKey(name: 'parent_instruction_audio_url') String? parentInstructionAudioUrl,
     required Map<String, dynamic> data,
     @JsonKey(name: 'on_success') GameEvent? onSuccess,
     @JsonKey(name: 'on_failure') GameEvent? onFailure,

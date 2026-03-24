@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../models/activity_models.dart';
+import '../../../core/services/audio_service.dart';
 import '../../../core/widgets/app_button.dart';
 import '../widgets/matching_game.dart';
 import '../widgets/colour_matching_game.dart';
@@ -30,7 +32,7 @@ class ComponentRegistry {
   }
 }
 
-class SduiRenderer extends StatefulWidget {
+class SduiRenderer extends ConsumerStatefulWidget {
   final ActivityPayload payload;
   final VoidCallback onActivityComplete;
 
@@ -41,17 +43,44 @@ class SduiRenderer extends StatefulWidget {
   });
 
   @override
-  State<SduiRenderer> createState() => _SduiRendererState();
+  ConsumerState<SduiRenderer> createState() => _SduiRendererState();
 }
 
-class _SduiRendererState extends State<SduiRenderer> {
+class _SduiRendererState extends ConsumerState<SduiRenderer> {
   int _currentStepIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _playAudioForCurrentStep();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void _playAudioForCurrentStep() {
+    final step = widget.payload.steps[_currentStepIndex];
+    String? audioUrl;
+    
+    if (step.type == 'instruction' || step.type == 'reward') {
+      audioUrl = step.voiceoverAudioUrl;
+    } else if (step.type == 'game') {
+      audioUrl = step.gameConfig?.parentInstructionAudioUrl;
+    }
+
+    if (audioUrl != null && audioUrl.isNotEmpty) {
+      ref.read(audioServiceProvider).playUrl(audioUrl);
+    }
+  }
 
   void _nextStep() {
     if (_currentStepIndex < widget.payload.steps.length - 1) {
       setState(() {
         _currentStepIndex++;
       });
+      _playAudioForCurrentStep();
     } else {
       widget.onActivityComplete();
     }
@@ -59,6 +88,9 @@ class _SduiRendererState extends State<SduiRenderer> {
 
   @override
   Widget build(BuildContext context) {
+    // Keep the audio service alive while this screen is active!
+    ref.watch(audioServiceProvider);
+
     final step = widget.payload.steps[_currentStepIndex];
     final theme = widget.payload.theme;
 

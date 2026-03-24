@@ -904,7 +904,7 @@ as String,
 mixin _$StepConfig {
 
  String get id; String get type;// "instruction", "game", "reward"
- String get title; String? get description;@JsonKey(name: 'voiceover_text') String? get voiceoverText;@JsonKey(name: 'game_config') GameConfig? get gameConfig;@JsonKey(name: 'lottie_url') String? get lottieUrl;
+ String get title; String? get description;@JsonKey(name: 'voiceover_text') String? get voiceoverText;@JsonKey(name: 'voiceover_audio_url') String? get voiceoverAudioUrl;@JsonKey(name: 'game_config') GameConfig? get gameConfig;@JsonKey(name: 'lottie_url') String? get lottieUrl;
 /// Create a copy of StepConfig
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -917,16 +917,16 @@ $StepConfigCopyWith<StepConfig> get copyWith => _$StepConfigCopyWithImpl<StepCon
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StepConfig&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.voiceoverText, voiceoverText) || other.voiceoverText == voiceoverText)&&(identical(other.gameConfig, gameConfig) || other.gameConfig == gameConfig)&&(identical(other.lottieUrl, lottieUrl) || other.lottieUrl == lottieUrl));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is StepConfig&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.voiceoverText, voiceoverText) || other.voiceoverText == voiceoverText)&&(identical(other.voiceoverAudioUrl, voiceoverAudioUrl) || other.voiceoverAudioUrl == voiceoverAudioUrl)&&(identical(other.gameConfig, gameConfig) || other.gameConfig == gameConfig)&&(identical(other.lottieUrl, lottieUrl) || other.lottieUrl == lottieUrl));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,type,title,description,voiceoverText,gameConfig,lottieUrl);
+int get hashCode => Object.hash(runtimeType,id,type,title,description,voiceoverText,voiceoverAudioUrl,gameConfig,lottieUrl);
 
 @override
 String toString() {
-  return 'StepConfig(id: $id, type: $type, title: $title, description: $description, voiceoverText: $voiceoverText, gameConfig: $gameConfig, lottieUrl: $lottieUrl)';
+  return 'StepConfig(id: $id, type: $type, title: $title, description: $description, voiceoverText: $voiceoverText, voiceoverAudioUrl: $voiceoverAudioUrl, gameConfig: $gameConfig, lottieUrl: $lottieUrl)';
 }
 
 
@@ -937,7 +937,7 @@ abstract mixin class $StepConfigCopyWith<$Res>  {
   factory $StepConfigCopyWith(StepConfig value, $Res Function(StepConfig) _then) = _$StepConfigCopyWithImpl;
 @useResult
 $Res call({
- String id, String type, String title, String? description,@JsonKey(name: 'voiceover_text') String? voiceoverText,@JsonKey(name: 'game_config') GameConfig? gameConfig,@JsonKey(name: 'lottie_url') String? lottieUrl
+ String id, String type, String title, String? description,@JsonKey(name: 'voiceover_text') String? voiceoverText,@JsonKey(name: 'voiceover_audio_url') String? voiceoverAudioUrl,@JsonKey(name: 'game_config') GameConfig? gameConfig,@JsonKey(name: 'lottie_url') String? lottieUrl
 });
 
 
@@ -954,13 +954,14 @@ class _$StepConfigCopyWithImpl<$Res>
 
 /// Create a copy of StepConfig
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? type = null,Object? title = null,Object? description = freezed,Object? voiceoverText = freezed,Object? gameConfig = freezed,Object? lottieUrl = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? type = null,Object? title = null,Object? description = freezed,Object? voiceoverText = freezed,Object? voiceoverAudioUrl = freezed,Object? gameConfig = freezed,Object? lottieUrl = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,voiceoverText: freezed == voiceoverText ? _self.voiceoverText : voiceoverText // ignore: cast_nullable_to_non_nullable
+as String?,voiceoverAudioUrl: freezed == voiceoverAudioUrl ? _self.voiceoverAudioUrl : voiceoverAudioUrl // ignore: cast_nullable_to_non_nullable
 as String?,gameConfig: freezed == gameConfig ? _self.gameConfig : gameConfig // ignore: cast_nullable_to_non_nullable
 as GameConfig?,lottieUrl: freezed == lottieUrl ? _self.lottieUrl : lottieUrl // ignore: cast_nullable_to_non_nullable
 as String?,
@@ -1060,10 +1061,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String type,  String title,  String? description, @JsonKey(name: 'voiceover_text')  String? voiceoverText, @JsonKey(name: 'game_config')  GameConfig? gameConfig, @JsonKey(name: 'lottie_url')  String? lottieUrl)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String type,  String title,  String? description, @JsonKey(name: 'voiceover_text')  String? voiceoverText, @JsonKey(name: 'voiceover_audio_url')  String? voiceoverAudioUrl, @JsonKey(name: 'game_config')  GameConfig? gameConfig, @JsonKey(name: 'lottie_url')  String? lottieUrl)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _StepConfig() when $default != null:
-return $default(_that.id,_that.type,_that.title,_that.description,_that.voiceoverText,_that.gameConfig,_that.lottieUrl);case _:
+return $default(_that.id,_that.type,_that.title,_that.description,_that.voiceoverText,_that.voiceoverAudioUrl,_that.gameConfig,_that.lottieUrl);case _:
   return orElse();
 
 }
@@ -1081,10 +1082,10 @@ return $default(_that.id,_that.type,_that.title,_that.description,_that.voiceove
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String type,  String title,  String? description, @JsonKey(name: 'voiceover_text')  String? voiceoverText, @JsonKey(name: 'game_config')  GameConfig? gameConfig, @JsonKey(name: 'lottie_url')  String? lottieUrl)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String type,  String title,  String? description, @JsonKey(name: 'voiceover_text')  String? voiceoverText, @JsonKey(name: 'voiceover_audio_url')  String? voiceoverAudioUrl, @JsonKey(name: 'game_config')  GameConfig? gameConfig, @JsonKey(name: 'lottie_url')  String? lottieUrl)  $default,) {final _that = this;
 switch (_that) {
 case _StepConfig():
-return $default(_that.id,_that.type,_that.title,_that.description,_that.voiceoverText,_that.gameConfig,_that.lottieUrl);case _:
+return $default(_that.id,_that.type,_that.title,_that.description,_that.voiceoverText,_that.voiceoverAudioUrl,_that.gameConfig,_that.lottieUrl);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1101,10 +1102,10 @@ return $default(_that.id,_that.type,_that.title,_that.description,_that.voiceove
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String type,  String title,  String? description, @JsonKey(name: 'voiceover_text')  String? voiceoverText, @JsonKey(name: 'game_config')  GameConfig? gameConfig, @JsonKey(name: 'lottie_url')  String? lottieUrl)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String type,  String title,  String? description, @JsonKey(name: 'voiceover_text')  String? voiceoverText, @JsonKey(name: 'voiceover_audio_url')  String? voiceoverAudioUrl, @JsonKey(name: 'game_config')  GameConfig? gameConfig, @JsonKey(name: 'lottie_url')  String? lottieUrl)?  $default,) {final _that = this;
 switch (_that) {
 case _StepConfig() when $default != null:
-return $default(_that.id,_that.type,_that.title,_that.description,_that.voiceoverText,_that.gameConfig,_that.lottieUrl);case _:
+return $default(_that.id,_that.type,_that.title,_that.description,_that.voiceoverText,_that.voiceoverAudioUrl,_that.gameConfig,_that.lottieUrl);case _:
   return null;
 
 }
@@ -1116,7 +1117,7 @@ return $default(_that.id,_that.type,_that.title,_that.description,_that.voiceove
 @JsonSerializable()
 
 class _StepConfig implements StepConfig {
-  const _StepConfig({required this.id, required this.type, required this.title, this.description, @JsonKey(name: 'voiceover_text') this.voiceoverText, @JsonKey(name: 'game_config') this.gameConfig, @JsonKey(name: 'lottie_url') this.lottieUrl});
+  const _StepConfig({required this.id, required this.type, required this.title, this.description, @JsonKey(name: 'voiceover_text') this.voiceoverText, @JsonKey(name: 'voiceover_audio_url') this.voiceoverAudioUrl, @JsonKey(name: 'game_config') this.gameConfig, @JsonKey(name: 'lottie_url') this.lottieUrl});
   factory _StepConfig.fromJson(Map<String, dynamic> json) => _$StepConfigFromJson(json);
 
 @override final  String id;
@@ -1125,6 +1126,7 @@ class _StepConfig implements StepConfig {
 @override final  String title;
 @override final  String? description;
 @override@JsonKey(name: 'voiceover_text') final  String? voiceoverText;
+@override@JsonKey(name: 'voiceover_audio_url') final  String? voiceoverAudioUrl;
 @override@JsonKey(name: 'game_config') final  GameConfig? gameConfig;
 @override@JsonKey(name: 'lottie_url') final  String? lottieUrl;
 
@@ -1141,16 +1143,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StepConfig&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.voiceoverText, voiceoverText) || other.voiceoverText == voiceoverText)&&(identical(other.gameConfig, gameConfig) || other.gameConfig == gameConfig)&&(identical(other.lottieUrl, lottieUrl) || other.lottieUrl == lottieUrl));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StepConfig&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.voiceoverText, voiceoverText) || other.voiceoverText == voiceoverText)&&(identical(other.voiceoverAudioUrl, voiceoverAudioUrl) || other.voiceoverAudioUrl == voiceoverAudioUrl)&&(identical(other.gameConfig, gameConfig) || other.gameConfig == gameConfig)&&(identical(other.lottieUrl, lottieUrl) || other.lottieUrl == lottieUrl));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,type,title,description,voiceoverText,gameConfig,lottieUrl);
+int get hashCode => Object.hash(runtimeType,id,type,title,description,voiceoverText,voiceoverAudioUrl,gameConfig,lottieUrl);
 
 @override
 String toString() {
-  return 'StepConfig(id: $id, type: $type, title: $title, description: $description, voiceoverText: $voiceoverText, gameConfig: $gameConfig, lottieUrl: $lottieUrl)';
+  return 'StepConfig(id: $id, type: $type, title: $title, description: $description, voiceoverText: $voiceoverText, voiceoverAudioUrl: $voiceoverAudioUrl, gameConfig: $gameConfig, lottieUrl: $lottieUrl)';
 }
 
 
@@ -1161,7 +1163,7 @@ abstract mixin class _$StepConfigCopyWith<$Res> implements $StepConfigCopyWith<$
   factory _$StepConfigCopyWith(_StepConfig value, $Res Function(_StepConfig) _then) = __$StepConfigCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String type, String title, String? description,@JsonKey(name: 'voiceover_text') String? voiceoverText,@JsonKey(name: 'game_config') GameConfig? gameConfig,@JsonKey(name: 'lottie_url') String? lottieUrl
+ String id, String type, String title, String? description,@JsonKey(name: 'voiceover_text') String? voiceoverText,@JsonKey(name: 'voiceover_audio_url') String? voiceoverAudioUrl,@JsonKey(name: 'game_config') GameConfig? gameConfig,@JsonKey(name: 'lottie_url') String? lottieUrl
 });
 
 
@@ -1178,13 +1180,14 @@ class __$StepConfigCopyWithImpl<$Res>
 
 /// Create a copy of StepConfig
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? type = null,Object? title = null,Object? description = freezed,Object? voiceoverText = freezed,Object? gameConfig = freezed,Object? lottieUrl = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? type = null,Object? title = null,Object? description = freezed,Object? voiceoverText = freezed,Object? voiceoverAudioUrl = freezed,Object? gameConfig = freezed,Object? lottieUrl = freezed,}) {
   return _then(_StepConfig(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,voiceoverText: freezed == voiceoverText ? _self.voiceoverText : voiceoverText // ignore: cast_nullable_to_non_nullable
+as String?,voiceoverAudioUrl: freezed == voiceoverAudioUrl ? _self.voiceoverAudioUrl : voiceoverAudioUrl // ignore: cast_nullable_to_non_nullable
 as String?,gameConfig: freezed == gameConfig ? _self.gameConfig : gameConfig // ignore: cast_nullable_to_non_nullable
 as GameConfig?,lottieUrl: freezed == lottieUrl ? _self.lottieUrl : lottieUrl // ignore: cast_nullable_to_non_nullable
 as String?,
@@ -1210,7 +1213,7 @@ $GameConfigCopyWith<$Res>? get gameConfig {
 /// @nodoc
 mixin _$GameConfig {
 
-@JsonKey(name: 'game_type') String get gameType; String get difficulty;@JsonKey(name: 'time_limit_seconds') int? get timeLimitSeconds; Map<String, dynamic> get data;@JsonKey(name: 'on_success') GameEvent? get onSuccess;@JsonKey(name: 'on_failure') GameEvent? get onFailure;
+@JsonKey(name: 'game_type') String get gameType; String get difficulty;@JsonKey(name: 'time_limit_seconds') int? get timeLimitSeconds;@JsonKey(name: 'parent_instruction') String? get parentInstruction;@JsonKey(name: 'parent_instruction_audio_url') String? get parentInstructionAudioUrl; Map<String, dynamic> get data;@JsonKey(name: 'on_success') GameEvent? get onSuccess;@JsonKey(name: 'on_failure') GameEvent? get onFailure;
 /// Create a copy of GameConfig
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1223,16 +1226,16 @@ $GameConfigCopyWith<GameConfig> get copyWith => _$GameConfigCopyWithImpl<GameCon
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GameConfig&&(identical(other.gameType, gameType) || other.gameType == gameType)&&(identical(other.difficulty, difficulty) || other.difficulty == difficulty)&&(identical(other.timeLimitSeconds, timeLimitSeconds) || other.timeLimitSeconds == timeLimitSeconds)&&const DeepCollectionEquality().equals(other.data, data)&&(identical(other.onSuccess, onSuccess) || other.onSuccess == onSuccess)&&(identical(other.onFailure, onFailure) || other.onFailure == onFailure));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GameConfig&&(identical(other.gameType, gameType) || other.gameType == gameType)&&(identical(other.difficulty, difficulty) || other.difficulty == difficulty)&&(identical(other.timeLimitSeconds, timeLimitSeconds) || other.timeLimitSeconds == timeLimitSeconds)&&(identical(other.parentInstruction, parentInstruction) || other.parentInstruction == parentInstruction)&&(identical(other.parentInstructionAudioUrl, parentInstructionAudioUrl) || other.parentInstructionAudioUrl == parentInstructionAudioUrl)&&const DeepCollectionEquality().equals(other.data, data)&&(identical(other.onSuccess, onSuccess) || other.onSuccess == onSuccess)&&(identical(other.onFailure, onFailure) || other.onFailure == onFailure));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,gameType,difficulty,timeLimitSeconds,const DeepCollectionEquality().hash(data),onSuccess,onFailure);
+int get hashCode => Object.hash(runtimeType,gameType,difficulty,timeLimitSeconds,parentInstruction,parentInstructionAudioUrl,const DeepCollectionEquality().hash(data),onSuccess,onFailure);
 
 @override
 String toString() {
-  return 'GameConfig(gameType: $gameType, difficulty: $difficulty, timeLimitSeconds: $timeLimitSeconds, data: $data, onSuccess: $onSuccess, onFailure: $onFailure)';
+  return 'GameConfig(gameType: $gameType, difficulty: $difficulty, timeLimitSeconds: $timeLimitSeconds, parentInstruction: $parentInstruction, parentInstructionAudioUrl: $parentInstructionAudioUrl, data: $data, onSuccess: $onSuccess, onFailure: $onFailure)';
 }
 
 
@@ -1243,7 +1246,7 @@ abstract mixin class $GameConfigCopyWith<$Res>  {
   factory $GameConfigCopyWith(GameConfig value, $Res Function(GameConfig) _then) = _$GameConfigCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'game_type') String gameType, String difficulty,@JsonKey(name: 'time_limit_seconds') int? timeLimitSeconds, Map<String, dynamic> data,@JsonKey(name: 'on_success') GameEvent? onSuccess,@JsonKey(name: 'on_failure') GameEvent? onFailure
+@JsonKey(name: 'game_type') String gameType, String difficulty,@JsonKey(name: 'time_limit_seconds') int? timeLimitSeconds,@JsonKey(name: 'parent_instruction') String? parentInstruction,@JsonKey(name: 'parent_instruction_audio_url') String? parentInstructionAudioUrl, Map<String, dynamic> data,@JsonKey(name: 'on_success') GameEvent? onSuccess,@JsonKey(name: 'on_failure') GameEvent? onFailure
 });
 
 
@@ -1260,12 +1263,14 @@ class _$GameConfigCopyWithImpl<$Res>
 
 /// Create a copy of GameConfig
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? gameType = null,Object? difficulty = null,Object? timeLimitSeconds = freezed,Object? data = null,Object? onSuccess = freezed,Object? onFailure = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? gameType = null,Object? difficulty = null,Object? timeLimitSeconds = freezed,Object? parentInstruction = freezed,Object? parentInstructionAudioUrl = freezed,Object? data = null,Object? onSuccess = freezed,Object? onFailure = freezed,}) {
   return _then(_self.copyWith(
 gameType: null == gameType ? _self.gameType : gameType // ignore: cast_nullable_to_non_nullable
 as String,difficulty: null == difficulty ? _self.difficulty : difficulty // ignore: cast_nullable_to_non_nullable
 as String,timeLimitSeconds: freezed == timeLimitSeconds ? _self.timeLimitSeconds : timeLimitSeconds // ignore: cast_nullable_to_non_nullable
-as int?,data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as int?,parentInstruction: freezed == parentInstruction ? _self.parentInstruction : parentInstruction // ignore: cast_nullable_to_non_nullable
+as String?,parentInstructionAudioUrl: freezed == parentInstructionAudioUrl ? _self.parentInstructionAudioUrl : parentInstructionAudioUrl // ignore: cast_nullable_to_non_nullable
+as String?,data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as Map<String, dynamic>,onSuccess: freezed == onSuccess ? _self.onSuccess : onSuccess // ignore: cast_nullable_to_non_nullable
 as GameEvent?,onFailure: freezed == onFailure ? _self.onFailure : onFailure // ignore: cast_nullable_to_non_nullable
 as GameEvent?,
@@ -1377,10 +1382,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'game_type')  String gameType,  String difficulty, @JsonKey(name: 'time_limit_seconds')  int? timeLimitSeconds,  Map<String, dynamic> data, @JsonKey(name: 'on_success')  GameEvent? onSuccess, @JsonKey(name: 'on_failure')  GameEvent? onFailure)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'game_type')  String gameType,  String difficulty, @JsonKey(name: 'time_limit_seconds')  int? timeLimitSeconds, @JsonKey(name: 'parent_instruction')  String? parentInstruction, @JsonKey(name: 'parent_instruction_audio_url')  String? parentInstructionAudioUrl,  Map<String, dynamic> data, @JsonKey(name: 'on_success')  GameEvent? onSuccess, @JsonKey(name: 'on_failure')  GameEvent? onFailure)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GameConfig() when $default != null:
-return $default(_that.gameType,_that.difficulty,_that.timeLimitSeconds,_that.data,_that.onSuccess,_that.onFailure);case _:
+return $default(_that.gameType,_that.difficulty,_that.timeLimitSeconds,_that.parentInstruction,_that.parentInstructionAudioUrl,_that.data,_that.onSuccess,_that.onFailure);case _:
   return orElse();
 
 }
@@ -1398,10 +1403,10 @@ return $default(_that.gameType,_that.difficulty,_that.timeLimitSeconds,_that.dat
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'game_type')  String gameType,  String difficulty, @JsonKey(name: 'time_limit_seconds')  int? timeLimitSeconds,  Map<String, dynamic> data, @JsonKey(name: 'on_success')  GameEvent? onSuccess, @JsonKey(name: 'on_failure')  GameEvent? onFailure)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'game_type')  String gameType,  String difficulty, @JsonKey(name: 'time_limit_seconds')  int? timeLimitSeconds, @JsonKey(name: 'parent_instruction')  String? parentInstruction, @JsonKey(name: 'parent_instruction_audio_url')  String? parentInstructionAudioUrl,  Map<String, dynamic> data, @JsonKey(name: 'on_success')  GameEvent? onSuccess, @JsonKey(name: 'on_failure')  GameEvent? onFailure)  $default,) {final _that = this;
 switch (_that) {
 case _GameConfig():
-return $default(_that.gameType,_that.difficulty,_that.timeLimitSeconds,_that.data,_that.onSuccess,_that.onFailure);case _:
+return $default(_that.gameType,_that.difficulty,_that.timeLimitSeconds,_that.parentInstruction,_that.parentInstructionAudioUrl,_that.data,_that.onSuccess,_that.onFailure);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1418,10 +1423,10 @@ return $default(_that.gameType,_that.difficulty,_that.timeLimitSeconds,_that.dat
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'game_type')  String gameType,  String difficulty, @JsonKey(name: 'time_limit_seconds')  int? timeLimitSeconds,  Map<String, dynamic> data, @JsonKey(name: 'on_success')  GameEvent? onSuccess, @JsonKey(name: 'on_failure')  GameEvent? onFailure)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'game_type')  String gameType,  String difficulty, @JsonKey(name: 'time_limit_seconds')  int? timeLimitSeconds, @JsonKey(name: 'parent_instruction')  String? parentInstruction, @JsonKey(name: 'parent_instruction_audio_url')  String? parentInstructionAudioUrl,  Map<String, dynamic> data, @JsonKey(name: 'on_success')  GameEvent? onSuccess, @JsonKey(name: 'on_failure')  GameEvent? onFailure)?  $default,) {final _that = this;
 switch (_that) {
 case _GameConfig() when $default != null:
-return $default(_that.gameType,_that.difficulty,_that.timeLimitSeconds,_that.data,_that.onSuccess,_that.onFailure);case _:
+return $default(_that.gameType,_that.difficulty,_that.timeLimitSeconds,_that.parentInstruction,_that.parentInstructionAudioUrl,_that.data,_that.onSuccess,_that.onFailure);case _:
   return null;
 
 }
@@ -1433,12 +1438,14 @@ return $default(_that.gameType,_that.difficulty,_that.timeLimitSeconds,_that.dat
 @JsonSerializable()
 
 class _GameConfig implements GameConfig {
-  const _GameConfig({@JsonKey(name: 'game_type') required this.gameType, required this.difficulty, @JsonKey(name: 'time_limit_seconds') this.timeLimitSeconds, required final  Map<String, dynamic> data, @JsonKey(name: 'on_success') this.onSuccess, @JsonKey(name: 'on_failure') this.onFailure}): _data = data;
+  const _GameConfig({@JsonKey(name: 'game_type') required this.gameType, required this.difficulty, @JsonKey(name: 'time_limit_seconds') this.timeLimitSeconds, @JsonKey(name: 'parent_instruction') this.parentInstruction, @JsonKey(name: 'parent_instruction_audio_url') this.parentInstructionAudioUrl, required final  Map<String, dynamic> data, @JsonKey(name: 'on_success') this.onSuccess, @JsonKey(name: 'on_failure') this.onFailure}): _data = data;
   factory _GameConfig.fromJson(Map<String, dynamic> json) => _$GameConfigFromJson(json);
 
 @override@JsonKey(name: 'game_type') final  String gameType;
 @override final  String difficulty;
 @override@JsonKey(name: 'time_limit_seconds') final  int? timeLimitSeconds;
+@override@JsonKey(name: 'parent_instruction') final  String? parentInstruction;
+@override@JsonKey(name: 'parent_instruction_audio_url') final  String? parentInstructionAudioUrl;
  final  Map<String, dynamic> _data;
 @override Map<String, dynamic> get data {
   if (_data is EqualUnmodifiableMapView) return _data;
@@ -1462,16 +1469,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GameConfig&&(identical(other.gameType, gameType) || other.gameType == gameType)&&(identical(other.difficulty, difficulty) || other.difficulty == difficulty)&&(identical(other.timeLimitSeconds, timeLimitSeconds) || other.timeLimitSeconds == timeLimitSeconds)&&const DeepCollectionEquality().equals(other._data, _data)&&(identical(other.onSuccess, onSuccess) || other.onSuccess == onSuccess)&&(identical(other.onFailure, onFailure) || other.onFailure == onFailure));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GameConfig&&(identical(other.gameType, gameType) || other.gameType == gameType)&&(identical(other.difficulty, difficulty) || other.difficulty == difficulty)&&(identical(other.timeLimitSeconds, timeLimitSeconds) || other.timeLimitSeconds == timeLimitSeconds)&&(identical(other.parentInstruction, parentInstruction) || other.parentInstruction == parentInstruction)&&(identical(other.parentInstructionAudioUrl, parentInstructionAudioUrl) || other.parentInstructionAudioUrl == parentInstructionAudioUrl)&&const DeepCollectionEquality().equals(other._data, _data)&&(identical(other.onSuccess, onSuccess) || other.onSuccess == onSuccess)&&(identical(other.onFailure, onFailure) || other.onFailure == onFailure));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,gameType,difficulty,timeLimitSeconds,const DeepCollectionEquality().hash(_data),onSuccess,onFailure);
+int get hashCode => Object.hash(runtimeType,gameType,difficulty,timeLimitSeconds,parentInstruction,parentInstructionAudioUrl,const DeepCollectionEquality().hash(_data),onSuccess,onFailure);
 
 @override
 String toString() {
-  return 'GameConfig(gameType: $gameType, difficulty: $difficulty, timeLimitSeconds: $timeLimitSeconds, data: $data, onSuccess: $onSuccess, onFailure: $onFailure)';
+  return 'GameConfig(gameType: $gameType, difficulty: $difficulty, timeLimitSeconds: $timeLimitSeconds, parentInstruction: $parentInstruction, parentInstructionAudioUrl: $parentInstructionAudioUrl, data: $data, onSuccess: $onSuccess, onFailure: $onFailure)';
 }
 
 
@@ -1482,7 +1489,7 @@ abstract mixin class _$GameConfigCopyWith<$Res> implements $GameConfigCopyWith<$
   factory _$GameConfigCopyWith(_GameConfig value, $Res Function(_GameConfig) _then) = __$GameConfigCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'game_type') String gameType, String difficulty,@JsonKey(name: 'time_limit_seconds') int? timeLimitSeconds, Map<String, dynamic> data,@JsonKey(name: 'on_success') GameEvent? onSuccess,@JsonKey(name: 'on_failure') GameEvent? onFailure
+@JsonKey(name: 'game_type') String gameType, String difficulty,@JsonKey(name: 'time_limit_seconds') int? timeLimitSeconds,@JsonKey(name: 'parent_instruction') String? parentInstruction,@JsonKey(name: 'parent_instruction_audio_url') String? parentInstructionAudioUrl, Map<String, dynamic> data,@JsonKey(name: 'on_success') GameEvent? onSuccess,@JsonKey(name: 'on_failure') GameEvent? onFailure
 });
 
 
@@ -1499,12 +1506,14 @@ class __$GameConfigCopyWithImpl<$Res>
 
 /// Create a copy of GameConfig
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? gameType = null,Object? difficulty = null,Object? timeLimitSeconds = freezed,Object? data = null,Object? onSuccess = freezed,Object? onFailure = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? gameType = null,Object? difficulty = null,Object? timeLimitSeconds = freezed,Object? parentInstruction = freezed,Object? parentInstructionAudioUrl = freezed,Object? data = null,Object? onSuccess = freezed,Object? onFailure = freezed,}) {
   return _then(_GameConfig(
 gameType: null == gameType ? _self.gameType : gameType // ignore: cast_nullable_to_non_nullable
 as String,difficulty: null == difficulty ? _self.difficulty : difficulty // ignore: cast_nullable_to_non_nullable
 as String,timeLimitSeconds: freezed == timeLimitSeconds ? _self.timeLimitSeconds : timeLimitSeconds // ignore: cast_nullable_to_non_nullable
-as int?,data: null == data ? _self._data : data // ignore: cast_nullable_to_non_nullable
+as int?,parentInstruction: freezed == parentInstruction ? _self.parentInstruction : parentInstruction // ignore: cast_nullable_to_non_nullable
+as String?,parentInstructionAudioUrl: freezed == parentInstructionAudioUrl ? _self.parentInstructionAudioUrl : parentInstructionAudioUrl // ignore: cast_nullable_to_non_nullable
+as String?,data: null == data ? _self._data : data // ignore: cast_nullable_to_non_nullable
 as Map<String, dynamic>,onSuccess: freezed == onSuccess ? _self.onSuccess : onSuccess // ignore: cast_nullable_to_non_nullable
 as GameEvent?,onFailure: freezed == onFailure ? _self.onFailure : onFailure // ignore: cast_nullable_to_non_nullable
 as GameEvent?,

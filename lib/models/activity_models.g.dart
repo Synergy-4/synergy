@@ -71,6 +71,7 @@ _StepConfig _$StepConfigFromJson(Map<String, dynamic> json) => _StepConfig(
   title: json['title'] as String,
   description: json['description'] as String?,
   voiceoverText: json['voiceover_text'] as String?,
+  voiceoverAudioUrl: json['voiceover_audio_url'] as String?,
   gameConfig: json['game_config'] == null
       ? null
       : GameConfig.fromJson(json['game_config'] as Map<String, dynamic>),
@@ -84,6 +85,7 @@ Map<String, dynamic> _$StepConfigToJson(_StepConfig instance) =>
       'title': instance.title,
       'description': instance.description,
       'voiceover_text': instance.voiceoverText,
+      'voiceover_audio_url': instance.voiceoverAudioUrl,
       'game_config': instance.gameConfig,
       'lottie_url': instance.lottieUrl,
     };
@@ -92,6 +94,8 @@ _GameConfig _$GameConfigFromJson(Map<String, dynamic> json) => _GameConfig(
   gameType: json['game_type'] as String,
   difficulty: json['difficulty'] as String,
   timeLimitSeconds: (json['time_limit_seconds'] as num?)?.toInt(),
+  parentInstruction: json['parent_instruction'] as String?,
+  parentInstructionAudioUrl: json['parent_instruction_audio_url'] as String?,
   data: json['data'] as Map<String, dynamic>,
   onSuccess: json['on_success'] == null
       ? null
@@ -106,6 +110,8 @@ Map<String, dynamic> _$GameConfigToJson(_GameConfig instance) =>
       'game_type': instance.gameType,
       'difficulty': instance.difficulty,
       'time_limit_seconds': instance.timeLimitSeconds,
+      'parent_instruction': instance.parentInstruction,
+      'parent_instruction_audio_url': instance.parentInstructionAudioUrl,
       'data': instance.data,
       'on_success': instance.onSuccess,
       'on_failure': instance.onFailure,
