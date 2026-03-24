@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../models/activity_models.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../core/api_constants.dart';
 import '../../../core/widgets/app_card.dart';
 
 class TapToSelectGame extends StatefulWidget {
@@ -31,6 +31,7 @@ class _TapToSelectGameState extends State<TapToSelectGame> {
     _distractors = data['distractors'] as List<dynamic>? ?? [];
 
     _allItems = [_targetItem, ..._distractors.cast<Map<String, dynamic>>()];
+    debugPrint("Game ==> ${_allItems.toString()}");
     _allItems.shuffle();
   }
 
@@ -51,12 +52,20 @@ class _TapToSelectGameState extends State<TapToSelectGame> {
     }
   }
 
+  String _formatImageUrl(String? url) {
+    if (url == null) return '';
+    // Fix localhost issue for Android emulators if baseUrl is set to 10.0.2.2
+    if (url.contains('localhost') && ApiConstants.baseUrl.contains('10.0.2.2')) {
+      return url.replaceAll('localhost', '10.0.2.2');
+    }
+    return url;
+  }
+
   @override
   Widget build(BuildContext context) {
     final data = widget.config.data;
     final instructionText = data['instruction_text'] ?? 'Find the object';
     final gridColumns = data['grid_columns'] ?? 2;
-    print(data);
 
     return Column(
       children: [
@@ -79,6 +88,8 @@ class _TapToSelectGameState extends State<TapToSelectGame> {
             itemCount: _allItems.length,
             itemBuilder: (context, index) {
               final item = _allItems[index];
+              final imageUrl = _formatImageUrl(item['image_url']);
+              
               return GestureDetector(
                 onTap: () => _onItemTapped(item['id']),
                 child: AppCard(
@@ -88,10 +99,10 @@ class _TapToSelectGameState extends State<TapToSelectGame> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      if (item['image_url'] != null)
+                      if (imageUrl.isNotEmpty)
                         Expanded(
                           child: Image.network(
-                            item['image_url'],
+                            imageUrl,
                             errorBuilder: (context, error, stackTrace) =>
                                 const Icon(Icons.image_not_supported),
                           ),
