@@ -1,0 +1,167 @@
+{
+  "version": "1.0.0",
+  "activity_id": 169,
+  "theme": {
+    "primary_color": "#1565C0",
+    "secondary_color": "#D32F2F",
+    "background_color": "#FFF9C4",
+    "card_color": "#FFFFFF",
+    "success_color": "#4CAF50",
+    "error_color": "#F44336",
+    "heading_font": {
+      "family": "Comic Sans MS",
+      "size": 24,
+      "weight": "bold",
+      "color": "#0D47A1"
+    },
+    "body_font": {
+      "family": "Arial",
+      "size": 16,
+      "weight": "normal",
+      "color": "#333333"
+    }
+  },
+  "steps": [
+    {
+      "id": "intro_1",
+      "type": "instruction",
+      "title": "Hi Kwaku Davis! Let's listen to vowel sounds!",
+      "description": "We are going to play with the sounds letters make. Can you help me find the right letters for each sound?",
+      "voiceover_text": "Hi Kwaku Davis! Let's listen to vowel sounds! We are going to play with the sounds letters make. Can you help me find the right letters for each sound?",
+      "voiceover_audio_url": "https://5304-154-160-19-166.ngrok-free.app/audio/36/36ef751b8725639c87340a026a36acc2ca25dc8a768f96d73f2c1b755389b178.mp3",
+      "game_config": null,
+      "lottie_url": null
+    },
+    {
+      "id": "game_1",
+      "type": "game",
+      "title": "Vowel Sound Match",
+      "description": null,
+      "voiceover_text": null,
+      "voiceover_audio_url": null,
+      "game_config": {
+        "game_type": "phonics_phonetics",
+        "difficulty": "easy",
+        "time_limit_seconds": null,
+        "parent_instruction": "When you see the letter A today, say 'A is for apple — aaah!' with Kwaku Davis. Point out A sounds in everyday words like 'apple'. Since Kwaku is sensitive to textures, the smooth screen is a great way for him to explore letters safely.",
+        "parent_instruction_audio_url": "https://5304-154-160-19-166.ngrok-free.app/audio/05/055790bfd80c23754b456519a1133b63a7e2f8269da5fcb8c5d8105c658c72d6.mp3",
+        "data": {
+          "phonics_stage": 1,
+          "stage_label": "vowel_sounds",
+          "response_mode": "receptive",
+          "allow_skip": false,
+          "trials": [
+            {
+              "id": "trial_001",
+              "phoneme": "a",
+              "display_letter": "A",
+              "anchor_word": "apple",
+              "anchor_image_url": "https://5304-154-160-19-166.ngrok-free.app/api/v1/assets/fruit/apple",
+              "phoneme_audio_url": "https://5304-154-160-19-166.ngrok-free.app/audio/fd/fd819a625bfa427ff7ba49bbb25a5fac1354fa0c5c5e102cbfca8a60726bafa3.mp3",
+              "stt_expected": "a",
+              "stt_accepted_variants": [
+                "ay",
+                "ah",
+                "apple"
+              ],
+              "distractor_phonemes": [
+                "o"
+              ],
+              "cvc_breakdown": null
+            },
+            {
+              "id": "trial_002",
+              "phoneme": "o",
+              "display_letter": "O",
+              "anchor_word": "orange",
+              "anchor_image_url": "https://5304-154-160-19-166.ngrok-free.app/api/v1/assets/fruit/orange",
+              "phoneme_audio_url": "https://5304-154-160-19-166.ngrok-free.app/audio/85/85091a51be763f6a9c94e84c623476c401c59bcae4c05ea449040d26744ee645.mp3",
+              "stt_expected": "o",
+              "stt_accepted_variants": [
+                "oh",
+                "aw",
+                "orange"
+              ],
+              "distractor_phonemes": [
+                "i"
+              ],
+              "cvc_breakdown": null
+            },
+            {
+              "id": "trial_003",
+              "phoneme": "a",
+              "display_letter": "A",
+              "anchor_word": "apple",
+              "anchor_image_url": "https://5304-154-160-19-166.ngrok-free.app/api/v1/assets/fruit/apple",
+              "phoneme_audio_url": "https://5304-154-160-19-166.ngrok-free.app/audio/fd/fd819a625bfa427ff7ba49bbb25a5fac1354fa0c5c5e102cbfca8a60726bafa3.mp3",
+              "stt_expected": "a",
+              "stt_accepted_variants": [
+                "ay",
+                "ah",
+                "apple"
+              ],
+              "distractor_phonemes": [
+                "u"
+              ],
+              "cvc_breakdown": null
+            },
+            {
+              "id": "trial_004",
+              "phoneme": "o",
+              "display_letter": "O",
+              "anchor_word": "orange",
+              "anchor_image_url": "https://5304-154-160-19-166.ngrok-free.app/api/v1/assets/fruit/orange",
+              "phoneme_audio_url": "https://5304-154-160-19-166.ngrok-free.app/audio/85/85091a51be763f6a9c94e84c623476c401c59bcae4c05ea449040d26744ee645.mp3",
+              "stt_expected": "o",
+              "stt_accepted_variants": [
+                "oh",
+                "aw",
+                "orange"
+              ],
+              "distractor_phonemes": [
+                "a"
+              ],
+              "cvc_breakdown": null
+            },
+            {
+              "id": "trial_005",
+              "phoneme": "a",
+              "display_letter": "A",
+              "anchor_word": "apple",
+              "anchor_image_url": "https://5304-154-160-19-166.ngrok-free.app/api/v1/assets/fruit/apple",
+              "phoneme_audio_url": "https://5304-154-160-19-166.ngrok-free.app/audio/fd/fd819a625bfa427ff7ba49bbb25a5fac1354fa0c5c5e102cbfca8a60726bafa3.mp3",
+              "stt_expected": "a",
+              "stt_accepted_variants": [
+                "ay",
+                "ah",
+                "apple"
+              ],
+              "distractor_phonemes": [
+                "e"
+              ],
+              "cvc_breakdown": null
+            }
+          ],
+          "trials_per_session": 5,
+          "scoring": {
+            "receptive_correct": 10,
+            "expressive_correct": 20,
+            "expressive_close": 10,
+            "perfect_bonus": 30
+          }
+        }
+      },
+      "lottie_url": null
+    },
+    {
+      "id": "reward_1",
+      "type": "reward",
+      "title": "Amazing work, Kwaku Davis! 🌟",
+      "description": "You identified the vowel sounds so well today. You are becoming a phonics star!",
+      "voiceover_text": "Amazing work, Kwaku Davis! You identified the vowel sounds so well today. You are becoming a phonics star!",
+      "voiceover_audio_url": "https://5304-154-160-19-166.ngrok-free.app/audio/eb/ebf310fa4db46a63916094a7032125441f8c5fd65c33f7088e963a0ba3d92c45.mp3",
+      "game_config": null,
+      "lottie_url": "https://assets2.lottiefiles.com/packages/lf20_touohxv0.json"
+    }
+  ]
+}
