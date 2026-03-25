@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,20 +9,15 @@ import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 import 'core/theme/app_theme.dart';
 import 'core/router.dart';
 import 'core/services/permission_manager.dart';
-// import 'core/database_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  sqfliteFfiInit();
-  // Initialize Database
   if (kIsWeb) {
-    // Use web implementation on the web
     databaseFactory = databaseFactoryFfiWeb;
-  } else {
-    // Use ffi on Linux, Windows, macOS, Android, iOS
-    // sqfliteFfiInit() might be needed for desktop
-    databaseFactory = databaseFactory;
+  } else if (Platform.isMacOS || Platform.isWindows || Platform.isLinux) {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
   }
 
   final sharedPreferences = await SharedPreferences.getInstance();
@@ -47,7 +43,6 @@ class _SynergyAppState extends ConsumerState<SynergyApp> {
   @override
   void initState() {
     super.initState();
-    // Request required permissions as soon as the app starts
     PermissionManager.instance.initializePermissions();
   }
 
