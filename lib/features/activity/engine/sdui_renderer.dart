@@ -6,6 +6,7 @@ import '../../../core/widgets/app_button.dart';
 import '../widgets/matching_game.dart';
 import '../widgets/colour_matching_game.dart';
 import '../widgets/tap_to_select_game.dart';
+import '../widgets/phonics_phonetics_game.dart';
 import 'event_handler.dart';
 
 /// A registry that maps SDUI components and game types to their respective widgets.
@@ -226,27 +227,13 @@ class _GameStep extends StatelessWidget {
           onComplete();
         },
       );
-    } else if (gameType == 'phonics') {
-      // Phonics game logic - for now using a placeholder with a completion button
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.record_voice_over, size: 80, color: Colors.blue),
-          const SizedBox(height: 16),
-          Text(
-            'Phonics Session',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          const SizedBox(height: 24),
-          AppButton(
-            text: 'I\'m Done!',
-            onPressed: () {
-              SduiEventHandler.handleEvent(context, step.gameConfig?.onSuccess);
-              onComplete();
-            },
-            backgroundColor: HexColor.fromHex(theme.primaryColor),
-          ),
-        ],
+    } else if (gameType == 'phonics' || gameType == 'phonics_phonetics') {
+      return PhonicsPhoneticsGame(
+        config: step.gameConfig!,
+        onComplete: () {
+          SduiEventHandler.handleEvent(context, step.gameConfig?.onSuccess);
+          onComplete();
+        },
       );
     }
 

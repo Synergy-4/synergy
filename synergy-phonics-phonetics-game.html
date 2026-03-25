@@ -1,0 +1,2513 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Synergy — Phonics & Phonetics Game</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+    :root {
+      --ink: #0d1117;
+      --ink-mid: #161b22;
+      --ink-light: #21262d;
+      --border: #30363d;
+      --border-lt: #3d4450;
+      --muted: #8b949e;
+      --body: #c9d1d9;
+      --white: #f0f6fc;
+      --green: #3fb950;
+      --green-dim: #1a3a24;
+      --blue: #58a6ff;
+      --blue-dim: #0d2a4a;
+      --amber: #e3b341;
+      --amber-dim: #3a2a0a;
+      --purple: #bc8cff;
+      --purple-dim: #2a1a4a;
+      --red: #f85149;
+      --red-dim: #3a0d0d;
+      --cyan: #79c0ff;
+      --orange: #ffa657;
+      --teal: #39d353;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      font-family: 'Sora', system-ui, sans-serif;
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--body);
+      background: var(--ink)
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 268px;
+      background: var(--ink-mid);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      z-index: 100;
+      padding: 28px 0 40px
+    }
+
+    .sidebar::-webkit-scrollbar {
+      width: 4px
+    }
+
+    .sidebar::-webkit-scrollbar-thumb {
+      background: var(--border-lt);
+      border-radius: 2px
+    }
+
+    .logo {
+      padding: 0 24px 24px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px
+    }
+
+    .logo-name {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .logo-pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--teal);
+      box-shadow: 0 0 8px var(--teal);
+      animation: pulse 2s infinite
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .45
+      }
+    }
+
+    .logo-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px
+    }
+
+    .nav-group {
+      margin-bottom: 4px
+    }
+
+    .nav-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 8px 24px 4px
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 24px;
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: all .15s;
+      border-left: 2px solid transparent
+    }
+
+    .nav-item:hover {
+      color: var(--white);
+      background: var(--ink-light)
+    }
+
+    .nav-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--border-lt);
+      min-width: 18px
+    }
+
+    .main {
+      margin-left: 268px;
+      padding: 60px 72px;
+      max-width: calc(268px + 960px)
+    }
+
+    /* HEADER */
+    .doc-header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 48px;
+      margin-bottom: 64px
+    }
+
+    .doc-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(57, 211, 83, .1);
+      border: 1px solid rgba(57, 211, 83, .3);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--teal);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 20px
+    }
+
+    .doc-title {
+      font-size: clamp(28px, 3.5vw, 48px);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.1;
+      letter-spacing: -.02em;
+      margin-bottom: 14px
+    }
+
+    .doc-title span {
+      color: var(--teal)
+    }
+
+    .doc-sub {
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--muted);
+      max-width: 620px;
+      line-height: 1.7
+    }
+
+    .doc-meta {
+      display: flex;
+      gap: 24px;
+      margin-top: 24px;
+      flex-wrap: wrap
+    }
+
+    .meta-item {
+      font-size: 12px;
+      color: var(--muted)
+    }
+
+    .meta-item strong {
+      color: var(--body);
+      font-weight: 500
+    }
+
+    /* SECTIONS */
+    .section {
+      margin-bottom: 72px;
+      scroll-margin-top: 40px
+    }
+
+    .sec-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      letter-spacing: .08em
+    }
+
+    .sec-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -.01em;
+      margin-bottom: 8px
+    }
+
+    .sec-desc {
+      font-size: 14px;
+      color: var(--muted);
+      max-width: 640px;
+      line-height: 1.7;
+      margin-bottom: 28px
+    }
+
+    .sub-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .sub-title::before {
+      content: '';
+      width: 3px;
+      height: 16px;
+      border-radius: 2px;
+      background: var(--teal);
+      flex-shrink: 0
+    }
+
+    .subsection {
+      margin-bottom: 36px
+    }
+
+    /* CODE */
+    .code-block {
+      background: var(--ink-light);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 14px 0;
+      font-family: 'JetBrains Mono', monospace
+    }
+
+    .code-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: var(--ink-mid);
+      border-bottom: 1px solid var(--border)
+    }
+
+    .code-lang {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: .08em;
+      text-transform: uppercase
+    }
+
+    .code-file {
+      font-size: 11px;
+      color: var(--teal)
+    }
+
+    .code-body {
+      padding: 20px 24px;
+      font-size: 12.5px;
+      line-height: 1.85;
+      color: var(--body);
+      overflow-x: auto;
+      white-space: pre
+    }
+
+    .k {
+      color: #ff7b72
+    }
+
+    .s {
+      color: #a5d6ff
+    }
+
+    .c {
+      color: #8b949e;
+      font-style: italic
+    }
+
+    .f {
+      color: #d2a8ff
+    }
+
+    .n {
+      color: #79c0ff
+    }
+
+    .v {
+      color: #ffa657
+    }
+
+    .num {
+      color: #79c0ff
+    }
+
+    /* CALLOUTS */
+    .callout {
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 14px 0;
+      display: flex;
+      gap: 14px
+    }
+
+    .callout-info {
+      background: var(--blue-dim);
+      border: 1px solid rgba(88, 166, 255, .2)
+    }
+
+    .callout-warn {
+      background: var(--amber-dim);
+      border: 1px solid rgba(227, 179, 65, .2)
+    }
+
+    .callout-tip {
+      background: var(--green-dim);
+      border: 1px solid rgba(63, 185, 80, .2)
+    }
+
+    .callout-teal {
+      background: rgba(57, 211, 83, .07);
+      border: 1px solid rgba(57, 211, 83, .2)
+    }
+
+    .callout-icon {
+      font-size: 16px;
+      flex-shrink: 0;
+      margin-top: 1px
+    }
+
+    .callout-body {
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--body)
+    }
+
+    .callout-body strong {
+      font-weight: 600;
+      color: var(--white)
+    }
+
+    /* TABLES */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin: 14px 0
+    }
+
+    .spec-table th {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 10px 16px;
+      border-bottom: 2px solid var(--border);
+      background: var(--ink-mid)
+    }
+
+    .spec-table td {
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--body);
+      vertical-align: top
+    }
+
+    .spec-table tr:last-child td {
+      border-bottom: none
+    }
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--cyan);
+      background: var(--ink-light);
+      padding: 2px 6px;
+      border-radius: 3px;
+      border: 1px solid var(--border)
+    }
+
+    /* STAGE CARDS */
+    .stage-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin: 16px 0
+    }
+
+    .stage-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden
+    }
+
+    .stage-head {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 20px;
+      background: var(--ink-mid);
+      border-bottom: 1px solid var(--border)
+    }
+
+    .stage-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--teal);
+      min-width: 28px
+    }
+
+    .stage-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--white);
+      flex: 1
+    }
+
+    .stage-tag {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 4px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      font-family: 'JetBrains Mono', monospace
+    }
+
+    .st-receptive {
+      background: rgba(88, 166, 255, .15);
+      color: var(--blue);
+      border: 1px solid rgba(88, 166, 255, .3)
+    }
+
+    .st-hybrid {
+      background: rgba(57, 211, 83, .12);
+      color: var(--teal);
+      border: 1px solid rgba(57, 211, 83, .3)
+    }
+
+    .stage-body {
+      padding: 18px 22px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px
+    }
+
+    .stage-col-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px
+    }
+
+    .stage-items {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px
+    }
+
+    .stage-item {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      font-size: 13px;
+      color: var(--body)
+    }
+
+    .stage-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--teal);
+      margin-top: 7px;
+      flex-shrink: 0
+    }
+
+    .phoneme-chips {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 6px
+    }
+
+    .phoneme-chip {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: var(--ink-light);
+      border: 1px solid var(--border);
+      color: var(--white)
+    }
+
+    .phoneme-chip.vowel {
+      border-color: rgba(57, 211, 83, .4);
+      color: var(--teal);
+      background: rgba(57, 211, 83, .08)
+    }
+
+    .phoneme-chip.consonant {
+      border-color: rgba(88, 166, 255, .4);
+      color: var(--blue);
+      background: rgba(88, 166, 255, .08)
+    }
+
+    .phoneme-chip.blend {
+      border-color: rgba(227, 179, 65, .4);
+      color: var(--amber);
+      background: rgba(227, 179, 65, .08)
+    }
+
+    .phoneme-chip.word {
+      border-color: rgba(188, 140, 255, .4);
+      color: var(--purple);
+      background: rgba(188, 140, 255, .08)
+    }
+
+    /* PROGRESSION LADDER */
+    .ladder {
+      position: relative;
+      padding-left: 32px;
+      margin: 16px 0
+    }
+
+    .ladder::before {
+      content: '';
+      position: absolute;
+      left: 10px;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--teal), var(--blue), var(--purple))
+    }
+
+    .ladder-item {
+      position: relative;
+      margin-bottom: 20px
+    }
+
+    .ladder-dot {
+      position: absolute;
+      left: -26px;
+      top: 4px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid;
+      background: var(--ink)
+    }
+
+    .ld-teal {
+      border-color: var(--teal)
+    }
+
+    .ld-blue {
+      border-color: var(--blue)
+    }
+
+    .ld-amber {
+      border-color: var(--amber)
+    }
+
+    .ld-purple {
+      border-color: var(--purple)
+    }
+
+    .ld-red {
+      border-color: var(--red)
+    }
+
+    .ladder-title {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 4px
+    }
+
+    .ladder-desc {
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.65
+    }
+
+    .ladder-gate {
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--amber);
+      margin-top: 4px
+    }
+
+    /* PHASE CARDS */
+    .phase-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 18px
+    }
+
+    .phase-head {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 15px 20px;
+      background: var(--ink-mid);
+      border-bottom: 1px solid var(--border)
+    }
+
+    .phase-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 4px;
+      white-space: nowrap
+    }
+
+    .ph1 {
+      background: rgba(88, 166, 255, .15);
+      color: var(--blue);
+      border: 1px solid rgba(88, 166, 255, .3)
+    }
+
+    .ph2 {
+      background: rgba(63, 185, 80, .15);
+      color: var(--green);
+      border: 1px solid rgba(63, 185, 80, .3)
+    }
+
+    .ph3 {
+      background: rgba(227, 179, 65, .15);
+      color: var(--amber);
+      border: 1px solid rgba(227, 179, 65, .3)
+    }
+
+    .ph4 {
+      background: rgba(188, 140, 255, .15);
+      color: var(--purple);
+      border: 1px solid rgba(188, 140, 255, .3)
+    }
+
+    .ph5 {
+      background: rgba(57, 211, 83, .12);
+      color: var(--teal);
+      border: 1px solid rgba(57, 211, 83, .3)
+    }
+
+    .phase-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--white);
+      flex: 1
+    }
+
+    .phase-meta {
+      font-size: 12px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace
+    }
+
+    .phase-body {
+      padding: 20px 24px
+    }
+
+    .task-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px
+    }
+
+    .task-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start
+    }
+
+    .task-check {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      border: 1.5px solid var(--border-lt);
+      flex-shrink: 0;
+      margin-top: 2px
+    }
+
+    .task-content {
+      flex: 1
+    }
+
+    .task-title {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--white);
+      margin-bottom: 3px
+    }
+
+    .task-desc {
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.65
+    }
+
+    .task-tags {
+      display: flex;
+      gap: 6px;
+      margin-top: 7px;
+      flex-wrap: wrap
+    }
+
+    .task-tag {
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 3px;
+      letter-spacing: .04em
+    }
+
+    .tag-flutter {
+      background: rgba(88, 166, 255, .12);
+      color: var(--blue)
+    }
+
+    .tag-api {
+      background: rgba(57, 211, 83, .1);
+      color: var(--teal)
+    }
+
+    .tag-tts {
+      background: rgba(188, 140, 255, .12);
+      color: var(--purple)
+    }
+
+    .tag-stt {
+      background: rgba(248, 81, 73, .12);
+      color: var(--red)
+    }
+
+    .tag-logic {
+      background: rgba(63, 185, 80, .12);
+      color: var(--green)
+    }
+
+    .tag-sdui {
+      background: rgba(227, 179, 65, .12);
+      color: var(--amber)
+    }
+
+    /* MILESTONE */
+    .milestone {
+      background: var(--green-dim);
+      border: 1px solid rgba(63, 185, 80, .25);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-top: 20px;
+      display: flex;
+      gap: 14px
+    }
+
+    .milestone-icon {
+      font-size: 18px;
+      flex-shrink: 0
+    }
+
+    .milestone-body {
+      font-size: 13px;
+      color: var(--body);
+      line-height: 1.7
+    }
+
+    .milestone-body strong {
+      color: var(--white);
+      font-weight: 600
+    }
+
+    /* SCREEN MOCKUP */
+    .screen-mock {
+      background: var(--ink-light);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin: 16px 0
+    }
+
+    .mock-zone {
+      border-radius: 8px;
+      padding: 16px 18px;
+      margin-bottom: 10px;
+      border: 1.5px dashed
+    }
+
+    .mock-zone-teal {
+      border-color: rgba(57, 211, 83, .4);
+      background: rgba(57, 211, 83, .05)
+    }
+
+    .mock-zone-blue {
+      border-color: rgba(88, 166, 255, .4);
+      background: rgba(88, 166, 255, .05)
+    }
+
+    .mock-zone-amber {
+      border-color: rgba(227, 179, 65, .4);
+      background: rgba(227, 179, 65, .05)
+    }
+
+    .mock-zone-red {
+      border-color: rgba(248, 81, 73, .4);
+      background: rgba(248, 81, 73, .05)
+    }
+
+    .mock-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-bottom: 8px
+    }
+
+    .mock-label-teal {
+      color: var(--teal)
+    }
+
+    .mock-label-blue {
+      color: var(--blue)
+    }
+
+    .mock-label-amber {
+      color: var(--amber)
+    }
+
+    .mock-label-red {
+      color: var(--red)
+    }
+
+    .phoneme-display {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 72px;
+      font-weight: 700;
+      color: var(--white);
+      text-align: center;
+      padding: 20px 0;
+      letter-spacing: -.02em
+    }
+
+    .phoneme-sub {
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+      margin-top: -12px;
+      margin-bottom: 12px
+    }
+
+    .option-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap
+    }
+
+    .option-card {
+      background: var(--ink-mid);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 22px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--white);
+      text-align: center;
+      min-width: 72px
+    }
+
+    .option-card.correct {
+      border-color: var(--teal);
+      color: var(--teal);
+      background: rgba(57, 211, 83, .08)
+    }
+
+    .mic-btn {
+      background: rgba(248, 81, 73, .15);
+      border: 2px solid var(--red);
+      border-radius: 50%;
+      width: 72px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin: 0 auto
+    }
+
+    .cvc-word {
+      display: flex;
+      gap: 8px;
+      justify-content: center
+    }
+
+    .cvc-box {
+      background: var(--ink-mid);
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--white);
+      min-width: 56px;
+      text-align: center
+    }
+
+    .cvc-box.active {
+      border-color: var(--teal);
+      color: var(--teal);
+      background: rgba(57, 211, 83, .08)
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 52px 0
+    }
+
+    .footer {
+      border-top: 1px solid var(--border);
+      padding-top: 28px;
+      margin-top: 56px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px
+    }
+
+    .footer-l,
+    .footer-r {
+      font-size: 12px;
+      color: var(--muted)
+    }
+
+    .footer-r {
+      font-family: 'JetBrains Mono', monospace
+    }
+
+    @media(max-width:900px) {
+      .sidebar {
+        display: none
+      }
+
+      .main {
+        margin-left: 0;
+        padding: 40px 24px
+      }
+
+      .stage-body {
+        grid-template-columns: 1fr
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="sidebar">
+    <div class="logo">
+      <div class="logo-name">
+        <div class="logo-pulse"></div>Synergy
+      </div>
+      <div class="logo-sub">Phonics & Phonetics Game Plan</div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-label">Design</div>
+      <a href="#overview" class="nav-item"><span class="nav-num">00</span>Overview</a>
+      <a href="#curriculum" class="nav-item"><span class="nav-num">01</span>5-Stage Curriculum</a>
+      <a href="#progression" class="nav-item"><span class="nav-num">02</span>Progression Gates</a>
+      <a href="#modes" class="nav-item"><span class="nav-num">03</span>Receptive vs Expressive</a>
+      <a href="#screens" class="nav-item"><span class="nav-num">04</span>Screen Anatomy</a>
+      <a href="#tts-strategy" class="nav-item"><span class="nav-num">05</span>TTS Phoneme Strategy</a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-label">Technical</div>
+      <a href="#state-machine" class="nav-item"><span class="nav-num">06</span>Game State Machine</a>
+      <a href="#stt" class="nav-item"><span class="nav-num">07</span>Speech Recognition</a>
+      <a href="#scoring" class="nav-item"><span class="nav-num">08</span>Scoring Logic</a>
+      <a href="#sdui" class="nav-item"><span class="nav-num">09</span>SDUI Data Contract</a>
+      <a href="#flutter-structure" class="nav-item"><span class="nav-num">10</span>Flutter Structure</a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-label">Build Plan</div>
+      <a href="#phase1" class="nav-item"><span class="nav-num">11</span>Phase 1 — Curriculum</a>
+      <a href="#phase2" class="nav-item"><span class="nav-num">12</span>Phase 2 — Receptive</a>
+      <a href="#phase3" class="nav-item"><span class="nav-num">13</span>Phase 3 — Expressive</a>
+      <a href="#phase4" class="nav-item"><span class="nav-num">14</span>Phase 4 — CVC & Words</a>
+      <a href="#phase5" class="nav-item"><span class="nav-num">15</span>Phase 5 — SDUI & EBP</a>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <div class="doc-header" id="overview">
+      <div class="doc-tag">Game Design Specification</div>
+      <h1 class="doc-title">Phonics & <span>Phonetics</span> Game</h1>
+      <p class="doc-sub">A 5-stage progressive phonics curriculum that teaches children to recognise and produce sounds
+        — from individual vowels to full sight words. Hybrid response model: tap-to-identify at beginner,
+        microphone-based pronunciation at advanced. Pocket TTS for all audio, <code>speech_to_text</code> for mic
+        recognition.</p>
+      <div class="doc-meta">
+        <div class="meta-item"><strong>Game type:</strong> <code>phonics_phonetics</code></div>
+        <div class="meta-item"><strong>Stages:</strong> 5 (vowels → sight words)</div>
+        <div class="meta-item"><strong>Response:</strong> Hybrid (receptive → expressive)</div>
+        <div class="meta-item"><strong>Audio:</strong> Pocket TTS with carrier phrase strategy</div>
+        <div class="meta-item"><strong>STT:</strong> flutter speech_to_text (word-level)</div>
+        <div class="meta-item"><strong>Flutter widget:</strong> PhonicsGame</div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════ -->
+    <!-- 01 CURRICULUM -->
+    <!-- ═══════════════════════════════════ -->
+    <section class="section" id="curriculum">
+      <div class="sec-num">// 01</div>
+      <h2 class="sec-title">5-Stage Curriculum</h2>
+      <p class="sec-desc">Every child starts at Stage 1 regardless of prior knowledge. Stages unlock sequentially — a
+        child cannot access Stage 3 without consistent Stage 2 performance. Within each stage, items are introduced in
+        developmental acquisition order.</p>
+
+      <div class="stage-grid">
+
+        <!-- S1 -->
+        <div class="stage-card">
+          <div class="stage-head">
+            <div class="stage-num">S1</div>
+            <div class="stage-name">Vowel Sounds</div>
+            <span class="stage-tag st-receptive">Receptive Only</span>
+          </div>
+          <div class="stage-body">
+            <div>
+              <div class="stage-col-label">Phonemes</div>
+              <div class="phoneme-chips">
+                <span class="phoneme-chip vowel">/a/</span>
+                <span class="phoneme-chip vowel">/e/</span>
+                <span class="phoneme-chip vowel">/i/</span>
+                <span class="phoneme-chip vowel">/o/</span>
+                <span class="phoneme-chip vowel">/u/</span>
+              </div>
+              <div style="font-size:12px;color:var(--muted);margin-top:10px;line-height:1.6">Short vowel sounds only.
+                Each paired with an anchor image: A=apple, E=egg, I=igloo, O=orange, U=umbrella.</div>
+            </div>
+            <div>
+              <div class="stage-col-label">Mechanics</div>
+              <ul class="stage-items">
+                <li class="stage-item">
+                  <div class="stage-dot"></div>Hear phoneme sound → tap the correct letter from 2–3 options
+                </li>
+                <li class="stage-item">
+                  <div class="stage-dot"></div>Hear letter name + phoneme → match to anchor image
+                </li>
+                <li class="stage-item">
+                  <div class="stage-dot"></div>Introduced one at a time — A mastered before E introduced
+                </li>
+                <li class="stage-item">
+                  <div class="stage-dot"></div>No microphone at this stage
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- S2 -->
+        <div class="stage-card">
+          <div class="stage-head">
+            <div class="stage-num">S2</div>
+            <div class="stage-name">Consonant Sounds</div>
+            <span class="stage-tag st-hybrid">Receptive → Expressive</span>
+          </div>
+          <div class="stage-body">
+            <div>
+              <div class="stage-col-label">Acquisition Order</div>
+              <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Group A (easiest, introduced first):
+              </div>
+              <div class="phoneme-chips">
+                <span class="phoneme-chip consonant">/b/</span>
+                <span class="phoneme-chip consonant">/m/</span>
+                <span class="phoneme-chip consonant">/p/</span>
+                <span class="phoneme-chip consonant">/t/</span>
+                <span class="phoneme-chip consonant">/d/</span>
+                <span class="phoneme-chip consonant">/n/</span>
+              </div>
+              <div style="font-size:12px;color:var(--muted);margin:8px 0">Group B (after Group A mastered):</div>
+              <div class="phoneme-chips">
+                <span class="phoneme-chip consonant">/f/</span>
+                <span class="phoneme-chip consonant">/g/</span>
+                <span class="phoneme-chip consonant">/h/</span>
+                <span class="phoneme-chip consonant">/k/</span>
+                <span class="phoneme-chip consonant">/l/</span>
+                <span class="phoneme-chip consonant">/r/</span>
+                <span class="phoneme-chip consonant">/s/</span>
+                <span class="phoneme-chip consonant">/w/</span>
+              </div>
+              <div style="font-size:12px;color:var(--muted);margin:8px 0">Group C (hardest sounds):</div>
+              <div class="phoneme-chips">
+                <span class="phoneme-chip consonant">/v/</span>
+                <span class="phoneme-chip consonant">/j/</span>
+                <span class="phoneme-chip consonant">/y/</span>
+                <span class="phoneme-chip consonant">/z/</span>
+                <span class="phoneme-chip consonant">/q/</span>
+                <span class="phoneme-chip consonant">/x/</span>
+              </div>
+            </div>
+            <div>
+              <div class="stage-col-label">Mechanics</div>
+              <ul class="stage-items">
+                <li class="stage-item">
+                  <div class="stage-dot"></div>Same receptive tap mechanic as S1
+                </li>
+                <li class="stage-item">
+                  <div class="stage-dot"></div>Expressive mic mode unlocks after 3 consecutive correct receptive
+                  sessions per consonant
+                </li>
+                <li class="stage-item">
+                  <div class="stage-dot"></div>Carrier phrase TTS: "The sound is... /b/" → child repeats just "/b/"
+                </li>
+                <li class="stage-item">
+                  <div class="stage-dot"></div>Groups A, B, C unlock sequentially — never mixed until Group A mastered
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- S3 -->
+        <div class="stage-card">
+          <div class="stage-head">
+            <div class="stage-num">S3</div>
+            <div class="stage-name">Blends & Digraphs</div>
+            <span class="stage-tag st-hybrid">Receptive → Expressive</span>
+          </div>
+          <div class="stage-body">
+            <div>
+              <div class="stage-col-label">Digraphs (one sound)</div>
+              <div class="phoneme-chips">
+                <span class="phoneme-chip blend">SH</span>
+                <span class="phoneme-chip blend">CH</span>
+                <span class="phoneme-chip blend">TH</span>
+                <span class="phoneme-chip blend">WH</span>
+                <span class="phoneme-chip blend">PH</span>
+                <span class="phoneme-chip blend">CK</span>
+              </div>
+              <div style="font-size:12px;color:var(--muted);margin:10px 0 6px">Blends (two sounds):</div>
+              <div class="phoneme-chips">
+                <span class="phoneme-chip blend">BL</span>
+                <span class="phoneme-chip blend">BR</span>
+                <span class="phoneme-chip blend">CL</span>
+                <span class="phoneme-chip blend">CR</span>
+                <span class="phoneme-chip blend">DR</span>
+                <span class="phoneme-chip blend">FL</span>
+                <span class="phoneme-chip blend">FR</span>
+                <span class="phoneme-chip blend">GL</span>
+                <span class="phoneme-chip blend">GR</span>
+                <span class="phoneme-chip blend">PL</span>
+                <span class="phoneme-chip blend">PR</span>
+                <span class="phoneme-chip blend">ST</span>
+                <span class="phoneme-chip blend">TR</span>
+              </div>
+            </div>
+            <div>
+              <div class="stage-col-label">Mechanics</div>
+              <ul class="stage-items">
+                <li class="stage-item">
+                  <div class="stage-dot"></div>Digraphs introduced before blends — one sound is simpler than two
+                </li>
+                <li class="stage-item">
+                  <div class="stage-dot"></div>Card shows both letters together as a unit
+                </li>
+                <li class="stage-item">
+                  <div class="stage-dot"></div>Hear the sound → tap the correct digraph/blend from options
+                </li>
+                <li class="stage-item">
+                  <div class="stage-dot"></div>Expressive: child says the sound into mic, STT checks for "sh", "ch" etc.
+                </li>
+                <li class="stage-item">
+                  <div class="stage-dot"></div>Anchor words shown: SH=shell, CH=chair, TH=thumb
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- S4 -->
+        <div class="stage-card">
+          <div class="stage-head">
+            <div class="stage-num">S4</div>
+            <div class="stage-name">CVC Words</div>
+            <span class="stage-tag st-hybrid">Receptive → Expressive</span>
+          </div>
+          <div class="stage-body">
+            <div>
+              <div class="stage-col-label">Word Families</div>
+              <div style="font-size:12px;color:var(--muted);margin-bottom:6px">-at family:</div>
+              <div class="phoneme-chips">
+                <span class="phoneme-chip word">CAT</span><span class="phoneme-chip word">BAT</span><span
+                  class="phoneme-chip word">HAT</span><span class="phoneme-chip word">MAT</span><span
+                  class="phoneme-chip word">RAT</span><span class="phoneme-chip word">SAT</span>
+              </div>
+              <div style="font-size:12px;color:var(--muted);margin:8px 0 6px">-ig / -it / -in families:</div>
+              <div class="phoneme-chips">
+                <span class="phoneme-chip word">BIG</span><span class="phoneme-chip word">PIG</span><span
+                  class="phoneme-chip word">DIG</span><span class="phoneme-chip word">BIT</span><span
+                  class="phoneme-chip word">SIT</span><span class="phoneme-chip word">BIN</span><span
+                  class="phoneme-chip word">PIN</span><span class="phoneme-chip word">WIN</span>
+              </div>
+              <div style="font-size:12px;color:var(--muted);margin:8px 0 6px">-op / -ot / -og families:</div>
+              <div class="phoneme-chips">
+                <span class="phoneme-chip word">HOP</span><span class="phoneme-chip word">TOP</span><span
+                  class="phoneme-chip word">DOT</span><span class="phoneme-chip word">HOT</span><span
+                  class="phoneme-chip word">DOG</span><span class="phoneme-chip word">LOG</span><span
+                  class="phoneme-chip word">HOG</span>
+              </div>
+              <div style="font-size:12px;color:var(--muted);margin:8px 0 6px">-un / -ug families:</div>
+              <div class="phoneme-chips">
+                <span class="phoneme-chip word">RUN</span><span class="phoneme-chip word">FUN</span><span
+                  class="phoneme-chip word">SUN</span><span class="phoneme-chip word">BUG</span><span
+                  class="phoneme-chip word">HUG</span><span class="phoneme-chip word">MUG</span><span
+                  class="phoneme-chip word">RUG</span>
+              </div>
+            </div>
+            <div>
+              <div class="stage-col-label">Mechanics</div>
+              <ul class="stage-items">
+                <li class="stage-item">
+                  <div class="stage-dot"></div>Word shown split into 3 boxes: C — A — T. Each box highlights as it plays
+                </li>
+                <li class="stage-item">
+                  <div class="stage-dot"></div>Whole word plays first, then each phoneme plays individually
+                </li>
+                <li class="stage-item">
+                  <div class="stage-dot"></div>Child taps the word when they hear it from 2–4 options
+                </li>
+                <li class="stage-item">
+                  <div class="stage-dot"></div>Expressive: child says the whole word — STT matches against correct word
+                </li>
+                <li class="stage-item">
+                  <div class="stage-dot"></div>Words taught in families (all -at words together) — pattern recognition
+                </li>
+                <li class="stage-item">
+                  <div class="stage-dot"></div>Anchor image for each word (cat image for CAT)
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- S5 -->
+        <div class="stage-card">
+          <div class="stage-head">
+            <div class="stage-num">S5</div>
+            <div class="stage-name">Sight Words & Full Words</div>
+            <span class="stage-tag st-hybrid">Receptive → Expressive</span>
+          </div>
+          <div class="stage-body">
+            <div>
+              <div class="stage-col-label">Dolch Sight Words (Tier 1)</div>
+              <div class="phoneme-chips">
+                <span class="phoneme-chip word">the</span><span class="phoneme-chip word">and</span><span
+                  class="phoneme-chip word">a</span><span class="phoneme-chip word">to</span><span
+                  class="phoneme-chip word">said</span><span class="phoneme-chip word">in</span><span
+                  class="phoneme-chip word">he</span><span class="phoneme-chip word">I</span><span
+                  class="phoneme-chip word">of</span><span class="phoneme-chip word">it</span><span
+                  class="phoneme-chip word">was</span><span class="phoneme-chip word">you</span><span
+                  class="phoneme-chip word">they</span><span class="phoneme-chip word">on</span><span
+                  class="phoneme-chip word">she</span><span class="phoneme-chip word">is</span><span
+                  class="phoneme-chip word">for</span><span class="phoneme-chip word">at</span><span
+                  class="phoneme-chip word">his</span><span class="phoneme-chip word">but</span>
+              </div>
+              <div style="font-size:12px;color:var(--muted);margin:10px 0 4px">Longer regular words (2-syllable):</div>
+              <div class="phoneme-chips">
+                <span class="phoneme-chip word">rabbit</span><span class="phoneme-chip word">happy</span><span
+                  class="phoneme-chip word">apple</span><span class="phoneme-chip word">funny</span><span
+                  class="phoneme-chip word">sunny</span>
+              </div>
+            </div>
+            <div>
+              <div class="stage-col-label">Mechanics</div>
+              <ul class="stage-items">
+                <li class="stage-item">
+                  <div class="stage-dot"></div>Sight words: whole-word recognition, not phonics decoding — shown in
+                  sentence context
+                </li>
+                <li class="stage-item">
+                  <div class="stage-dot"></div>Longer words: syllable-by-syllable highlighting (RAB-BIT)
+                </li>
+                <li class="stage-item">
+                  <div class="stage-dot"></div>Expressive: full word pronunciation scored by STT
+                </li>
+                <li class="stage-item">
+                  <div class="stage-dot"></div>Context sentences shown for sight words ("The cat sat.")
+                </li>
+                <li class="stage-item">
+                  <div class="stage-dot"></div>20 Tier 1 Dolch words is the MVP scope
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════ -->
+    <!-- 02 PROGRESSION GATES -->
+    <!-- ═══════════════════════════════════ -->
+    <section class="section" id="progression">
+      <div class="sec-num">// 02</div>
+      <h2 class="sec-title">Progression Gates</h2>
+      <p class="sec-desc">Two types of gates: stage gates (unlock the next stage) and mode gates (unlock expressive mic
+        within a stage). Both are managed by the server — the client never decides progression.</p>
+
+      <div class="subsection">
+        <div class="sub-title">Stage Unlock Gates</div>
+        <div class="ladder">
+          <div class="ladder-item">
+            <div class="ladder-dot ld-teal"></div>
+            <div class="ladder-title">Stage 1 → Stage 2 unlocks when:</div>
+            <div class="ladder-desc">All 5 vowels (/a/ /e/ /i/ /o/ /u/) show ≥ 80% correct_independent rate across at
+              least 3 sessions each. Vowels can be mastered in any order — all 5 must be consistent before any
+              consonants are introduced.</div>
+            <div class="ladder-gate">gate: vowel_mastery_count == 5</div>
+          </div>
+          <div class="ladder-item">
+            <div class="ladder-dot ld-blue"></div>
+            <div class="ladder-title">Stage 2 → Stage 3 unlocks when:</div>
+            <div class="ladder-desc">All 6 Group A consonants (B, M, P, T, D, N) show consistent correct_independent
+              performance. Group B and C consonants do NOT need to be mastered — the child can continue learning
+              consonants in parallel with Stage 3.</div>
+            <div class="ladder-gate">gate: consonant_group_a_mastered == true</div>
+          </div>
+          <div class="ladder-item">
+            <div class="ladder-dot ld-amber"></div>
+            <div class="ladder-title">Stage 3 → Stage 4 unlocks when:</div>
+            <div class="ladder-desc">The 3 core digraphs (SH, CH, TH) are consistently correct receptively. Child does
+              not need to master all blends — just the foundational digraphs.</div>
+            <div class="ladder-gate">gate: sh_correct && ch_correct && th_correct</div>
+          </div>
+          <div class="ladder-item">
+            <div class="ladder-dot ld-purple"></div>
+            <div class="ladder-title">Stage 4 → Stage 5 unlocks when:</div>
+            <div class="ladder-desc">≥ 80% accuracy across at least 5 different CVC word families. Words within a family
+              count separately — child must demonstrate transfer across families (not just -at words).</div>
+            <div class="ladder-gate">gate: cvc_families_mastered >= 5</div>
+          </div>
+          <div class="ladder-item">
+            <div class="ladder-dot ld-red"></div>
+            <div class="ladder-title">Stage 5 — ongoing</div>
+            <div class="ladder-desc">No upper gate. Sight words expand as the child masters batches of 5. The LLM
+              selects from mastered-adjacent sight words each session.</div>
+            <div class="ladder-gate">gate: none — continuous</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="sub-title">Expressive Mode Gate (within any stage)</div>
+        <div class="callout callout-teal">
+          <div class="callout-icon">🎙️</div>
+          <div class="callout-body">
+            <strong>Mic unlocks per-phoneme, not per-stage.</strong> For each individual sound (e.g. /b/, SH, CAT), the
+            expressive mic mode activates only when that specific sound has achieved <strong>3 consecutive receptive
+              correct_independent outcomes</strong>. A child may have mic enabled for /b/ but not yet for /f/ — they are
+            gated independently. The server tracks this per-phoneme in the session history and sets
+            <code>response_mode: "expressive"</code> in the SDUI config when the gate is met.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════ -->
+    <!-- 03 RESPONSE MODES -->
+    <!-- ═══════════════════════════════════ -->
+    <section class="section" id="modes">
+      <div class="sec-num">// 03</div>
+      <h2 class="sec-title">Receptive vs Expressive Mode</h2>
+
+      <div class="subsection">
+        <div class="sub-title">Receptive Mode — Tap to Identify</div>
+        <p style="font-size:13.5px;color:var(--muted);line-height:1.7;margin-bottom:14px">Applies to all stages at
+          acquisition level. The phoneme or word plays through the speaker. The child selects the correct answer from
+          2–4 letter/word options displayed on screen.</p>
+        <table class="spec-table">
+          <thead>
+            <tr>
+              <th>Parameter</th>
+              <th>Easy</th>
+              <th>Medium</th>
+              <th>Hard</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Options shown</td>
+              <td>2 (target + 1 distractor)</td>
+              <td>3 options</td>
+              <td>4 options</td>
+            </tr>
+            <tr>
+              <td>Distractor type</td>
+              <td>Phonemically distant (/a/ vs /o/)</td>
+              <td>Same category (/a/ vs /e/)</td>
+              <td>Perceptually similar (/b/ vs /d/)</td>
+            </tr>
+            <tr>
+              <td>Audio repeats</td>
+              <td>Auto-repeats 2× before timeout</td>
+              <td>Repeats once on tap of speaker icon</td>
+              <td>Plays once, no repeat</td>
+            </tr>
+            <tr>
+              <td>Response window</td>
+              <td>10 seconds</td>
+              <td>7 seconds</td>
+              <td>5 seconds</td>
+            </tr>
+            <tr>
+              <td>Anchor image shown</td>
+              <td>Yes — always visible</td>
+              <td>Fades after 2s</td>
+              <td>Not shown</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="subsection">
+        <div class="sub-title">Expressive Mode — Speak Into Mic</div>
+        <p style="font-size:13.5px;color:var(--muted);line-height:1.7;margin-bottom:14px">Activates only after receptive
+          mastery of a specific phoneme. The phoneme plays, then a large mic button appears. The child holds the button
+          and speaks. The app records and scores the attempt.</p>
+
+        <div class="callout callout-warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-body"><strong>Non-verbal children:</strong> The expressive mic button must always have a
+            visible "Skip" option next to it. If a child skips expressive mode 3 times in a row for the same phoneme,
+            the server should flag <code>therapist_flag: true</code> and include a note that expressive practice may
+            need in-person support. Never force mic mode — it must always feel optional.</div>
+        </div>
+
+        <table class="spec-table">
+          <thead>
+            <tr>
+              <th>Interaction step</th>
+              <th>What happens</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1. Phoneme plays</td>
+              <td>TTS audio plays automatically. Large phoneme letter shown on screen. "Now you try!" prompt appears.
+              </td>
+            </tr>
+            <tr>
+              <td>2. Child holds mic button</td>
+              <td>Waveform visualiser activates — child sees their voice as a wave. Recording begins.</td>
+            </tr>
+            <tr>
+              <td>3. Child releases button</td>
+              <td>Recording ends. "Checking..." spinner shows briefly (max 2s).</td>
+            </tr>
+            <tr>
+              <td>4. STT scores attempt</td>
+              <td>See scoring logic below. Result shown immediately.</td>
+            </tr>
+            <tr>
+              <td>5. Feedback</td>
+              <td>Correct: celebration. Close: "Almost! Try again." Miss: phoneme replays, gentle encouragement.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════ -->
+    <!-- 04 SCREEN ANATOMY -->
+    <!-- ═══════════════════════════════════ -->
+    <section class="section" id="screens">
+      <div class="sec-num">// 04</div>
+      <h2 class="sec-title">Screen Anatomy</h2>
+
+      <div class="subsection">
+        <div class="sub-title">Receptive Trial Screen</div>
+        <div class="screen-mock">
+          <div class="mock-zone mock-zone-teal">
+            <div class="mock-label mock-label-teal">HUD — progress + score</div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted)">
+              <span>Stage 1 · Vowel Sounds</span>
+              <span>Trial 3 / 5</span>
+              <span>⭐ 40 pts</span>
+            </div>
+          </div>
+          <div class="mock-zone mock-zone-blue" style="margin-top:10px">
+            <div class="mock-label mock-label-blue">PHONEME DISPLAY — centre of screen</div>
+            <div class="phoneme-display">A</div>
+            <div class="phoneme-sub">🔊 "The sound is... /a/"</div>
+            <div style="text-align:center;margin-top:8px">
+              <div
+                style="display:inline-block;background:var(--ink-light);border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-size:12px;color:var(--muted)">
+                🍎 apple</div>
+            </div>
+          </div>
+          <div class="mock-zone mock-zone-amber" style="margin-top:10px">
+            <div class="mock-label mock-label-amber">RESPONSE OPTIONS — tap the correct letter</div>
+            <div class="option-row">
+              <div class="option-card correct">A</div>
+              <div class="option-card">O</div>
+              <div class="option-card">E</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="sub-title">Expressive Trial Screen</div>
+        <div class="screen-mock">
+          <div class="mock-zone mock-zone-teal">
+            <div class="mock-label mock-label-teal">HUD</div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted)">
+              <span>Stage 2 · Consonants</span><span>Trial 2 / 5</span><span>⭐ 20 pts</span>
+            </div>
+          </div>
+          <div class="mock-zone mock-zone-blue" style="margin-top:10px">
+            <div class="mock-label mock-label-blue">PHONEME + PROMPT</div>
+            <div class="phoneme-display">B</div>
+            <div class="phoneme-sub">🔊 Played — now your turn!</div>
+          </div>
+          <div class="mock-zone mock-zone-red" style="margin-top:10px">
+            <div class="mock-label mock-label-red">MIC INPUT — hold to speak</div>
+            <div style="display:flex;gap:24px;align-items:center;justify-content:center;padding:8px 0">
+              <div class="mic-btn">🎙️</div>
+              <div
+                style="flex:1;background:var(--ink-light);border-radius:4px;height:32px;position:relative;overflow:hidden">
+                <div
+                  style="position:absolute;left:0;top:0;bottom:0;width:60%;background:linear-gradient(90deg,rgba(57,211,83,.4),rgba(57,211,83,.1))">
+                </div>
+              </div>
+            </div>
+            <div style="text-align:center;font-size:11px;color:var(--muted)">Hold the button and say the sound</div>
+            <div style="text-align:center;margin-top:8px"><span
+                style="font-size:11px;color:var(--muted);border-bottom:1px solid var(--border);cursor:pointer;padding-bottom:2px">Skip
+                for now →</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="sub-title">CVC Word Screen (Stage 4)</div>
+        <div class="screen-mock">
+          <div class="mock-zone mock-zone-blue">
+            <div class="mock-label mock-label-blue">CVC BREAKDOWN — phoneme-by-phoneme highlight</div>
+            <div class="cvc-word" style="margin:16px 0">
+              <div class="cvc-box active">C</div>
+              <div class="cvc-box">A</div>
+              <div class="cvc-box">T</div>
+            </div>
+            <div style="text-align:center;font-size:12px;color:var(--muted)">"Tap each sound as you hear it → C... A...
+              T... CAT"</div>
+            <div style="text-align:center;margin-top:10px">
+              <div
+                style="display:inline-block;background:var(--ink-light);border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-size:12px;color:var(--muted)">
+                🐱 cat</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════ -->
+    <!-- 05 TTS PHONEME STRATEGY -->
+    <!-- ═══════════════════════════════════ -->
+    <section class="section" id="tts-strategy">
+      <div class="sec-num">// 05</div>
+      <h2 class="sec-title">Pocket TTS Phoneme Strategy</h2>
+      <p class="sec-desc">Isolated phonemes are the hardest case for TTS. This section defines exactly how each type of
+        sound should be generated to maximise audio quality.</p>
+
+      <div class="callout callout-warn">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body"><strong>The core problem:</strong> Asking Pocket TTS to generate "/b/" alone will
+          produce "bee" (the letter name) or "/buh/" (with an unwanted schwa vowel). The child hears the wrong sound and
+          learns incorrect pronunciation. The mitigation is the carrier phrase strategy below.</div>
+      </div>
+
+      <div class="subsection">
+        <div class="sub-title">Carrier Phrase Strategy by Stage</div>
+        <table class="spec-table">
+          <thead>
+            <tr>
+              <th>Stage</th>
+              <th>Phoneme Type</th>
+              <th>TTS Input String</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>S1</td>
+              <td>Vowel sounds</td>
+              <td><code>"The letter A makes the sound... a, a, a"</code></td>
+              <td>Repeating the phoneme 3× helps TTS produce it more cleanly than once. Server generates and caches.
+              </td>
+            </tr>
+            <tr>
+              <td>S2</td>
+              <td>Consonant sounds (stops: b, p, t, d)</td>
+              <td><code>"The sound is... buh... buh... buh"</code></td>
+              <td>Unavoidable slight schwa on stops. Acceptable — children learn from this context. Do NOT try to
+                generate a pure /b/ — TTS cannot do it.</td>
+            </tr>
+            <tr>
+              <td>S2</td>
+              <td>Consonant sounds (continuants: m, n, s, f)</td>
+              <td><code>"The sound is... mmmm... mmmm"</code></td>
+              <td>Continuants can be held and TTS handles them well. Generate the sustained version.</td>
+            </tr>
+            <tr>
+              <td>S3</td>
+              <td>Digraphs</td>
+              <td><code>"The letters S-H make the sound... shhhh"</code></td>
+              <td>TTS handles digraph sounds well when spelled phonetically in the input.</td>
+            </tr>
+            <tr>
+              <td>S3</td>
+              <td>Blends</td>
+              <td><code>"The blend B-L sounds like... bl, bl, bl — as in blue"</code></td>
+              <td>Include the anchor word at the end — helps TTS produce the blend in context.</td>
+            </tr>
+            <tr>
+              <td>S4</td>
+              <td>CVC words (whole word)</td>
+              <td><code>"The word is... cat"</code></td>
+              <td>Full words are TTS's strength. No carrier phrase tricks needed.</td>
+            </tr>
+            <tr>
+              <td>S4</td>
+              <td>CVC phoneme-by-phoneme</td>
+              <td>Generate separately: <code>"c"</code>, <code>"a"</code>, <code>"t"</code> using S1/S2 strategy</td>
+              <td>Client plays them in sequence with 400ms gaps between each.</td>
+            </tr>
+            <tr>
+              <td>S5</td>
+              <td>Sight words + full words</td>
+              <td><code>"The word is... the"</code></td>
+              <td>Clean TTS output. No special handling needed.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-tip">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body"><strong>All phoneme audio is pre-generated at server startup, not on-demand.</strong>
+          The phoneme library is finite and known — 5 vowels, 21 consonants, 19 digraphs/blends. That's 45 audio files
+          total for Stages 1–3. Generate them all at startup and cache permanently in R2/local storage. Stage 4–5 words
+          are generated on-demand per child (themed to interests) and cached by content hash as per the TTS pipeline.
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════ -->
+    <!-- 06 STATE MACHINE -->
+    <!-- ═══════════════════════════════════ -->
+    <section class="section" id="state-machine">
+      <div class="sec-num">// 06</div>
+      <h2 class="sec-title">Game State Machine</h2>
+
+      <div class="code-block">
+        <div class="code-head"><span class="code-lang">Pseudocode</span><span class="code-file">PhonicsGame — complete
+            state machine</span></div>
+        <div class="code-body"><span class="c">// ── Phases
+            ──────────────────────────────────────────────────────────────</span>
+          <span class="n">IDLE</span>
+          <span class="v">onConfigReceived</span> → <span class="n">LOADING</span>
+
+          <span class="n">LOADING</span>
+          <span class="c">// Preload: TTS audio for all trials in this session</span>
+          <span class="v">onAllAudioPreloaded</span> → <span class="n">INTRO</span>
+
+          <span class="n">INTRO</span>
+          <span class="c">// Play voiceover_audio, show animated phoneme intro</span>
+          <span class="v">onIntroComplete</span> → <span class="n">TRIAL_START</span>
+
+          <span class="n">TRIAL_START</span>
+          <span class="c">// Play phoneme/word audio, show display card, animate options in</span>
+          <span class="v">onAudioComplete</span> → <span class="n">WAITING_RESPONSE</span>
+
+          <span class="n">WAITING_RESPONSE</span> <span class="c">// different sub-flows per response_mode</span>
+          <span class="c">// ── Receptive ─────────────────────────────────────────────────────</span>
+          <span class="v">onOptionTapped(option)</span>
+          [correct] → <span class="n">ANIMATING_CORRECT</span>
+          [incorrect] → <span class="n">ANIMATING_INCORRECT</span>
+          <span class="v">onTimerExpired</span> → <span class="n">ANIMATING_TIMEOUT</span>
+          <span class="v">onReplayTapped</span> → <span class="n">TRIAL_START</span> <span class="c">// replay audio if
+            allowed</span>
+
+          <span class="c">// ── Expressive ────────────────────────────────────────────────────</span>
+          <span class="v">onMicHeld</span> → <span class="n">RECORDING</span>
+          <span class="v">onSkipTapped</span> → <span class="n">RECORDING_SKIPPED</span>
+
+          <span class="n">RECORDING</span>
+          <span class="c">// speech_to_text listening, waveform visualiser active</span>
+          <span class="v">onMicReleased</span> → <span class="n">SCORING</span>
+          <span class="v">onTimeout(5s)</span> → <span class="n">SCORING</span> <span class="c">// auto-score if held
+            too long</span>
+
+          <span class="n">SCORING</span> <span class="c">// ≤ 2s — show spinner</span>
+          <span class="v">onScoreReady</span>
+          [correct] → <span class="n">ANIMATING_CORRECT</span>
+          [close] → <span class="n">ANIMATING_CLOSE</span> <span class="c">// "almost" feedback</span>
+          [miss] → <span class="n">ANIMATING_INCORRECT</span>
+
+          <span class="n">RECORDING_SKIPPED</span>
+          <span class="c">// record skip in session data, count toward therapist flag</span>
+          → <span class="n">TRIAL_END</span>
+
+          <span class="n">ANIMATING_CORRECT</span> <span class="c">// ~600ms lock</span>
+          <span class="v">onAnimationComplete</span> → <span class="n">TRIAL_END</span>
+
+          <span class="n">ANIMATING_CLOSE</span> <span class="c">// "almost!" — replay phoneme + allow retry</span>
+          <span class="v">onRetryTapped</span> → <span class="n">TRIAL_START</span>
+          <span class="v">onNextTapped</span> → <span class="n">TRIAL_END</span>
+
+          <span class="n">ANIMATING_INCORRECT</span> <span class="c">// ~400ms — replay audio + show correct
+            answer</span>
+          <span class="v">onAnimationComplete</span> → <span class="n">TRIAL_END</span>
+
+          <span class="n">ANIMATING_TIMEOUT</span> <span class="c">// gentle "Time's up" — no punishment</span>
+          <span class="v">onAnimationComplete</span> → <span class="n">TRIAL_END</span>
+
+          <span class="n">TRIAL_END</span>
+          [more trials remaining] → <span class="n">TRIAL_START</span>
+          [session complete] → <span class="n">WIN</span>
+
+          <span class="n">WIN</span>
+          <span class="c">// play celebration, show session score, POST to /sessions</span>
+          <span class="v">onCelebrationComplete</span> → <span class="n">RESULTS</span>
+
+          <span class="n">RESULTS</span>
+          <span class="v">onAcknowledged</span> → <span class="n">IDLE</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════ -->
+    <!-- 07 STT — SPEECH RECOGNITION -->
+    <!-- ═══════════════════════════════════ -->
+    <section class="section" id="stt">
+      <div class="sec-num">// 07</div>
+      <h2 class="sec-title">Speech Recognition — <code>speech_to_text</code></h2>
+      <p class="sec-desc">The <code>speech_to_text</code> Flutter package transcribes what the child says. Scoring is
+        word-level — the transcription is matched against expected values. Phoneme-level scoring is a future upgrade
+        path.</p>
+
+      <div class="subsection">
+        <div class="sub-title">Integration Code</div>
+        <div class="code-block">
+          <div class="code-head"><span class="code-lang">Dart</span><span
+              class="code-file">lib/games/phonics/stt_scorer.dart</span></div>
+          <div class="code-body"><span class="k">import</span> <span
+              class="s">'package:speech_to_text/speech_to_text.dart'</span>;
+
+            <span class="k">class</span> <span class="n">SttScorer</span> {
+            <span class="k">final</span> <span class="n">SpeechToText</span> _stt = <span
+              class="n">SpeechToText</span>();
+            <span class="k">bool</span> _available = <span class="k">false</span>;
+
+            <span class="k">Future</span>&lt;<span class="k">void</span>&gt; <span class="f">init</span>() <span
+              class="k">async</span> {
+            _available = <span class="k">await</span> _stt.<span class="f">initialize</span>(
+            onError: (e) => <span class="n">debugPrint</span>(<span class="s">'STT error: $e'</span>),
+            );
+            }
+
+            <span class="c">/// Records child's attempt and scores against [expected].</span>
+            <span class="c">/// Returns a PhonicsScore — never throws, degrades gracefully.</span>
+            <span class="k">Future</span>&lt;<span class="n">PhonicsScore</span>&gt; <span
+              class="f">scoreAttempt</span>({
+            <span class="k">required</span> String expected, <span class="c">// e.g. "cat" or "sh"</span>
+            <span class="k">required</span> String stage, <span class="c">// "vowel" | "consonant" | "blend" | "cvc" |
+              "word"</span>
+            Duration timeout = <span class="k">const</span> <span class="n">Duration</span>(seconds: <span
+              class="num">5</span>),
+            }) <span class="k">async</span> {
+
+            <span class="k">if</span> (!_available) <span class="k">return</span> <span
+              class="n">PhonicsScore</span>.unavailable();
+
+            String? transcript;
+
+            <span class="k">await</span> _stt.<span class="f">listen</span>(
+            onResult: (result) {
+            <span class="k">if</span> (result.finalResult) {
+            transcript = result.recognizedWords.<span class="f">toLowerCase</span>().<span class="f">trim</span>();
+            }
+            },
+            listenFor: timeout,
+            localeId: <span class="s">'en_US'</span>,
+            cancelOnError: <span class="k">false</span>,
+            partialResults: <span class="k">false</span>,
+            );
+
+            <span class="k">await</span> <span class="n">Future</span>.<span class="f">delayed</span>(<span
+              class="k">const</span> <span class="n">Duration</span>(milliseconds: <span class="num">200</span>));
+            <span class="k">await</span> _stt.<span class="f">stop</span>();
+
+            <span class="k">return</span> <span class="f">_evaluate</span>(transcript, expected, stage);
+            }
+
+            <span class="n">PhonicsScore</span> <span class="f">_evaluate</span>(String? transcript, String expected,
+            String stage) {
+            <span class="k">if</span> (transcript == <span class="k">null</span> || transcript.<span
+              class="f">isEmpty</span>) {
+            <span class="k">return</span> <span class="n">PhonicsScore</span>(result: <span
+              class="n">PhonicsResult</span>.noAudio, transcript: <span class="k">null</span>);
+            }
+
+            <span class="k">final</span> clean = <span class="f">_normalise</span>(transcript);
+            <span class="k">final</span> exp = <span class="f">_normalise</span>(expected);
+
+            <span class="c">// 1. Exact match</span>
+            <span class="k">if</span> (clean == exp) {
+            <span class="k">return</span> <span class="n">PhonicsScore</span>(result: <span
+              class="n">PhonicsResult</span>.correct, transcript: transcript);
+            }
+
+            <span class="c">// 2. Transcript CONTAINS the expected word/sound</span>
+            <span class="c">// e.g. child says "buh buh" when expected is "b" — still correct</span>
+            <span class="k">if</span> (clean.<span class="f">contains</span>(exp)) {
+            <span class="k">return</span> <span class="n">PhonicsScore</span>(result: <span
+              class="n">PhonicsResult</span>.correct, transcript: transcript);
+            }
+
+            <span class="c">// 3. For single phonemes: check accepted variants list</span>
+            <span class="k">if</span> (stage == <span class="s">'vowel'</span> || stage == <span
+              class="s">'consonant'</span> || stage == <span class="s">'blend'</span>) {
+            <span class="k">final</span> variants = _phonemeVariants[exp] ?? [];
+            <span class="k">if</span> (variants.<span class="f">any</span>((v) => clean.<span
+              class="f">contains</span>(v))) {
+            <span class="k">return</span> <span class="n">PhonicsScore</span>(result: <span
+              class="n">PhonicsResult</span>.correct, transcript: transcript);
+            }
+            }
+
+            <span class="c">// 4. Close match — edit distance ≤ 1 for CVC and word stages</span>
+            <span class="k">if</span> ((stage == <span class="s">'cvc'</span> || stage == <span class="s">'word'</span>)
+            && <span class="f">_editDistance</span>(clean, exp) == <span class="num">1</span>) {
+            <span class="k">return</span> <span class="n">PhonicsScore</span>(result: <span
+              class="n">PhonicsResult</span>.close, transcript: transcript);
+            }
+
+            <span class="k">return</span> <span class="n">PhonicsScore</span>(result: <span
+              class="n">PhonicsResult</span>.miss, transcript: transcript);
+            }
+
+            String <span class="f">_normalise</span>(String s) =>
+            s.<span class="f">toLowerCase</span>().<span class="f">replaceAll</span>(<span class="n">RegExp</span>(<span
+              class="s">r'[^a-z]'</span>), '').<span class="f">trim</span>();
+
+            <span class="c">/// Accepted STT transcriptions per phoneme</span>
+            <span class="c">/// e.g. child says "bee" when asked for /b/ — still correct</span>
+            <span class="k">static const</span> Map&lt;String, List&lt;String&gt;&gt; _phonemeVariants = {
+            <span class="s">'b'</span>: [<span class="s">'bee'</span>, <span class="s">'buh'</span>, <span
+              class="s">'be'</span>],
+            <span class="s">'m'</span>: [<span class="s">'em'</span>, <span class="s">'mmm'</span>],
+            <span class="s">'p'</span>: [<span class="s">'pee'</span>, <span class="s">'puh'</span>],
+            <span class="s">'t'</span>: [<span class="s">'tee'</span>, <span class="s">'tuh'</span>],
+            <span class="s">'d'</span>: [<span class="s">'dee'</span>, <span class="s">'duh'</span>],
+            <span class="s">'sh'</span>: [<span class="s">'shh'</span>, <span class="s">'shhh'</span>, <span
+              class="s">'shush'</span>],
+            <span class="s">'ch'</span>: [<span class="s">'chuh'</span>, <span class="s">'church'</span>],
+            <span class="s">'th'</span>: [<span class="s">'the'</span>, <span class="s">'thee'</span>],
+            <span class="c">// ... full variant map in implementation</span>
+            };
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="sub-title">Score Result Types</div>
+        <table class="spec-table">
+          <thead>
+            <tr>
+              <th>Result</th>
+              <th>Condition</th>
+              <th>Feedback</th>
+              <th>Retry?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span style="color:var(--teal);font-weight:600">correct</span></td>
+              <td>Exact match, contains match, or accepted variant</td>
+              <td>Celebration animation + star token</td>
+              <td>No — advance</td>
+            </tr>
+            <tr>
+              <td><span style="color:var(--amber);font-weight:600">close</span></td>
+              <td>Edit distance 1 (CVC/word only)</td>
+              <td>"Almost! Try one more time" — phoneme replays</td>
+              <td>Yes — one retry allowed</td>
+            </tr>
+            <tr>
+              <td><span style="color:var(--muted);font-weight:600">miss</span></td>
+              <td>No match, edit distance >1</td>
+              <td>Gentle "Let's hear it again" — replays audio, no negative signal</td>
+              <td>No — move on</td>
+            </tr>
+            <tr>
+              <td><span style="color:var(--muted);font-weight:600">noAudio</span></td>
+              <td>STT returned empty or null</td>
+              <td>"Hmm, I didn't hear that — try again!" — does NOT count as miss</td>
+              <td>Yes — retry free</td>
+            </tr>
+            <tr>
+              <td><span style="color:var(--muted);font-weight:600">skipped</span></td>
+              <td>Child tapped "Skip"</td>
+              <td>No feedback — move on gently. Logged for therapist flag tracking.</td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td><span style="color:var(--muted);font-weight:600">unavailable</span></td>
+              <td>STT not available (permission denied or offline)</td>
+              <td>Silently fall back to receptive mode for this session. Parent notified via session summary.</td>
+              <td>N/A</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════ -->
+    <!-- 08 SCORING -->
+    <!-- ═══════════════════════════════════ -->
+    <section class="section" id="scoring">
+      <div class="sec-num">// 08</div>
+      <h2 class="sec-title">Scoring Logic</h2>
+
+      <div class="code-block">
+        <div class="code-head"><span class="code-lang">Pseudocode</span><span class="code-file">scoring per trial</span>
+        </div>
+        <div class="code-body"><span class="c">// Base points</span>
+          receptive_correct_independent = <span class="num">10</span> pts
+          receptive_correct_prompted = <span class="num">5</span> pts <span class="c">// answered after audio
+            replay</span>
+          expressive_correct = <span class="num">20</span> pts <span class="c">// double points for speaking</span>
+          expressive_close = <span class="num">10</span> pts <span class="c">// partial credit for close attempt</span>
+          expressive_skipped = <span class="num">0</span> pts <span class="c">// no penalty for skipping</span>
+          miss = <span class="num">0</span> pts <span class="c">// no negative score — ever</span>
+
+          <span class="c">// Session completion bonus (no errors in session)</span>
+          perfect_session_bonus = <span class="num">30</span> pts
+
+          <span class="c">// Streak bonus (3 correct in a row)</span>
+          streak_bonus = <span class="num">5</span> pts × streak_count <span class="c">// capped at 4 (20pts max)</span>
+
+          <span class="c">// Session result POSTed back (outcome field maps to Synergy standard)</span>
+          receptive_correct_independent → outcome: "correct_independent"
+          receptive_after_replay → outcome: "correct_prompted"
+          expressive_correct → outcome: "correct_independent"
+          expressive_close → outcome: "correct_prompted"
+          expressive_skipped → outcome: "no_response"
+          miss → outcome: "incorrect"
+          no_audio → <span class="c">not counted in outcome_distribution</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════ -->
+    <!-- 09 SDUI DATA CONTRACT -->
+    <!-- ═══════════════════════════════════ -->
+    <section class="section" id="sdui">
+      <div class="sec-num">// 09</div>
+      <h2 class="sec-title">SDUI Data Contract</h2>
+
+      <div class="code-block">
+        <div class="code-head"><span class="code-lang">JSON</span><span class="code-file">game_config.data —
+            phonics_phonetics game type (Stage 2, expressive)</span></div>
+        <div class="code-body">{
+          <span class="s">"game_type"</span>: <span class="s">"phonics_phonetics"</span>,
+          <span class="s">"difficulty"</span>: <span class="s">"medium"</span>,
+          <span class="s">"time_limit_seconds"</span>: <span class="k">null</span>,
+          <span class="s">"prompt_level"</span>: <span class="num">2</span>,
+          <span class="s">"skill_id"</span>: <span class="s">"consonant_sounds"</span>,
+          <span class="s">"module_id"</span>: <span class="s">"M08"</span>,
+          <span class="s">"reinforcement_schedule"</span>: <span class="s">"continuous"</span>,
+          <span class="s">"ebp_applied"</span>: [<span class="s">"DTT"</span>, <span class="s">"Shaping"</span>, <span
+            class="s">"Multiple Exemplar Training"</span>, <span class="s">"Prompt Hierarchy"</span>],
+          <span class="s">"therapist_flag"</span>: <span class="k">false</span>,
+          <span class="s">"therapist_flag_reason"</span>: <span class="k">null</span>,
+          <span class="s">"parent_instruction"</span>: <span class="s">"When your child says the sound, repeat it back
+            with excitement — 'Yes! Buh! That's the B sound!' Say consonant sounds throughout the day: 'Listen —
+            d-d-dog! Can you make that sound?'"</span>,
+
+          <span class="s">"data"</span>: {
+          <span class="s">"phonics_stage"</span>: <span class="num">2</span>, <span class="c">// 1–5 maps to
+            S1–S5</span>
+          <span class="s">"stage_label"</span>: <span class="s">"consonant_sounds"</span>,
+          <span class="s">"response_mode"</span>: <span class="s">"expressive"</span>, <span class="c">// "receptive" |
+            "expressive"</span>
+          <span class="s">"allow_skip"</span>: <span class="k">true</span>, <span class="c">// always true for
+            expressive</span>
+
+          <span class="s">"trials"</span>: [
+          {
+          <span class="s">"id"</span>: <span class="s">"trial_001"</span>,
+          <span class="s">"phoneme"</span>: <span class="s">"b"</span>, <span class="c">// the target sound</span>
+          <span class="s">"display_letter"</span>: <span class="s">"B"</span>, <span class="c">// shown on the phoneme
+            card</span>
+          <span class="s">"anchor_word"</span>: <span class="s">"ball"</span>,
+          <span class="s">"anchor_image_url"</span>: <span
+            class="s">"https://cdn.synergy.ai/assets/objects/ball"</span>,
+          <span class="s">"phoneme_audio_url"</span>: <span
+            class="s">"https://cdn.synergy.ai/audio/phonemes/b_carrier.mp3"</span>,
+          <span class="s">"stt_expected"</span>: <span class="s">"b"</span>, <span class="c">// primary match
+            target</span>
+          <span class="s">"stt_accepted_variants"</span>: [<span class="s">"bee"</span>, <span class="s">"buh"</span>,
+          <span class="s">"be"</span>],
+          <span class="s">"distractor_phonemes"</span>: [<span class="s">"p"</span>, <span class="s">"d"</span>], <span
+            class="c">// used in receptive mode</span>
+          <span class="s">"cvc_breakdown"</span>: <span class="k">null</span> <span class="c">// only populated for
+            Stage 4</span>
+          },
+          {
+          <span class="s">"id"</span>: <span class="s">"trial_002"</span>,
+          <span class="s">"phoneme"</span>: <span class="s">"m"</span>,
+          <span class="s">"display_letter"</span>: <span class="s">"M"</span>,
+          <span class="s">"anchor_word"</span>: <span class="s">"moon"</span>,
+          <span class="s">"anchor_image_url"</span>: <span
+            class="s">"https://cdn.synergy.ai/assets/objects/moon"</span>,
+          <span class="s">"phoneme_audio_url"</span>: <span
+            class="s">"https://cdn.synergy.ai/audio/phonemes/m_carrier.mp3"</span>,
+          <span class="s">"stt_expected"</span>: <span class="s">"m"</span>,
+          <span class="s">"stt_accepted_variants"</span>: [<span class="s">"em"</span>, <span class="s">"mmm"</span>],
+          <span class="s">"distractor_phonemes"</span>: [<span class="s">"n"</span>, <span class="s">"b"</span>],
+          <span class="s">"cvc_breakdown"</span>: <span class="k">null</span>
+          }
+          ],
+
+          <span class="s">"trials_per_session"</span>: <span class="num">5</span>,
+          <span class="s">"scoring"</span>: {
+          <span class="s">"receptive_correct"</span>: <span class="num">10</span>,
+          <span class="s">"expressive_correct"</span>: <span class="num">20</span>,
+          <span class="s">"expressive_close"</span>: <span class="num">10</span>,
+          <span class="s">"perfect_bonus"</span>: <span class="num">30</span>
+          }
+          }
+          }
+        </div>
+      </div>
+
+      <div class="subsection" style="margin-top:20px">
+        <div class="sub-title">Stage 4 CVC trial shape (additional fields)</div>
+        <div class="code-block">
+          <div class="code-head"><span class="code-lang">JSON</span><span class="code-file">trial object — Stage 4 CVC
+              word</span></div>
+          <div class="code-body">{
+            <span class="s">"id"</span>: <span class="s">"trial_003"</span>,
+            <span class="s">"phoneme"</span>: <span class="s">"cat"</span>, <span class="c">// full word as the
+              "phoneme" field</span>
+            <span class="s">"display_letter"</span>: <span class="s">"CAT"</span>,
+            <span class="s">"anchor_word"</span>: <span class="s">"cat"</span>,
+            <span class="s">"anchor_image_url"</span>: <span
+              class="s">"https://cdn.synergy.ai/assets/animals/cat"</span>,
+            <span class="s">"phoneme_audio_url"</span>: <span
+              class="s">"https://cdn.synergy.ai/audio/words/cat.mp3"</span>,
+            <span class="s">"stt_expected"</span>: <span class="s">"cat"</span>,
+            <span class="s">"stt_accepted_variants"</span>: [<span class="s">"kat"</span>, <span
+              class="s">"kad"</span>],
+            <span class="s">"distractor_phonemes"</span>: [<span class="s">"dog"</span>, <span class="s">"bat"</span>],
+
+            <span class="c">// CVC-specific: breakdown for phoneme-by-phoneme animation</span>
+            <span class="s">"cvc_breakdown"</span>: {
+            <span class="s">"letters"</span>: [<span class="s">"C"</span>, <span class="s">"A"</span>, <span
+              class="s">"T"</span>],
+            <span class="s">"phoneme_audio_urls"</span>: [
+            <span class="s">"https://cdn.synergy.ai/audio/phonemes/k_carrier.mp3"</span>,
+            <span class="s">"https://cdn.synergy.ai/audio/phonemes/a_carrier.mp3"</span>,
+            <span class="s">"https://cdn.synergy.ai/audio/phonemes/t_carrier.mp3"</span>
+            ],
+            <span class="s">"highlight_delay_ms"</span>: <span class="num">400</span> <span class="c">// gap between
+              highlighting each letter</span>
+            }
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════ -->
+    <!-- 10 FLUTTER STRUCTURE -->
+    <!-- ═══════════════════════════════════ -->
+    <section class="section" id="flutter-structure">
+      <div class="sec-num">// 10</div>
+      <h2 class="sec-title">Flutter Folder Structure</h2>
+      <div
+        style="background:var(--ink-light);border:1px solid var(--border);border-radius:8px;padding:20px 24px;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.9;white-space:pre">
+        <span style="color:var(--blue)">lib/games/phonics/</span>
+        <span style="color:var(--muted)">├── </span><span style="color:var(--orange)">phonics_game.dart</span> <span
+          style="color:var(--muted)"># Entry widget — registers in ComponentRegistry</span>
+        <span style="color:var(--muted)">├── </span><span style="color:var(--orange)">phonics_notifier.dart</span> <span
+          style="color:var(--muted)"># Riverpod StateNotifier — full state machine</span>
+        <span style="color:var(--muted)">├── </span><span style="color:var(--orange)">phonics_models.dart</span> <span
+          style="color:var(--muted)"># PhonicsConfig, PhonicsState, TrialData, PhonicsScore</span>
+        <span style="color:var(--muted)">├── </span><span style="color:var(--orange)">stt_scorer.dart</span> <span
+          style="color:var(--muted)"># speech_to_text wrapper + scoring logic</span>
+        <span style="color:var(--muted)">│</span>
+        <span style="color:var(--muted)">├── </span><span style="color:var(--blue)">widgets/</span>
+        <span style="color:var(--muted)">│ ├── </span><span style="color:var(--orange)">phoneme_display_card.dart</span>
+        <span style="color:var(--muted)"># Large letter + anchor image + play button</span>
+        <span style="color:var(--muted)">│ ├── </span><span style="color:var(--orange)">receptive_options.dart</span>
+        <span style="color:var(--muted)"># 2–4 tap options (letters or words)</span>
+        <span style="color:var(--muted)">│ ├── </span><span style="color:var(--orange)">mic_record_button.dart</span>
+        <span style="color:var(--muted)"># Hold-to-record + waveform + skip</span>
+        <span style="color:var(--muted)">│ ├── </span><span style="color:var(--orange)">waveform_visualiser.dart</span>
+        <span style="color:var(--muted)"># Animated waveform during recording</span>
+        <span style="color:var(--muted)">│ ├── </span><span style="color:var(--orange)">cvc_breakdown_row.dart</span>
+        <span style="color:var(--muted)"># C-A-T boxes with sequential highlight</span>
+        <span style="color:var(--muted)">│ ├── </span><span style="color:var(--orange)">phonics_hud.dart</span> <span
+          style="color:var(--muted)"># Stage label + trial counter + score</span>
+        <span style="color:var(--muted)">│ ├── </span><span style="color:var(--orange)">scoring_feedback.dart</span>
+        <span style="color:var(--muted)"># Correct / close / miss overlays</span>
+        <span style="color:var(--muted)">│ └── </span><span style="color:var(--orange)">stage_intro_card.dart</span>
+        <span style="color:var(--muted)"># Stage name + intro animation</span>
+        <span style="color:var(--muted)">│</span>
+        <span style="color:var(--muted)">└── </span><span style="color:var(--blue)">animations/</span>
+        <span style="color:var(--muted)"> ├── </span><span style="color:var(--orange)">correct_burst.dart</span> <span
+          style="color:var(--muted)"># Star burst on correct answer</span>
+        <span style="color:var(--muted)"> ├── </span><span style="color:var(--orange)">close_wobble.dart</span> <span
+          style="color:var(--muted)"># Gentle wobble on "almost"</span>
+        <span style="color:var(--muted)"> └── </span><span style="color:var(--orange)">phoneme_pulse.dart</span> <span
+          style="color:var(--muted)"># Letter pulses when audio plays</span>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- ═══════════════════════════════════ -->
+    <!-- BUILD PHASES -->
+    <!-- ═══════════════════════════════════ -->
+    <section class="section" id="phase1">
+      <div class="sec-num">// 11 — Build Plan</div>
+      <h2 class="sec-title">5-Phase Implementation Plan</h2>
+
+      <div class="phase-card">
+        <div class="phase-head">
+          <span class="phase-badge ph1">Phase 1</span>
+          <span class="phase-title">Curriculum Data + TTS Audio Generation</span>
+          <span class="phase-meta">Days 1–4</span>
+        </div>
+        <div class="phase-body">
+          <ul class="task-list">
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Define the full phoneme library in a static JSON curriculum file</div>
+                <div class="task-desc">Create <code>phonics_curriculum.json</code> — all 5 vowels, 21 consonants with
+                  groups, 19 blends/digraphs, 50+ CVC words organised by family, 20 Tier 1 sight words. This is the
+                  server's source of truth for what to put in SDUI trial arrays. Include
+                  <code>stt_accepted_variants</code> for every phoneme.</div>
+                <div class="task-tags"><span class="task-tag tag-api">Server</span><span
+                    class="task-tag tag-logic">Curriculum</span></div>
+              </div>
+            </li>
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Build the phoneme audio pre-generation script</div>
+                <div class="task-desc">A one-time script (<code>python scripts/generate_phoneme_audio.py</code>) that
+                  iterates the curriculum and generates carrier phrase audio for every S1–S3 phoneme via Pocket TTS.
+                  Uploads all 45 files to the configured storage backend. Outputs a manifest JSON mapping phoneme →
+                  audio URL. This runs once — never at request time.</div>
+                <div class="task-tags"><span class="task-tag tag-tts">TTS</span><span
+                    class="task-tag tag-api">Server</span></div>
+              </div>
+            </li>
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Add phonics_phonetics to the AI generation prompt GAME TYPE CATALOGUE</div>
+                <div class="task-desc">Add the full <code>phonics_phonetics</code> game type entry following the same
+                  format as <code>colour_matching</code>. Include all 5 stage variants, trial construction rules,
+                  progression gate logic, and the <code>stt_accepted_variants</code> field requirement. Claude must
+                  never invent phoneme audio URLs — they come from the pre-generated manifest.</div>
+                <div class="task-tags"><span class="task-tag tag-sdui">SDUI</span><span
+                    class="task-tag tag-api">Server</span></div>
+              </div>
+            </li>
+          </ul>
+          <div class="milestone">
+            <div class="milestone-icon">✅</div>
+            <div class="milestone-body"><strong>Phase 1 milestone:</strong> All phoneme audio files pre-generated and
+              accessible via URL. Curriculum JSON is complete and covers all 5 stages. Claude can generate a valid
+              <code>phonics_phonetics</code> SDUI payload for any stage.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-card" id="phase2">
+        <div class="phase-head">
+          <span class="phase-badge ph2">Phase 2</span>
+          <span class="phase-title">Receptive Mode — Full Flutter Implementation</span>
+          <span class="phase-meta">Days 5–10</span>
+        </div>
+        <div class="phase-body">
+          <ul class="task-list">
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Build PhonicsNotifier with full state machine (receptive only)</div>
+                <div class="task-desc">Implement all states: IDLE → LOADING → INTRO → TRIAL_START → WAITING_RESPONSE →
+                  ANIMATING → TRIAL_END → WIN. Wire trial progression, score tracking, and session result accumulation.
+                  No mic code yet — mock expressive mode as not-available.</div>
+                <div class="task-tags"><span class="task-tag tag-flutter">Flutter</span><span
+                    class="task-tag tag-logic">Logic</span></div>
+              </div>
+            </li>
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Build PhonemeDisplayCard and ReceptiveOptions widgets</div>
+                <div class="task-desc">PhonemeDisplayCard: large letter, anchor image, audio play button, pulse
+                  animation when audio plays. ReceptiveOptions: 2–4 tappable letter cards with correct/incorrect tap
+                  feedback. Both stateless — driven entirely by PhonicsNotifier.</div>
+                <div class="task-tags"><span class="task-tag tag-flutter">Flutter</span></div>
+              </div>
+            </li>
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Build CvcBreakdownRow for Stage 4</div>
+                <div class="task-desc">Three letter boxes that highlight sequentially as each phoneme plays. Uses an
+                  <code>AnimationController</code> with 400ms stagger. Active box gets teal border and background tint.
+                  Whole-word audio plays first, then each box highlights with its phoneme audio.</div>
+                <div class="task-tags"><span class="task-tag tag-flutter">Flutter</span></div>
+              </div>
+            </li>
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Integrate VoiceoverPlayer — play phoneme_audio_url automatically on trial start
+                </div>
+                <div class="task-desc">On TRIAL_START: play the trial's <code>phoneme_audio_url</code> via
+                  <code>just_audio</code>. On completion, transition to WAITING_RESPONSE. Auto-replay on timer warning
+                  (prompt level ≥ 2). Respect <code>pref_sfx_enabled</code> and <code>pref_volume</code> settings.</div>
+                <div class="task-tags"><span class="task-tag tag-flutter">Flutter</span></div>
+              </div>
+            </li>
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Test all 5 stages with real SDUI payloads</div>
+                <div class="task-desc">Generate a test payload for each stage from the API. Verify: correct letters
+                  shown, audio plays, distractors are from the right difficulty level, CVC breakdown works for Stage 4,
+                  sight word sentence context shows for Stage 5.</div>
+                <div class="task-tags"><span class="task-tag tag-flutter">Flutter</span><span
+                    class="task-tag tag-sdui">SDUI</span></div>
+              </div>
+            </li>
+          </ul>
+          <div class="milestone">
+            <div class="milestone-icon">✅</div>
+            <div class="milestone-body"><strong>Phase 2 milestone:</strong> Fully playable receptive-only phonics game
+              across all 5 stages. Audio plays correctly for every trial. Distractor selection scales with difficulty.
+              CVC breakdown animates correctly. Session results POST accurately.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-card" id="phase3">
+        <div class="phase-head">
+          <span class="phase-badge ph3">Phase 3</span>
+          <span class="phase-title">Expressive Mode — Mic + Speech Recognition</span>
+          <span class="phase-meta">Days 11–16</span>
+        </div>
+        <div class="phase-body">
+          <ul class="task-list">
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Add speech_to_text, request mic permissions at app startup</div>
+                <div class="task-desc">Add <code>speech_to_text: ^6.x</code> to pubspec. Add microphone permission to
+                  AndroidManifest and Info.plist. Request permission at app startup (not mid-game). If denied: set
+                  <code>sttAvailable = false</code> in a global provider — expressive mode silently falls back to
+                  receptive throughout the session.</div>
+                <div class="task-tags"><span class="task-tag tag-stt">STT</span><span
+                    class="task-tag tag-flutter">Flutter</span></div>
+              </div>
+            </li>
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Implement SttScorer with full scoring and variant matching</div>
+                <div class="task-desc">Implement all logic as specified: exact match, contains match, accepted variants,
+                  edit distance for CVC/word stages. Build out the complete <code>_phonemeVariants</code> map for all 45
+                  phonemes. Write unit tests for each score result type — especially edge cases like "noAudio" and
+                  partial transcriptions.</div>
+                <div class="task-tags"><span class="task-tag tag-stt">STT</span><span
+                    class="task-tag tag-logic">Logic</span></div>
+              </div>
+            </li>
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Build MicRecordButton and WaveformVisualiser widgets</div>
+                <div class="task-desc">MicRecordButton: large circular button, hold to record, release to score.
+                  Animated ring pulses while recording. WaveformVisualiser: real-time audio amplitude bars using
+                  <code>speech_to_text</code>'s sound level stream — shows child their voice is being heard. "Skip for
+                  now" text button always visible alongside the mic button.</div>
+                <div class="task-tags"><span class="task-tag tag-flutter">Flutter</span></div>
+              </div>
+            </li>
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Wire RECORDING → SCORING states into PhonicsNotifier</div>
+                <div class="task-desc">On mic release: call <code>sttScorer.scoreAttempt()</code>. Handle
+                  ANIMATING_CLOSE (retry flow). Wire "close" retry: replay phoneme audio, show "Almost! Try again",
+                  allow one retry per trial. Implement consecutive skip counter — after 3 skips on same phoneme, set
+                  <code>therapist_flag: true</code> in next session POST.</div>
+                <div class="task-tags"><span class="task-tag tag-stt">STT</span><span
+                    class="task-tag tag-logic">Logic</span></div>
+              </div>
+            </li>
+          </ul>
+          <div class="milestone">
+            <div class="milestone-icon">✅</div>
+            <div class="milestone-body"><strong>Phase 3 milestone:</strong> Full expressive mode working. Child holds
+              mic, says a sound or word, gets immediate scored feedback. "Almost" retry flow works. Skip is graceful and
+              logged. STT unavailability falls back to receptive mode silently.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-card" id="phase4">
+        <div class="phase-head">
+          <span class="phase-badge ph4">Phase 4</span>
+          <span class="phase-title">Progression Gates + Server-Side Tracking</span>
+          <span class="phase-meta">Days 17–20</span>
+        </div>
+        <div class="phase-body">
+          <ul class="task-list">
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Add phonics-specific fields to the sessions DB schema</div>
+                <div class="task-desc">Extend the <code>sessions</code> table (or a <code>phonics_sessions</code> view):
+                  add <code>phonics_stage</code>, <code>phoneme_id</code>, <code>response_mode</code>,
+                  <code>stt_transcript</code>, <code>skip_count</code>. These allow the server to evaluate progression
+                  gates per-phoneme across sessions.</div>
+                <div class="task-tags"><span class="task-tag tag-api">Server</span></div>
+              </div>
+            </li>
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Implement progression gate evaluation in the activity generator</div>
+                <div class="task-desc">Before generating a phonics payload, the server queries session history to
+                  evaluate: which vowels are mastered, which consonant group is active, whether SH/CH/TH are consistent,
+                  CVC family count. Sets the correct <code>phonics_stage</code> and <code>response_mode</code> in the
+                  SDUI config. The LLM prompt includes the gate evaluation result — it never computes gates itself.
+                </div>
+                <div class="task-tags"><span class="task-tag tag-api">Server</span><span
+                    class="task-tag tag-logic">Logic</span></div>
+              </div>
+            </li>
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Build phonics progress section in the parent dashboard</div>
+                <div class="task-desc">Add a "Phonics Progress" section to the Flutter progress screen. Shows a stage
+                  ladder (S1–S5) with which stage is active. Within the active stage: a chip grid of each phoneme
+                  coloured by mastery (grey=not started, amber=in progress, green=mastered). Tapping a chip shows
+                  session history for that phoneme.</div>
+                <div class="task-tags"><span class="task-tag tag-flutter">Flutter</span></div>
+              </div>
+            </li>
+          </ul>
+          <div class="milestone">
+            <div class="milestone-icon">✅</div>
+            <div class="milestone-body"><strong>Phase 4 milestone:</strong> Progression gates work end-to-end. A child
+              who masters all vowels automatically gets consonant trials next session. Expressive mode activates
+              per-phoneme after 3 receptive wins. Parents can see phonics progress on the dashboard.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-card" id="phase5">
+        <div class="phase-head">
+          <span class="phase-badge ph5">Phase 5</span>
+          <span class="phase-title">Polish, EBP Wiring & SDUI Registration</span>
+          <span class="phase-meta">Days 21–24</span>
+        </div>
+        <div class="phase-body">
+          <ul class="task-list">
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Register phonics_phonetics in Flutter ComponentRegistry</div>
+                <div class="task-desc">Add
+                  <code>'phonics_phonetics': (config, session) => PhonicsGame(config: config, session: session)</code>.
+                  The game is now fully SDUI-driven. No hardcoded content in Flutter — every trial, every audio URL,
+                  every phoneme comes from the server payload.</div>
+                <div class="task-tags"><span class="task-tag tag-sdui">SDUI</span><span
+                    class="task-tag tag-flutter">Flutter</span></div>
+              </div>
+            </li>
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Animations: correct burst, close wobble, phoneme pulse</div>
+                <div class="task-desc">CorrectBurst: star particles radiate from the tapped option (receptive) or mic
+                  button (expressive). CloseWobble: letter card gently wobbles left-right on "almost" — warm, not
+                  punishing. PhonemePulse: the large letter scales 1.0→1.1→1.0 in sync with each audio playback.</div>
+                <div class="task-tags"><span class="task-tag tag-flutter">Flutter</span></div>
+              </div>
+            </li>
+            <li class="task-item">
+              <div class="task-check"></div>
+              <div class="task-content">
+                <div class="task-title">Therapist flag logic + parent session summary</div>
+                <div class="task-desc">Implement: 3 consecutive mic skips on same phoneme →
+                  <code>therapist_flag: true</code>. STT consistently returns no_audio on a phoneme → flag. 5+ sessions
+                  on same phoneme with no improvement → flag. Parent summary at session end: shows which phonemes were
+                  practiced, how many were correct, and any therapist notes.</div>
+                <div class="task-tags"><span class="task-tag tag-logic">Logic</span><span
+                    class="task-tag tag-sdui">EBP</span></div>
+              </div>
+            </li>
+          </ul>
+          <div class="milestone">
+            <div class="milestone-icon">✅</div>
+            <div class="milestone-body"><strong>Phase 5 milestone:</strong> Complete, polished, SDUI-registered phonics
+              game. All 5 stages working. Receptive and expressive modes tested. Therapist flags fire correctly.
+              Animations are warm and encouraging. Ready for pilot use.</div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <div class="footer">
+      <div class="footer-l">Synergy · Phonics & Phonetics Game · Full Specification</div>
+      <div class="footer-r">5 stages · 5 phases · ~24 days · Hybrid receptive/expressive</div>
+    </div>
+
+  </main>
+</body>
+
+</html>
