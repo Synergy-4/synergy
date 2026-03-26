@@ -18,12 +18,17 @@ class DatabaseService {
   Future<Database> _initDB(String filePath) async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
+    
+    // ignore: avoid_print
+    print('--- DATABASE PATH: $path ---');
 
     return await openDatabase(
       path,
       version: 2,
       onCreate: _createDB,
       onUpgrade: (db, oldVersion, newVersion) async {
+        // ignore: avoid_print
+        print('--- UPGRADING DATABASE FROM $oldVersion TO $newVersion ---');
         if (oldVersion < 2) {
           await db.execute('DROP TABLE IF EXISTS children');
           await _createDB(db, newVersion);
@@ -33,6 +38,8 @@ class DatabaseService {
   }
 
   Future<void> _createDB(Database db, int version) async {
+    // ignore: avoid_print
+    print('--- CREATING DATABASE TABLES ---');
     await db.execute('''
       CREATE TABLE children (
         id INTEGER PRIMARY KEY,
@@ -66,7 +73,11 @@ class DatabaseService {
 
   Future<List<ChildModel>> getChildren() async {
     final db = await instance.database;
+    // ignore: avoid_print
+    print('--- FETCHING CHILDREN FROM DB ---');
     final result = await db.query('children');
+    // ignore: avoid_print
+    print('--- FOUND ${result.length} CHILDREN ---');
 
     return result.map((json) {
       return ChildModel(
@@ -90,5 +101,6 @@ class DatabaseService {
   Future<void> close() async {
     final db = await instance.database;
     db.close();
+    _database = null;
   }
 }

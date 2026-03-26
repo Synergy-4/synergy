@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../models/activity_models.dart';
@@ -8,6 +9,13 @@ import '../widgets/colour_matching_game.dart';
 import '../widgets/tap_to_select_game.dart';
 import '../widgets/phonics_phonetics_game.dart';
 import 'event_handler.dart';
+
+const _kBackgrounds = [
+  'assets/backgrounds/aerial_view.jpg',
+  'assets/backgrounds/nature_forest.jpg',
+  'assets/backgrounds/nature_park.jpg',
+  'assets/backgrounds/night_forest.jpg',
+];
 
 /// A registry that maps SDUI components and game types to their respective widgets.
 class ComponentRegistry {
@@ -64,7 +72,7 @@ class _SduiRendererState extends ConsumerState<SduiRenderer> {
   void _playAudioForCurrentStep() {
     final step = widget.payload.steps[_currentStepIndex];
     String? audioUrl;
-    
+
     if (step.type == 'instruction' || step.type == 'reward') {
       audioUrl = step.voiceoverAudioUrl;
     } else if (step.type == 'game') {
@@ -98,6 +106,7 @@ class _SduiRendererState extends ConsumerState<SduiRenderer> {
     return Theme(
       data: Theme.of(context).copyWith(
         scaffoldBackgroundColor: HexColor.fromHex(theme.backgroundColor),
+        // scaffoldBackgroundColor: Colors.transparent,
         textTheme: Theme.of(context).textTheme.copyWith(
           displaySmall: TextStyle(
             fontFamily: theme.headingFont.family,
@@ -198,21 +207,23 @@ class _GameStep extends StatelessWidget {
   final StepConfig step;
   final VoidCallback onComplete;
   final ThemeConfigData theme;
+  final String _background;
 
-  const _GameStep({
+  _GameStep({
     required this.step,
     required this.onComplete,
     required this.theme,
-  });
+  }) : _background = _kBackgrounds[Random().nextInt(_kBackgrounds.length)];
 
   @override
   Widget build(BuildContext context) {
     final gameType = step.gameConfig?.gameType;
 
+    Widget gameWidget;
     if (gameType == 'matching') {
-      return MatchingGame(config: step.gameConfig!, onComplete: onComplete);
+      gameWidget = MatchingGame(config: step.gameConfig!, onComplete: onComplete);
     } else if (gameType == 'colour_matching') {
-      return ColourMatchingGame(
+      gameWidget = ColourMatchingGame(
         config: step.gameConfig!,
         onComplete: () {
           SduiEventHandler.handleEvent(context, step.gameConfig?.onSuccess);
@@ -220,7 +231,7 @@ class _GameStep extends StatelessWidget {
         },
       );
     } else if (gameType == 'tap_to_select') {
-      return TapToSelectGame(
+      gameWidget = TapToSelectGame(
         config: step.gameConfig!,
         onComplete: () {
           SduiEventHandler.handleEvent(context, step.gameConfig?.onSuccess);
@@ -228,28 +239,36 @@ class _GameStep extends StatelessWidget {
         },
       );
     } else if (gameType == 'phonics' || gameType == 'phonics_phonetics') {
-      return PhonicsPhoneticsGame(
+      gameWidget = PhonicsPhoneticsGame(
         config: step.gameConfig!,
         onComplete: () {
           SduiEventHandler.handleEvent(context, step.gameConfig?.onSuccess);
           onComplete();
         },
       );
+    } else {
+      gameWidget = Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Game: ${gameType ?? "Unknown"}',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: 16),
+          AppButton(
+            text: 'Complete Game',
+            onPressed: onComplete,
+            backgroundColor: HexColor.fromHex(theme.primaryColor),
+          ),
+        ],
+      );
     }
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Stack(
+      fit: StackFit.expand,
       children: [
-        Text(
-          'Game: ${gameType ?? "Unknown"}',
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        const SizedBox(height: 16),
-        AppButton(
-          text: 'Complete Game',
-          onPressed: onComplete,
-          backgroundColor: HexColor.fromHex(theme.primaryColor),
-        ),
+        Image.asset(_background, fit: BoxFit.cover),
+        gameWidget,
       ],
     );
   }
