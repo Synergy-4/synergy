@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../models/activity_models.dart';
 import '../../../core/services/audio_service.dart';
+import '../../../core/widgets/liquid_glass_card.dart';
 import '../engine/stt_scorer.dart';
 
 class PhonicsPhoneticsGame extends ConsumerStatefulWidget {
@@ -124,135 +125,156 @@ class _PhonicsPhoneticsGameState extends ConsumerState<PhonicsPhoneticsGame> {
     final anchorImage = trial['anchor_image_url'] as String?;
     final phonemeAudio = trial['phoneme_audio_url'] as String?;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          // Letter & Word Display
-          Column(
-            children: [
-              Text(
-                displayLetter,
-                style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                      fontSize: 100,
-                      fontWeight: FontWeight.bold,
-                      color: _isCorrect ? Colors.green : null,
-                    ),
-              ).animate(target: _isCorrect ? 1 : 0).scale(
-                    duration: 300.ms,
-                    curve: Curves.elasticOut,
-                    end: const Offset(1.2, 1.2),
+    return Center(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+          child: LiquidGlassCard(
+            borderRadius: 32,
+            thickness: 20,
+            blur: 14,
+            saturation: 1.4,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 28.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  // Letter & Word Display
+                  Column(
+                    children: [
+                      Text(
+                        displayLetter,
+                        style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                              fontSize: 100,
+                              fontWeight: FontWeight.bold,
+                              color: _isCorrect ? Colors.green : Colors.white,
+                            ),
+                      ).animate(target: _isCorrect ? 1 : 0).scale(
+                            duration: 300.ms,
+                            curve: Curves.elasticOut,
+                            end: const Offset(1.2, 1.2),
+                          ),
+                      const SizedBox(height: 8),
+                      if (anchorWord.isNotEmpty)
+                        Text(
+                          anchorWord.toUpperCase(),
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                color: Colors.white70,
+                                letterSpacing: 4.0,
+                              ),
+                        ),
+                    ],
                   ),
-              const SizedBox(height: 8),
-              if (anchorWord.isNotEmpty)
-                Text(
-                  anchorWord.toUpperCase(),
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: Colors.grey.shade700,
-                        letterSpacing: 4.0,
-                      ),
-                ),
-            ],
-          ),
 
-          // Core Visual Anchor
-          if (anchorImage != null)
-            Container(
-              height: 200,
-              width: 200,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 10,
-                    offset: Offset(0, 4),
-                  )
+                  const SizedBox(height: 24),
+
+                  // Core Visual Anchor
+                  if (anchorImage != null)
+                    Container(
+                      height: 200,
+                      width: 200,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 10,
+                            offset: Offset(0, 4),
+                          )
+                        ],
+                      ),
+                      padding: const EdgeInsets.all(24),
+                      child: CachedNetworkImage(
+                        imageUrl: anchorImage,
+                        fit: BoxFit.contain,
+                        placeholder: (context, url) =>
+                            const Center(child: CircularProgressIndicator(color: Colors.white)),
+                        errorWidget: (context, url, err) =>
+                            const Icon(Icons.broken_image, size: 50, color: Colors.white54),
+                      ),
+                    ),
+
+                  const SizedBox(height: 24),
+
+                  // Interactivity Row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Play Sound Button
+                      if (phonemeAudio != null)
+                        IconButton(
+                          iconSize: 64,
+                          onPressed: () {
+                            ref.read(audioServiceProvider).playUrl(phonemeAudio);
+                          },
+                          icon: const Icon(Icons.volume_up_rounded, color: Colors.white),
+                        ),
+
+                      const SizedBox(width: 40),
+
+                      // Microphone Button
+                      GestureDetector(
+                        onTapDown: (_) => _startListening(trial),
+                        onTapUp: (_) => _stopListening(),
+                        onTapCancel: () => _stopListening(),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          padding: const EdgeInsets.all(24),
+                          decoration: BoxDecoration(
+                            color: _isCorrect
+                                ? Colors.green
+                                : (_isListening ? Colors.redAccent : Colors.orangeAccent),
+                            shape: BoxShape.circle,
+                            boxShadow: _isListening
+                                ? [
+                                    BoxShadow(
+                                      color: Colors.redAccent.withOpacity(0.6),
+                                      blurRadius: 20,
+                                      spreadRadius: 10,
+                                    )
+                                  ]
+                                : [],
+                          ),
+                          child: Icon(
+                            _isCorrect ? Icons.check : Icons.mic,
+                            size: 48,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // Live feedback text
+                  if (_isListening || _lastWords.isNotEmpty)
+                    Text(
+                      _isCorrect ? "Great job!" : "I heard: '$_lastWords'",
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            color: _isCorrect ? Colors.greenAccent : Colors.white70,
+                            fontStyle: FontStyle.italic,
+                          ),
+                      textAlign: TextAlign.center,
+                    ),
+
+                  const SizedBox(height: 8),
+
+                  // Helper instructions
+                  Text(
+                    "Hold the microphone and say the sound!",
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Colors.white54,
+                        ),
+                    textAlign: TextAlign.center,
+                  ),
                 ],
               ),
-              padding: const EdgeInsets.all(24),
-              child: CachedNetworkImage(
-                imageUrl: anchorImage,
-                fit: BoxFit.contain,
-                placeholder: (context, url) =>
-                    const Center(child: CircularProgressIndicator()),
-                errorWidget: (context, url, err) =>
-                    const Icon(Icons.broken_image, size: 50, color: Colors.grey),
-              ),
             ),
-
-          // Interactivity Row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Play Sound Button
-              if (phonemeAudio != null)
-                IconButton(
-                  iconSize: 64,
-                  onPressed: () {
-                    ref.read(audioServiceProvider).playUrl(phonemeAudio);
-                  },
-                  icon: const Icon(Icons.volume_up_rounded, color: Colors.blueAccent),
-                ),
-
-              const SizedBox(width: 40),
-
-              // Microphone Button
-              GestureDetector(
-                onTapDown: (_) => _startListening(trial),
-                onTapUp: (_) => _stopListening(),
-                onTapCancel: () => _stopListening(),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: _isCorrect
-                        ? Colors.green
-                        : (_isListening ? Colors.redAccent : Colors.orangeAccent),
-                    shape: BoxShape.circle,
-                    boxShadow: _isListening
-                        ? [
-                            BoxShadow(
-                              color: Colors.redAccent.withOpacity(0.6),
-                              blurRadius: 20,
-                              spreadRadius: 10,
-                            )
-                          ]
-                        : [],
-                  ),
-                  child: Icon(
-                    _isCorrect ? Icons.check : Icons.mic,
-                    size: 48,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ],
           ),
-
-          // Live debugging / feedback text
-          if (_isListening || _lastWords.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(top: 24.0),
-              child: Text(
-                _isCorrect ? "Great job!" : "I heard: '$_lastWords'",
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: _isCorrect ? Colors.green : Colors.grey.shade600,
-                      fontStyle: FontStyle.italic,
-                    ),
-              ),
-            ),
-            
-          // Helper instructions
-          Text(
-            "Hold the microphone and say the sound!",
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.grey.shade500,
-                ),
-          ),
-        ],
+        ),
       ),
     );
   }

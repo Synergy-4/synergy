@@ -19,7 +19,7 @@ class AppTheme {
         brightness: Brightness.light,
       ),
       scaffoldBackgroundColor: AppColors.scaffoldBackground,
-      textTheme: GoogleFonts.quicksandTextTheme(
+      textTheme: GoogleFonts.bubblegumSansTextTheme(
         const TextTheme(
           displayLarge: TextStyle(
             fontSize: 32,
